@@ -1,0 +1,23 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model makes {
+  id          Int           @id @default(autoincrement())
+  make        String        @db.VarChar(40)
+  make_models make_models[]
+}
+
+model make_models {
+  id       Int    @id @default(autoincrement())
+  make_id  Int?
+  label    String @db.VarChar(60)
+  makes    makes? @relation(fields: [make_id], references: [id])
+  year     Int
+  category String @db.VarChar(40)
+}
