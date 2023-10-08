@@ -65,7 +65,6 @@ export const FilterModelButton = ({ placeholder }: { placeholder: string }) => {
       <PopoverContent className="w-[170px] p-0">
         <Command>
           <CommandInput placeholder="Search" className={`text-[11px] text-[#111]`} />
-          <CommandEmpty>No results.</CommandEmpty>
           <CommandGroup className={`max-h-[200px] overflow-auto`}>
             {vehicleModels?.map((item) => (
               <CommandItem

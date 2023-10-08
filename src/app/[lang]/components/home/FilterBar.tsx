@@ -4,6 +4,7 @@ import { TVehicleMake } from '@/types/vehicle.type';
 import { FilterMakeButton } from './_components/FilterMakeButton';
 import { FilterModelButton } from './_components/FilterModelButton';
 import { FilterPriceMin } from './_components/FilterPriceMin';
+import { FilterPriceMax } from './_components/FilterPriceMax';
 
 const FilterBar = ({ makesData }: { makesData: TVehicleMake[] }) => {
 
@@ -21,7 +22,9 @@ const FilterBar = ({ makesData }: { makesData: TVehicleMake[] }) => {
                 {/* Maker model button */}
                 <FilterModelButton placeholder={'Modelis'} />
                 {/* Price min */}
-                <FilterPriceMin />
+                <FilterPriceMin placeholder={`Kaina nuo`}/>
+                {/* Price max */}
+                <FilterPriceMax placeholder={`Kaina iki`}/>
             </div>
         </div>
     );
