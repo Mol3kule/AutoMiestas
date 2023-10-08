@@ -1,12 +1,11 @@
 import { create } from 'zustand';
+type TVehicle = 'Sedan' | 'Suv' | 'Pickup' | ;
 
 interface IFilter {
+    vehicleType: TVehicle;
     makeId: number | null;
     model: string | null;
-    price: {
-        min: number,
-        max: number
-    }
+    price: { min: number, max: number },
 
     setMake: (make: number) => void;
     setModel: (model: string) => void;
