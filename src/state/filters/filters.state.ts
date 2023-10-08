@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-type TVehicle = '';
+type TVehicle = 'Automobile' | 'Bike' | 'Truck' | 'Tractor' | 'Boat' | 'Bus' | 'Trailer';
 type TCar = 'Sedan' | 'Suv' | 'Pickup' | 'Coupe' | 'SUV' | 'Convertible' | 'Hatchback' | 'Van/Minivan';
 
 interface IFilter {
