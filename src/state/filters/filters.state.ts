@@ -15,6 +15,7 @@ interface IFilter {
 }
 
 export const useFilterStore = create<IFilter>()((set) => ({
+    vehicleType: 'Automobile',
     makeId: null,
     model: null,
     price: {
@@ -22,6 +23,7 @@ export const useFilterStore = create<IFilter>()((set) => ({
         max: 10000
     },
 
+    setVehicleType: (vehicleType: TVehicle) => set({ vehicleType }),
     setMake: (makeId) => set({ makeId }),
     setModel: (model) => set({ model }),
     setPrice: (price) => set({ price }),
