@@ -5,6 +5,7 @@ import { FilterMakeButton } from './_components/FilterMakeButton';
 import { FilterModelButton } from './_components/FilterModelButton';
 import { FilterPriceMin } from './_components/FilterPriceMin';
 import { FilterPriceMax } from './_components/FilterPriceMax';
+import { Button } from '@/components/ui/button';
 
 const FilterBar = ({ makesData }: { makesData: TVehicleMake[] }) => {
 
@@ -22,9 +23,16 @@ const FilterBar = ({ makesData }: { makesData: TVehicleMake[] }) => {
                 {/* Maker model button */}
                 <FilterModelButton placeholder={'Modelis'} />
                 {/* Price min */}
-                <FilterPriceMin placeholder={`Kaina nuo`}/>
+                <FilterPriceMin placeholder={`Kaina nuo`} />
                 {/* Price max */}
-                <FilterPriceMax placeholder={`Kaina iki`}/>
+                <FilterPriceMax placeholder={`Kaina iki`} />
+                {/* Search button */}
+                <Button
+                    type='button'
+                    className={`flex-1 h-[30px]`}
+                >
+                    {`Ieškoti`}
+                </Button>
             </div>
         </div>
     );

@@ -14,12 +14,11 @@ export const FilterPriceMin = ({ placeholder }: { placeholder: string }) => {
     return (
         <Input
             type="number"
-            className="w-[170px] h-[30px] justify-between bg-[#FFF] font-normal text-[11px] text-[#111]"
+            className="flex-1 h-[30px] justify-between bg-[#FFF] font-normal text-[11px] text-[#111] border-0 focus-visible:ring-transparent"
             placeholder={placeholder}
             onChange={handleOnChange}
             value={price.min!}
-
-            // min={0}
+            min={0}
         />
     )
 };

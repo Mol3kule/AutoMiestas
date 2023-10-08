@@ -12,7 +12,7 @@ export const FilterPriceMax = ({ placeholder }: { placeholder: string }) => {
     return (
         <Input
             type="number"
-            className="w-[170px] h-[30px] justify-between bg-[#FFF] font-normal text-[11px] text-[#111] outline-none"
+            className="flex-1 h-[30px] justify-between bg-[#FFF] font-normal text-[11px] text-[#111] focus-visible:ring-transparent border-none"
             placeholder={placeholder}
             onChange={handleOnChange}
             value={price.max}
