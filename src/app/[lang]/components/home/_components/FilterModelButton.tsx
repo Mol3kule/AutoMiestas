@@ -4,13 +4,50 @@ import { Button } from "@/components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils";
+import { useFilterStore } from "@/state/filters/filters.state";
 import { TVehicleModel } from "@/types/vehicle.type"
 import { Check, ChevronDown } from "lucide-react";
-import { Dispatch, SetStateAction, useState } from "react";
+import { useEffect, useState } from "react";
 
-export const FilterModelButton = ({ data, placeholder, updateData }: { data: TVehicleModel[], placeholder: string, updateData: Dispatch<SetStateAction<string | null>> }) => {
+export const FilterModelButton = ({ placeholder }: { placeholder: string }) => {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState<string | null>(null);
+  const { makeId, model, setModel } = useFilterStore();
+  const [vehicleModels, setVehicleModels] = useState<TVehicleModel[]>([]);
+
+  useEffect(() => {
+    if (makeId === null) return;
+    const uniqueVehicleSet = new Set<TVehicleModel>([]); // Set of model objects (no duplicates by label)
+
+    const getModelsByMakeId: Promise<{ models: TVehicleModel[] }> = fetch(`http://localhost:3000/api/vehicleFilters`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json', // Set the content type to JSON
+      },
+      body: JSON.stringify({ type: 'getModelsByMakeId', id: makeId })
+    }).then(res => res.json());
+
+    getModelsByMakeId?.then(async (response) => {
+      const models = response.models;
+
+      for (const model of models) {
+        let isLabelInSet = false;
+
+        // @ts-ignore
+        for (const uniqueModel of uniqueVehicleSet) {
+          if (uniqueModel.label.toLowerCase() === model.label.toLowerCase()) {
+            isLabelInSet = true;
+            break;
+          }
+        }
+
+        if (!isLabelInSet) {
+          uniqueVehicleSet.add(model);
+        }
+      }
+
+      setVehicleModels(Array.from(uniqueVehicleSet));
+    });
+  }, [makeId]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -21,7 +58,7 @@ export const FilterModelButton = ({ data, placeholder, updateData }: { data: TVe
           aria-expanded={open}
           className="w-[170px] h-[30px] justify-between bg-[#FFF] font-normal text-[11px] text-[#111]"
         >
-          {value !== null ? value : placeholder}
+          {model !== null ? model : placeholder}
           <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" size={10} />
         </Button>
       </PopoverTrigger>
@@ -30,17 +67,16 @@ export const FilterModelButton = ({ data, placeholder, updateData }: { data: TVe
           <CommandInput placeholder="Search" className={`text-[11px] text-[#111]`} />
           <CommandEmpty>No results.</CommandEmpty>
           <CommandGroup className={`max-h-[200px] overflow-auto`}>
-            {data?.map((item) => (
+            {vehicleModels?.map((item) => (
               <CommandItem
                 key={`model_filter_id_${item.make_id}_${item.label}`}
                 onSelect={(currentValue) => {
-                  updateData(currentValue)
-                  setValue(currentValue);
+                  setModel(currentValue);
                   setOpen(false);
                 }}
                 className={`text-[11px] text-[#111]`}
               >
-                <Check className={cn("mr-2 h-4 w-4", value?.toLowerCase() === item.label.toLowerCase() ? "opacity-100" : "opacity-0")} />
+                <Check className={cn("mr-2 h-4 w-4", model?.toLowerCase() === item.label.toLowerCase() ? "opacity-100" : "opacity-0")} />
                 {item.label}
               </CommandItem>
             ))}

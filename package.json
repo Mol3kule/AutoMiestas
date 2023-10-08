@@ -39,6 +39,7 @@
     "postcss": "latest",
     "prisma": "^5.4.1",
     "tailwindcss": "latest",
-    "typescript": "latest"
+    "typescript": "latest",
+    "zustand": "^4.4.3"
   }
 }
