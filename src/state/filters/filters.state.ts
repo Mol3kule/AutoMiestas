@@ -1,5 +1,7 @@
 import { create } from 'zustand';
-type TVehicle = 'Sedan' | 'Suv' | 'Pickup' | ;
+
+type TVehicle = '';
+type TCar = 'Sedan' | 'Suv' | 'Pickup' | 'Coupe' | 'SUV' | 'Convertible' | 'Hatchback' | 'Van/Minivan';
 
 interface IFilter {
     vehicleType: TVehicle;
