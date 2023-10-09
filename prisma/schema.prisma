@@ -36,6 +36,7 @@ model posts {
   authorRelation users? @relation(fields: [authorId], references: [id])
   information    Json
   images         Json
+  statistics     Json
   periods        Json
   boosts         Json
 }

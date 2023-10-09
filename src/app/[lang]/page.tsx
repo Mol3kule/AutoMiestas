@@ -2,6 +2,7 @@ import TopBanner from './components/home/TopBanner';
 import { Locale } from '@/i18n/i18n-config';
 import { FilterComponent } from './components/home/Filter';
 import { VehicleTypeSelector } from './components/home/TypeSelector';
+import { DisplayPosts } from './components/posts/DisplayPosts';
 
 export default async function Home({ params: { lang } }: { params: { lang: Locale } }) {
   return (
@@ -10,6 +11,7 @@ export default async function Home({ params: { lang } }: { params: { lang: Local
         <TopBanner />
         <VehicleTypeSelector />
         <FilterComponent />
+        <DisplayPosts />
       </div>
     </div>
   );
