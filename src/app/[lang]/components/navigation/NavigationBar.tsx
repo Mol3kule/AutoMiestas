@@ -6,7 +6,7 @@ const NavigationBar = () => {
             {/* Navigation */}
             <div className={`bg-[#111] h-[64px] flex items-center`}>
                 {/* Inner container */}
-                <div className={`mx-[490px] flex flex-1 items-center`}>
+                <div className={`mx-[20px] md:mx-[490px] flex flex-1 items-center`}>
                     {/* Title side */}
                     <div className={`flex flex-col`}>
                         <span className={`text-[#FFF] text-[16px] font-medium`}>Auto<span className={`text-[#008EFF] text-[16px] font-medium`}>miestas.lt</span></span>
@@ -21,7 +21,7 @@ const NavigationBar = () => {
                 </div>
             </div>
             {/* Other navigation */}
-            <div className={`bg-[#F7F7F8] h-[31px] flex`}>
+            <div className={`bg-[#F7F7F8] h-[31px] hidden md:flex`}>
                 {/* Inner container */}
                 <div className={`mx-[490px] flex flex-1 items-center gap-[34px]`}>
                     <span className={`text-[#111] text-[11px]`}>Skelbimai</span>
