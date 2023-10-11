@@ -1,3 +1,4 @@
+import prisma from '@/prisma/prisma';
 import { create } from 'zustand';
 
 export type TVehicle = 'Automobile' | 'Bike' | 'Truck' | 'Tractor' | 'Boat' | 'Bus' | 'Trailer';
@@ -13,6 +14,8 @@ interface IFilter {
     setModel: (model: string) => void;
     setPrice: (price: { min: number, max: number }) => void;
     setVehicleType: (vehicleType: TVehicle) => void;
+
+    getVehicleYears: () => Promise<Set<Number>>;
 }
 
 export const useFilterStore = create<IFilter>()((set) => ({
@@ -28,4 +31,15 @@ export const useFilterStore = create<IFilter>()((set) => ({
     setMake: (makeId) => set({ makeId }),
     setModel: (model) => set({ model }),
     setPrice: (price) => set({ price }),
+
+    getVehicleYears: async () => {
+        const vehicleYears = new Set<Number>([]);
+        const vehicleModels = await prisma.make_models.findMany({ orderBy: { year: 'desc' } });
+
+        vehicleModels.forEach((model) => {
+            vehicleYears.add(model.year);
+        });
+
+        return vehicleYears;
+    }
 }));

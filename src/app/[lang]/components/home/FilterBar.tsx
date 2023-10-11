@@ -6,15 +6,18 @@ import { FilterModelButton } from './_components/FilterModelButton';
 import { FilterPriceMin } from './_components/FilterPriceMin';
 import { FilterPriceMax } from './_components/FilterPriceMax';
 import { Button } from '@/components/ui/button';
+import { useState } from 'react';
+import { FilterYearFrom } from './_components/FilterYearFrom';
 
 const FilterBar = ({ makesData }: { makesData: TVehicleMake[] }) => {
+    const [isDetailedFilters, setDetailedFilters] = useState<boolean>(false);
 
     return (
         <div className={`flex flex-col gap-[20px]`}>
             {/* Text */}
             <div className={`flex text-[#111] text-[11px] justify-between`}>
                 <span>Paieška</span>
-                <span className={`underline`}>Detali paieška</span>
+                <span className={`underline`} onClick={() => setDetailedFilters((prev) => !prev)}>Detali paieška</span>
             </div>
             {/* Filter buttons */}
             <div className={`flex flex-col md:flex-row gap-[15px] py-[20px] bg-[#F7F7F8] items-center px-[30px]`}>
@@ -33,6 +36,10 @@ const FilterBar = ({ makesData }: { makesData: TVehicleMake[] }) => {
                 >
                     {`Ieškoti`}
                 </Button>
+
+                {isDetailedFilters && (
+                    <FilterYearFrom />
+                )}
             </div>
         </div>
     );
