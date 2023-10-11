@@ -17,7 +17,7 @@ const FilterBar = ({ makesData }: { makesData: TVehicleMake[] }) => {
                 <span className={`underline`}>Detali paieška</span>
             </div>
             {/* Filter buttons */}
-            <div className={`flex gap-[15px] h-[70px] bg-[#F7F7F8] items-center px-[30px]`}>
+            <div className={`flex flex-col md:flex-row gap-[15px] py-[20px] bg-[#F7F7F8] items-center px-[30px]`}>
                 {/* Make button */}
                 <FilterMakeButton data={makesData} placeholder={'Markė'} />
                 {/* Maker model button */}
@@ -29,7 +29,7 @@ const FilterBar = ({ makesData }: { makesData: TVehicleMake[] }) => {
                 {/* Search button */}
                 <Button
                     type='button'
-                    className={`flex-1 h-[30px]`}
+                    className={`w-full flex-1 h-[30px]`}
                 >
                     {`Ieškoti`}
                 </Button>

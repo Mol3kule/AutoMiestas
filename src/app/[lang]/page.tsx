@@ -6,10 +6,10 @@ import { DisplayPosts } from './components/posts/DisplayPosts';
 
 export default async function Home({ params: { lang } }: { params: { lang: Locale } }) {
   return (
-    <div className={`flex flex-col`}>
-      <div className={`mx-[20px] md:mx-[490px] flex flex-col gap-[20px]`}>
-        <TopBanner />
-        <VehicleTypeSelector />
+    <div className={`flex flex-col gap-[20px]`}>
+      <VehicleTypeSelector />
+      <div className={`px-[20px] md:px-[490px] flex flex-col gap-[20px]`}>
+        {/* <TopBanner /> */}
         <FilterComponent />
         <DisplayPosts />
       </div>

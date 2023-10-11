@@ -2,7 +2,7 @@ import { Heart, User2 } from 'lucide-react';
 
 const NavigationBar = () => {
     return (
-        <div className={`pb-[20px]`}>
+        <div className={`md:pb-[20px] w-full`}>
             {/* Navigation */}
             <div className={`bg-[#111] h-[64px] flex items-center`}>
                 {/* Inner container */}

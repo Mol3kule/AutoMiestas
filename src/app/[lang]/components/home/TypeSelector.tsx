@@ -18,10 +18,16 @@ const VehicleTypeList: IVehicleTypeList[] = [
 ];
 
 const RenderType = ({ data }: { data: IVehicleTypeList }) => {
-    const { vehicleType } = useFilterStore();
+    const { vehicleType, setVehicleType } = useFilterStore();
+
+    const UpdateSelectedType = (newType: TVehicle) => {
+        if (vehicleType === newType) return;
+        setVehicleType(newType);
+    }
+
     return (
-        <button className={`h-[42px] bg-[#F7F7F8] flex flex-1 justify-center items-center`}>
-            <span className={`${vehicleType === data.type ? `text-[#111111]` : `opacity-[0.1]`}`}>
+        <button className={`h-[42px] bg-[#F7F7F8] flex flex-1 justify-center items-center`} onClick={() => UpdateSelectedType(data.type)}>
+            <span className={`${vehicleType === data.type ? `text-[#111111] animate-pulse` : `opacity-[0.1]` }`}>
                 {data.icon}
             </span>
         </button>
@@ -30,7 +36,7 @@ const RenderType = ({ data }: { data: IVehicleTypeList }) => {
 
 export const VehicleTypeSelector = () => {
     return (
-        <div className={`flex gap-[20px]`}>
+        <div className={`flex md:px-[490px] md:gap-[20px]`}>
             {VehicleTypeList?.map((item, idx) => (
                 <RenderType key={`${item.type}_${idx}_list`} data={item} />
             ))}

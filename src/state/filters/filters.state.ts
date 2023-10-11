@@ -12,6 +12,7 @@ interface IFilter {
     setMake: (make: number) => void;
     setModel: (model: string) => void;
     setPrice: (price: { min: number, max: number }) => void;
+    setVehicleType: (vehicleType: TVehicle) => void;
 }
 
 export const useFilterStore = create<IFilter>()((set) => ({

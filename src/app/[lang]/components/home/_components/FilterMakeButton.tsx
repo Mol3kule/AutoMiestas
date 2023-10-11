@@ -20,7 +20,7 @@ export const FilterMakeButton = ({ data, placeholder }: { data: TVehicleMake[], 
           variant="ghost"
           role="combobox"
           aria-expanded={open}
-          className="flex-1 h-[30px] justify-between bg-[#FFF] font-normal text-[11px] text-[#111]"
+          className="w-full flex-1 h-[30px] justify-between bg-[#FFF] font-normal text-[11px] text-[#111]"
         >
           {makeId !== null ? data.find((item) => item.id === makeId)?.make : placeholder}
           <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" size={10} />

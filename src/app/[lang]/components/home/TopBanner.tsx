@@ -27,7 +27,7 @@ const TopBanner = () => {
                     className={`object-contain`}
                     draggable={false}
                 />
-                <div className={`flex flex-col gap-[0px]`}>
+                <div className={`flex flex-col gap-[0px] overflow-hidden`}>
                     <span className={`text-[#FFA800] text-[11px]`}>Išvenk brangiai kainuojančių problemų patikrinęs transporto priemonės istoriją.</span>
                     <div className={`flex gap-[6px] text-[11px] text-[#FFF]`}>
                         <span className={`flex items-center gap-[5px]`}><Check color={`#FFF`} size={10} />Ridos klastojimas</span>
