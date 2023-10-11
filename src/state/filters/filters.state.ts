@@ -10,12 +10,16 @@ interface IFilter {
     model: string | null;
     price: { min: number, max: number },
 
+    yearFrom: number | null;
+    yearTo: number | null;
+
     setMake: (make: number) => void;
     setModel: (model: string) => void;
     setPrice: (price: { min: number, max: number }) => void;
     setVehicleType: (vehicleType: TVehicle) => void;
 
-    getVehicleYears: () => Promise<Set<Number>>;
+    getVehicleYears: () => Promise<Array<Number>>;
+    setYearFrom: (yearFrom: number) => void;
 }
 
 export const useFilterStore = create<IFilter>()((set) => ({
@@ -27,6 +31,9 @@ export const useFilterStore = create<IFilter>()((set) => ({
         max: 10000
     },
 
+    yearFrom: null,
+    yearTo: null,
+
     setVehicleType: (vehicleType: TVehicle) => set({ vehicleType }),
     setMake: (makeId) => set({ makeId }),
     setModel: (model) => set({ model }),
@@ -34,12 +41,14 @@ export const useFilterStore = create<IFilter>()((set) => ({
 
     getVehicleYears: async () => {
         const vehicleYears = new Set<Number>([]);
-        const vehicleModels = await prisma.make_models.findMany({ orderBy: { year: 'desc' } });
+        const vehicleModels = await prisma.make_models.findMany({ orderBy: { year: 'desc' } }); // move to api
 
         vehicleModels.forEach((model) => {
             vehicleYears.add(model.year);
         });
 
-        return vehicleYears;
-    }
+        return Array.from(vehicleYears);
+    },
+
+    setYearFrom: (yearFrom: number) => set({ yearFrom })
 }));

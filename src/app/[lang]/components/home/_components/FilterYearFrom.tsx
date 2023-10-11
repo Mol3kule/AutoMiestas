@@ -6,11 +6,21 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils";
 import { useFilterStore } from "@/state/filters/filters.state";
 import { Check, ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export const FilterYearFrom = () => {
+export const FilterYearFrom = ({ placeholder }: { placeholder: string }) => {
     const [open, setOpen] = useState(false);
-    const { getVehicleYears } = useFilterStore();
+    const { yearFrom, getVehicleYears, setYearFrom } = useFilterStore();
+
+    const [modelYears, setModelYears] = useState<Number[]>([]);
+
+    useEffect(() => {
+        const initData = async () => {
+            const years = await getVehicleYears();
+            setModelYears(years);
+        }
+        initData();
+    }, []);
 
 
     return (
@@ -22,7 +32,7 @@ export const FilterYearFrom = () => {
                     aria-expanded={open}
                     className="w-full flex-1 h-[30px] justify-between bg-[#FFF] font-normal text-[11px] text-[#111]"
                 >
-                    {makeId !== null ? data.find((item) => item.id === makeId)?.make : placeholder}
+                    {yearFrom !== null ? yearFrom : placeholder}
                     <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" size={10} />
                 </Button>
             </PopoverTrigger>
@@ -31,18 +41,16 @@ export const FilterYearFrom = () => {
                     <CommandInput placeholder="" className={`text-[11px] text-[#111]`} />
                     <CommandEmpty>No results.</CommandEmpty>
                     <CommandGroup className={`max-h-[200px] overflow-auto`}>
-                        {getVehicleYears()?.map((item) => (
+                        {modelYears?.map((year) => (
                             <CommandItem
-                                key={`make_id_${item.id}`}
+                                key={`model_year_from_${year}`}
                                 onSelect={(currentValue) => {
-                                    const makerData = data.find((searchItem) => searchItem.make.toLowerCase() === currentValue.toLowerCase());
-                                    setMake(makerData?.id!);
                                     setOpen(false);
                                 }}
                                 className={`text-[11px] text-[#111]`}
                             >
-                                <Check className={cn("mr-2 h-4 w-4", makeId === item.id ? "opacity-100" : "opacity-0")} />
-                                {item.make}
+                                <Check className={cn("mr-2 h-4 w-4", yearFrom === year ? "opacity-100" : "opacity-0")} />
+                                {year.toString()}
                             </CommandItem>
                         ))}
                     </CommandGroup>

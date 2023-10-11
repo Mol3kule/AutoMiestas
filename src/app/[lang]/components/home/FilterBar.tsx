@@ -38,7 +38,7 @@ const FilterBar = ({ makesData }: { makesData: TVehicleMake[] }) => {
                 </Button>
 
                 {isDetailedFilters && (
-                    <FilterYearFrom />
+                    <FilterYearFrom placeholder={`Metai nuo`}/>
                 )}
             </div>
         </div>
