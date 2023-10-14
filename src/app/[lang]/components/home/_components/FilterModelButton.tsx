@@ -23,7 +23,7 @@ export const FilterModelButton = ({ placeholder }: { placeholder: string }) => {
       headers: {
         'Content-Type': 'application/json', // Set the content type to JSON
       },
-      body: JSON.stringify({ type: 'getModelsByMakeId', id: makeId })
+      body: JSON.stringify({ type: 'getModelsByMakeId', data: { id: makeId } })
     }).then(res => res.json());
 
     getModelsByMakeId?.then(async (response) => {

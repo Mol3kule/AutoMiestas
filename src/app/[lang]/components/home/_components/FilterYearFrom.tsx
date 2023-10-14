@@ -5,19 +5,27 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils";
 import { useFilterStore } from "@/state/filters/filters.state";
+import axios from "axios";
 import { Check, ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export const FilterYearFrom = ({ placeholder }: { placeholder: string }) => {
     const [open, setOpen] = useState(false);
-    const { yearFrom, getVehicleYears, setYearFrom } = useFilterStore();
+    const { makeId, yearFrom, setYearFrom } = useFilterStore();
 
     const [modelYears, setModelYears] = useState<Number[]>([]);
 
     useEffect(() => {
         const initData = async () => {
-            const years = await getVehicleYears();
-            setModelYears(years);
+            const years: { modelYears: Number[] } = await fetch('http://localhost:3000/api/vehicleFilters', {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ type: 'getYearsByModel', data: { makeId: makeId } })
+            }).then(res => res.json());
+
+            setModelYears(years.modelYears ?? []);
         }
         initData();
     }, []);
@@ -45,6 +53,7 @@ export const FilterYearFrom = ({ placeholder }: { placeholder: string }) => {
                             <CommandItem
                                 key={`model_year_from_${year}`}
                                 onSelect={(currentValue) => {
+                                    setYearFrom(Number(currentValue));
                                     setOpen(false);
                                 }}
                                 className={`text-[11px] text-[#111]`}

@@ -20,7 +20,7 @@ const FilterBar = ({ makesData }: { makesData: TVehicleMake[] }) => {
                 <span className={`underline`} onClick={() => setDetailedFilters((prev) => !prev)}>Detali paieška</span>
             </div>
             {/* Filter buttons */}
-            <div className={`flex flex-col md:flex-row gap-[15px] py-[20px] bg-[#F7F7F8] items-center px-[30px]`}>
+            <div className={`grid grid-cols-1 md:grid-cols-5 gap-[15px] py-[20px] bg-[#F7F7F8] items-center px-[30px]`}>
                 {/* Make button */}
                 <FilterMakeButton data={makesData} placeholder={'Markė'} />
                 {/* Maker model button */}
@@ -30,15 +30,10 @@ const FilterBar = ({ makesData }: { makesData: TVehicleMake[] }) => {
                 {/* Price max */}
                 <FilterPriceMax placeholder={`Kaina iki`} />
                 {/* Search button */}
-                <Button
-                    type='button'
-                    className={`w-full flex-1 h-[30px]`}
-                >
-                    {`Ieškoti`}
-                </Button>
-
+                <Button type='button' className={`w-full flex-1 h-[30px]`}>{`Ieškoti`}</Button>
+                {/* Additional filters */}
                 {isDetailedFilters && (
-                    <FilterYearFrom placeholder={`Metai nuo`}/>
+                    <FilterYearFrom placeholder={`Metai nuo`} />
                 )}
             </div>
         </div>
