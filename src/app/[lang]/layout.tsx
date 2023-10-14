@@ -3,6 +3,7 @@ import { Locale, i18n } from '@/i18n/i18n-config';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import NavigationBar from '@/app/[lang]/components/navigation/NavigationBar';
+import { Footer } from './components/footer/Footer';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -16,6 +17,7 @@ export default function RootLayout({ children, params }: { children: React.React
       <body className={inter.className}>
         <NavigationBar />
         {children}
+        <Footer />
       </body>
     </html>
   );

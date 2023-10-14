@@ -10,6 +10,7 @@ export const RenderPost = ({ data }: { data: any }) => {
                 alt="Image"
                 width={300}
                 height={50}
+                className={`object-cover`}
             />
             <div className={`h-[50px] bg-[#F7F7F8]`}>
                 <div className={`flex px-[16px] py-[10px] flex-col`}>
