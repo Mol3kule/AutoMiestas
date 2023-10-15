@@ -14,7 +14,7 @@ export async function generateStaticParams() {
 export default function RootLayout({ children, params }: { children: React.ReactNode, params: { lang: Locale } }) {
   return (
     <html lang={params.lang}>
-      <body className={inter.className}>
+      <body className={`${inter.className} flex flex-col min-h-[100vh]`}>
         <NavigationBar />
         {children}
         <Footer />

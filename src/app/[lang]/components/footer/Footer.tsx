@@ -2,7 +2,7 @@
 
 export const Footer = () => {
     return (
-        <footer>
+        <footer className="mt-auto">
             <section className="bg-[#F7F7F8]">
                 <div className={` mx-[20px] md:mx-[490px] py-[20px] flex flex-col gap-[15px]`}>
                     <p className={`flex justify-between font-medium`}>
