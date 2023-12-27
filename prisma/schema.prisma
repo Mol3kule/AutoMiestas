@@ -15,24 +15,23 @@ model makes {
 
 model make_models {
   id       Int    @id @default(autoincrement())
-  make_id  Int?
+  make_id  Int
   label    String @db.VarChar(60)
-  makes    makes? @relation(fields: [make_id], references: [id])
+  makes    makes  @relation(fields: [make_id], references: [id])
   year     Int
   category String @db.VarChar(40)
 }
 
 model users {
-  id            Int      @id @default(autoincrement())
-  firstname     String   @db.VarChar(40)
-  lastname      String   @db.VarChar(40)
-  date_of_birth DateTime
-  posts         posts[]
+  id              Int      @id @default(autoincrement())
+  userId          String   @unique
+  date_registered DateTime @default(now())
+  posts           posts[]
 }
 
 model posts {
   id             Int    @id @default(autoincrement())
-  authorId       Int?
+  authorId       Int
   authorRelation users? @relation(fields: [authorId], references: [id])
   information    Json
   images         Json

@@ -1,9 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    env: {
+        defaultApiEndpoint: process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3000'
+    },
     images: {
-        domains: [
-            'lh3.googleusercontent.com',
-            'images.hgmsites.net'
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'img.clerk.com'
+            }
         ]
     }
 }

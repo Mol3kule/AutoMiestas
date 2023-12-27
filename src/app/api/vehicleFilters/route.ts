@@ -1,9 +1,7 @@
 import prisma from '@/prisma/prisma';
-import { useFilterStore } from '@/state/filters/filters.state';
-import axios from 'axios';
 import { NextResponse } from 'next/server';
 
-export const POST = async (request: Request) => {
+export const GET = async (request: Request) => {
     const { type, data } = await request.json();
     switch (type) {
         case 'getModelsByMakeId': {
@@ -20,8 +18,6 @@ export const POST = async (request: Request) => {
             const vehicleModels = await prisma.make_models.findMany({
                 where: { make_id: data.makeId }
             });
-
-            console.log(vehicleModels);
 
             vehicleModels.forEach((model) => {
                 vehicleYears.add(model.year);
