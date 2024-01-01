@@ -79,8 +79,8 @@ export const CreateVehiclePostForm = () => {
                 <PostCreateSelectInput
                     label={t.vehicleInfo.objKeys.body_type}
                     value={bodyType !== null ? bodyType.toString() : ``}
-                    // items={Object.keys(BodyType).map((key) => ({ id: BodyType[key as keyof typeof BodyType].toString(), label: t.vehicleInfo.body_type[key.toLowerCase() as keyof typeof t.vehicleInfo.body_type] }))}
-                    items={Object.values(VehicleObj.getAllBodyTypes()).map((key) => ({ id: BodyType[key as keyof typeof BodyType].toString(), label: t.vehicleInfo.body_type[key.toLowerCase() as keyof typeof t.vehicleInfo.body_type] }))}
+                    items={Object.keys(VehicleObj.getAllBodyTypes()).map((keyIdx) => ({ id: keyIdx, label: t.vehicleInfo.body_type[VehicleObj.getBodyTypeByIndex(Number(keyIdx)) as keyof typeof t.vehicleInfo.body_type] }))}
+                    // items={Object.values(VehicleObj.getAllBodyTypes()).map((key) => ({ id: BodyType[key as keyof typeof BodyType].toString(), label: t.vehicleInfo.body_type[key.toLowerCase() as keyof typeof t.vehicleInfo.body_type] }))}
                 />
             </div>
         </>
