@@ -38,6 +38,7 @@ export const RegisterVerifyCodePage = ({ emailAddress, password, setErrorMessage
 
                 // Insert a new registered user to prisma DB
                 fetch(`${process.env.defaultApiEndpoint}/api/auth`, {
+                    method: 'POST',
                     body: JSON.stringify({
                         type: 'createNew',
                         userId: result.createdUserId,

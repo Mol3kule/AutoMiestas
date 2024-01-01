@@ -9,8 +9,13 @@ module.exports = {
   ],
   theme: {
     fontSize: {
+      header: "0.9375rem",
       base: "0.75rem",
-      base_xl: "1.25rem"
+      sm: "0.625rem",
+
+      header_2xl: "1.25rem",
+      base_2xl: "1rem",
+      sm_2xl: "0.813rem"
     },
     colors: {
       primary: "#161A30",
@@ -21,8 +26,15 @@ module.exports = {
       highlight: "#5C8374",
       highlight_secondary: "#F5F6F9",
       error: "#FDBDBD",
-      error_secondary: "#FF6F6F"
+      error_secondary: "#FF6F6F",
+      error_third: "#FFA800"
     },
+    screens: {
+      tablet: '640px',
+      laptop: '1024px',
+      hd: '1920px',
+      full_hd: '2560px'
+    }
   },
   plugins: [require("tailwindcss-animate")],
 }

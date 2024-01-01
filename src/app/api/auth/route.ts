@@ -1,7 +1,7 @@
 import prisma from '@/prisma/prisma';
 import { NextResponse } from 'next/server';
 
-export const GET = async (request: Request) => {
+export const POST = async (request: Request) => {
     const { type, data } = await request.json();
     switch (type) {
         case 'createNew': {

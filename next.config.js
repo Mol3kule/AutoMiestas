@@ -8,7 +8,31 @@ const nextConfig = {
             {
                 protocol: 'https',
                 hostname: 'img.clerk.com'
-            }
+            },
+            {
+                protocol: 'https',
+                hostname: 'www.digitaltrends.com'
+            },
+            {
+                protocol: 'https',
+                hostname: 'www.motortrend.com'
+            },
+            {
+                protocol: 'https',
+                hostname: 'www.amzs.si'
+            },
+            {
+                protocol: 'https',
+                hostname: 'images.cars.com'
+            },
+            {
+                protocol: 'https',
+                hostname: 'hips.hearstapps.com'
+            },
+            {
+                protocol: 'https',
+                hostname: 'media.ed.edmunds-media.com'
+            },
         ]
     }
 }

@@ -1,3 +1,95 @@
 {
-  "app_title": "Automiestas.lt"
+  "app_title": "Automiestas.lt",
+  "vehicleInfo": {
+    "objKeys": {
+      "type": "Tipas",
+      "make": "Markė",
+      "model": "Modelis",
+      "year": "Metai",
+      "body_type": "Kėbulo tipas",
+      "condition": "Būklė",
+      "fuel_type": "Kuro tipas",
+      "drive_train": "Varomieji ratai",
+      "transmission": "Pavarų dėžė",
+      "mileage": "Rida",
+      "technical_inspection_due_to": "Techninė apžiūra iki",
+      "vin": "VIN",
+
+      "sw_side": "Vairo padėtis"
+    },
+    "types": {
+      "car": "Automobilis",
+      "truck": "Sunkvežimis",
+      "motorcycle": "Motociklas",
+      "boat": "Valtis",
+      "rv": "Kemperis",
+      "other": "Kita"
+    },
+    "body_type": {
+      "sedan": "Sedanas",
+      "suv": "Visureigis",
+      "truck": "Sunkvežimis",
+      "van": "Mikroautobusas",
+      "coupe": "Kupė",
+      "convertible": "Kabrioletas",
+      "hatchback": "Hečbekas",
+      "wagon": "Universalas",
+      "crossover": "Krosoveris",
+      "minivan": "Minivenas",
+      "other": "Kita"
+    },
+    "conditions": {
+      "new": "Naujas",
+      "used": "Naudotas"
+    },
+    "fuelTypes": {
+      "gasoline": "Benzinas",
+      "diesel": "Dyzelinas",
+      "electric": "Elektra",
+      "hybrid": "Hibridas",
+      "other": "Kita"
+    },
+    "drivetrains": {
+      "fwd": "Priekiniai",
+      "rwd": "Galiniai",
+      "awd": "Visi"
+    },
+    "transmission": {
+      "manual": "Mechaninė",
+      "automatic": "Automatinė"
+    },
+    "tags": {
+      "heated_seats": "Šildomos sėdynės",
+      "heated_steering_wheel": "Šildomas vairas",
+      "leather_seats": "Odinis salonas"
+    },
+    "rating": {
+      "equipment": "Komplektacija",
+      "body": "Kėbulas"
+    }
+  },
+  "post": {
+    "categories": {
+      "vehicles": "Automobiliai",
+      "motorcycles": "Motociklai",
+      "heavy": "Sunkus transportas",
+      "agricultural": "Žemės ūkio technika",
+      "construction": "Statybinė technika",
+      "trailers": "Priekabos",
+      "boats": "Vandens transportas",
+      "planes": "Oro transportas",
+      "scooters": "El. paspirtukai",
+      "tires_wheels": "Ratai ir padangos",
+      "parts": "Dalys"
+    },
+    "errors": {
+      "category_not_selected": "Turite pasirinkti kategoriją!",
+      "make_not_selected": "Turite pasirinkti markę!",
+      "model_not_selected": "Turite pasirinkti modelį!",
+      "year_not_selected": "Turite pasirinkti pirmos registracijos metus!"
+    }
+  },
+  "general": {
+    "continue": "Tęsti"
+  }
 }
