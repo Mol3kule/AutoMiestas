@@ -10,7 +10,7 @@ import { BodyType, VehicleObj } from "@/classes/Vehicle";
 
 export const CreateVehiclePostForm = () => {
     const t = useLanguage();
-    const { category, makeId, modelId, modelYear, bodyType, setMakeId, setModelId, setModelYear, setBodyType } = usePostCreateStore();
+    const { category, makeId, modelId, modelYear, bodyType, mileage, fuelType, setMakeId, setModelId, setModelYear, setBodyType, setMileage, setFuelType } = usePostCreateStore();
     const { vehicleMakes, vehicleModels, vehicleYears, setModels, setYears } = useVehicleStore(); // Global store
 
     useEffect(() => {
@@ -80,7 +80,16 @@ export const CreateVehiclePostForm = () => {
                     label={t.vehicleInfo.objKeys.body_type}
                     value={bodyType !== null ? bodyType.toString() : ``}
                     items={Object.keys(VehicleObj.getAllBodyTypes()).map((keyIdx) => ({ id: keyIdx, label: t.vehicleInfo.body_type[VehicleObj.getBodyTypeByIndex(Number(keyIdx)) as keyof typeof t.vehicleInfo.body_type] }))}
-                    // items={Object.values(VehicleObj.getAllBodyTypes()).map((key) => ({ id: BodyType[key as keyof typeof BodyType].toString(), label: t.vehicleInfo.body_type[key.toLowerCase() as keyof typeof t.vehicleInfo.body_type] }))}
+                    setValue={(value) => setBodyType(Number(value))}
+                />
+                <PostCreateInputText
+                    label={t.vehicleInfo.objKeys.mileage}
+                    value={mileage ? mileage.toString() : ``}
+                    setValue={(value) => setMileage(Number(value))}
+                />
+                <PostCreateSelectInput 
+                    label={t.vehicleInfo.objKeys.fuel_type}
+                    value={}
                 />
             </div>
         </>
