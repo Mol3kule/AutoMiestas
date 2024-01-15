@@ -1,4 +1,4 @@
-import { TVehicleMake, TVehicleModels, TVehicleYears } from "@/types/vehicle.type";
+import { TVehicleMake, TVehicleModels } from "@/types/vehicle.type";
 import { create } from "zustand";
 
 type Store = {
@@ -7,9 +7,6 @@ type Store = {
 
     vehicleModels: TVehicleModels[];
     setModels: (vehicleModels: TVehicleModels[]) => void; // Array of vehicle models
-
-    vehicleYears: TVehicleYears;
-    setYears: (vehicleYears: TVehicleYears) => void; // Array of vehicle years
 }
 
 export const useVehicleStore = create<Store>()((set) => ({
@@ -18,7 +15,4 @@ export const useVehicleStore = create<Store>()((set) => ({
 
     vehicleModels: [],
     setModels: (vehicleModels: TVehicleModels[]) => set({ vehicleModels }),
-
-    vehicleYears: {},
-    setYears: (vehicleYears: TVehicleYears) => set({ vehicleYears }),
 }));

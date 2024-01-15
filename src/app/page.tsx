@@ -1,30 +1,27 @@
+import { auth } from "@clerk/nextjs";
+import axios from "axios";
+
 import { Post } from "@/types/post.type";
 import { HomePage } from "./components/pages/home/homePage";
 
 type PostData = {
-  status: 'success' | 'error';
-  post: Post;
+  status: number;
+  data: Post[];
 }
 
-const getPostById = async (id: number) => {
-  return await fetch(`${process.env.defaultApiEndpoint}/api/posts/getPostById`, {
-    method: 'POST',
-    body: JSON.stringify({
-      postId: id
-    })
-  }).then(res => res.json()).catch((error) => {
-    console.log(`[getPostById]: ${error}`);
-    return { status: 'error' }
-  });
+const getPosts = async (token: string | null) => {
+  return await axios.get(`${process.env.defaultApiEndpoint}/api/posts/getPosts`, { headers: { Authorization: `Bearer ${token}` } }).then(res => res.data);
 }
 
-export default async function Home() {
-  const { status, post }: PostData = await getPostById(1);
+const Home = async () => {
+  const { getToken } = auth();
+  const { status, data }: PostData = await getPosts(await getToken());
 
-  if (!status || status === 'error') return null; // Return error page
-  const posts = Array(10).fill(post);
+  if (status !== 200) return null; // Return error page
 
   return (
-    <HomePage posts={posts}/>
+    <HomePage posts={data} />
   );
 }
+
+export default Home;

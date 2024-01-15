@@ -25,7 +25,7 @@ export const SecondaryInformationSection = ({ post }: PostSecondaryInfoProps) =>
         return (
             <div className={`flex flex-col gap-[0.87rem] text-base full_hd:text-base_2xl`}>
                 <span className={`font-medium text-primary`}>Pardavėjo komentarai</span>
-                <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque, officiis quam nulla ipsam at doloribus eos porro dolore sint molestias suscipit voluptates sapiente debitis quidem magni optio illum, provident tempora?</span>
+                <span className={`text-primary`}>{post.information.description}</span>
                 <TagsSection />
             </div>
         );
@@ -41,7 +41,7 @@ export const SecondaryInformationSection = ({ post }: PostSecondaryInfoProps) =>
 
                         <div className={`flex gap-[0.63rem]`}>
                             {Array.from({ length: 10 }).map((_, i) => (
-                                <div className={`w-full h-[0.625rem] full_hd:h-[0.813rem] rounded-[0.125rem] ${post.ratingByAuthor[Number(value) as Rating] >= i ? `bg-highlight` : `bg-border`}`} key={`v_rating_${i}`}></div>
+                                <div className={`w-full h-[0.625rem] full_hd:h-[0.813rem] rounded-[0.125rem] ${post.ratingByAuthor[Number(value) as Rating] > i ? `bg-highlight` : `bg-border`}`} key={`v_rating_${i}`}></div>
                             ))}
                         </div>
                     </div>
@@ -52,7 +52,9 @@ export const SecondaryInformationSection = ({ post }: PostSecondaryInfoProps) =>
 
     return (
         <div className={`flex flex-col gap-[1.25rem]`}>
-            <CommentSection />
+            {post.information.description && (
+                <CommentSection />
+            )}
             <hr className={`text-border bg-border`} />
             <VehicleSpecs />
         </div>

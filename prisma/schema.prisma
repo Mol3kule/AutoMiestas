@@ -9,33 +9,46 @@ datasource db {
 
 model makes {
   id          Int           @id @default(autoincrement())
-  make        String        @db.VarChar(40)
+  make        String        @unique
   make_models make_models[]
 }
 
 model make_models {
-  id       Int    @id @default(autoincrement())
-  make_id  Int
-  label    String @db.VarChar(60)
-  makes    makes  @relation(fields: [make_id], references: [id])
-  year     Int
-  category String @db.VarChar(40)
+  id        Int    @id @default(autoincrement())
+  make_id   Int
+  model     String
+  makes     makes  @relation(fields: [make_id], references: [id])
+  year      Json
+  engine_l  Float?
+  cylinders Int?
 }
 
 model users {
-  id              Int      @id @default(autoincrement())
-  userId          String   @unique
-  date_registered DateTime @default(now())
-  posts           posts[]
+  id               Int      @id @default(autoincrement())
+  userId           String   @unique
+  stripeCustomerId String   @unique
+  email            String   @unique
+  first_name       String
+  last_name        String
+  phone_number     String
+  organization     String
+  date_registered  DateTime @default(now())
+  posts            posts[]
 }
 
 model posts {
-  id             Int    @id @default(autoincrement())
-  authorId       Int
-  authorRelation users? @relation(fields: [authorId], references: [id])
+  id             Int     @id @default(autoincrement())
+  authorId       String
+  authorRelation users?  @relation(fields: [authorId], references: [userId])
   information    Json
   images         Json
   statistics     Json
   periods        Json
   boosts         Json
+  tags           Json
+  ratingByAuthor Json
+  subscriptionId String
+  isActive       Boolean
+  isVerified     Boolean
+  category       Int
 }

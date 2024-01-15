@@ -1,5 +1,5 @@
 import { Categories as PostCategories } from "@/classes/PostCategories";
-import { BodyType, FuelTypes } from "@/classes/Vehicle";
+import { BodyType, Conditions, Drivetrains, FuelTypes, SteeringWheel_Side, Transmissions } from "@/classes/Vehicle";
 import { create } from "zustand";
 
 type Store = {
@@ -10,6 +10,22 @@ type Store = {
     bodyType: BodyType;
     mileage: number;
     fuelType: FuelTypes;
+    drivetrain: Drivetrains;
+    transmission: Transmissions;
+    sw_side: SteeringWheel_Side;
+    condition: Conditions;
+
+    // Additional
+    technical_inspection_due: string;
+    price: number;
+    vin: string;
+    sdk: string;
+    description: string;
+
+    primaryImg: number;
+    fileImages: File[];
+    countryId: number;
+    cityId: number;
 
     setCategory: (category: PostCategories) => void;
     setMakeId: (makeId: number) => void;
@@ -18,6 +34,22 @@ type Store = {
     setBodyType: (bodyType: BodyType) => void;
     setMileage: (mileage: number) => void;
     setFuelType: (fuelType: FuelTypes) => void;
+    setDrivetrain: (drivetrain: Drivetrains) => void;
+    setTransmission: (transmission: Transmissions) => void;
+    setSteeringWheelSide: (sw_side: SteeringWheel_Side) => void;
+    setCondition: (condition: Conditions) => void;
+
+    // Additional
+    setTechnicalInspectionDue: (technical_inspection_due: string) => void;
+    setPrice: (price: number) => void;
+    setVin: (vin: string) => void;
+    setSDK: (sdk: any) => void;
+    setDescription: (description: string) => void;
+
+    setPrimaryImg: (primaryImg: number) => void;
+    setFileImages: (fileImages: File[]) => void;
+    setCountryId: (country: number) => void;
+    setCityId: (city: number) => void;
 }
 
 export const usePostCreateStore = create<Store>()((set) => ({
@@ -28,6 +60,22 @@ export const usePostCreateStore = create<Store>()((set) => ({
     bodyType: null!,
     mileage: null!,
     fuelType: null!,
+    drivetrain: null!,
+    transmission: null!,
+    sw_side: null!,
+    condition: null!,
+    price: null!,
+
+    // Additional
+    technical_inspection_due: null!,
+    vin: null!,
+    sdk: null!,
+    description: null!,
+
+    primaryImg: null!,
+    fileImages: [],
+    countryId: null!,
+    cityId: null!,
 
     setCategory: (category: PostCategories) => set({ category }),
     setMakeId: (makeId: number) => set({ makeId }),
@@ -36,4 +84,20 @@ export const usePostCreateStore = create<Store>()((set) => ({
     setBodyType: (bodyType: BodyType) => set({ bodyType }),
     setMileage: (mileage: number) => set({ mileage }),
     setFuelType: (fuelType: FuelTypes) => set({ fuelType }),
+    setDrivetrain: (drivetrain: Drivetrains) => set({ drivetrain }),
+    setTransmission: (transmission: Transmissions) => set({ transmission }),
+    setSteeringWheelSide: (sw_side: SteeringWheel_Side) => set({ sw_side }),
+    setCondition: (condition: Conditions) => set({ condition }),
+    setPrice: (price: number) => set({ price }),
+
+    setPrimaryImg: (primaryImg: number) => set({ primaryImg }),
+    setFileImages: (fileImages: File[]) => set({ fileImages }),
+    setCountryId: (countryId: number) => set({ countryId }),
+    setCityId: (cityId: number) => set({ cityId }),
+
+    // Additional
+    setTechnicalInspectionDue: (technical_inspection_due: string) => set({ technical_inspection_due }),
+    setVin: (vin: string) => set({ vin }),
+    setSDK: (sdk: any) => set({ sdk }),
+    setDescription: (description: string) => set({ description }),
 }));

@@ -6,12 +6,12 @@ export const GET = async () => {
         const result = await prisma.makes.findMany();
 
         if (result) {
-            return NextResponse.json({ status: 'success', data: result });
+            return NextResponse.json({ status: 200, data: result });
         }
 
-        return NextResponse.json({ status: 'error', message: 'No data was found' });
+        return NextResponse.json({ status: 404, message: 'No data was found' });
     } catch (error) {
         console.log(`[getPostByParams]: ${error}`)
-        return NextResponse.json({ status: 'error' });
+        return NextResponse.json({ status: 500 });
     }
 }

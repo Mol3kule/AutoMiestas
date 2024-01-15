@@ -14,7 +14,7 @@
       "mileage": "Rida (km)",
       "technical_inspection_due_to": "Techninė apžiūra iki",
       "vin": "VIN",
-
+      "sdk": "SDK",
       "sw_side": "Vairo padėtis"
     },
     "types": {
@@ -66,6 +66,10 @@
     "rating": {
       "equipment": "Komplektacija",
       "body": "Kėbulas"
+    },
+    "sw_side": {
+      "left": "Kairė",
+      "right": "Dešinė"
     }
   },
   "post": {
@@ -86,10 +90,73 @@
       "category_not_selected": "Turite pasirinkti kategoriją!",
       "make_not_selected": "Turite pasirinkti markę!",
       "model_not_selected": "Turite pasirinkti modelį!",
-      "year_not_selected": "Turite pasirinkti pirmos registracijos metus!"
+      "year_not_selected": "Turite pasirinkti pirmos registracijos metus!",
+      "body_type_not_selected": "Turite pasirinkti kėbulo tipą!",
+      "condition_not_selected": "Turite pasirinkti būklę!",
+      "fuel_type_not_selected": "Turite pasirinkti kuro tipą!",
+      "drivetrain_not_selected": "Turite pasirinkti varomuosius ratus!",
+      "mileage_not_selected": "Turite įvesti ridą!",
+      "transmission_not_selected": "Turite pasirinkti pavarų dėžę!",
+      "sw_side_not_selected": "Turite pasirinkti vairo pusę!",
+      "price_not_selected": "Turite įvesti kainą!",
+      "images_not_selected": "Turite įkelti bent 4 nuotraukas!"
+    },
+    "labels": {
+      "generalInfo": "Pagrindinė informacija",
+      "generalInfo_description": "Atidžiai užpildykite privalomąją informaciją prieš sukurdami skelbimą",
+      "additionalInfo": "Papildoma informacija",
+      "additionalInfo_description": "Atidžiai užpildykite papildomą informaciją prieš sukurdami skelbimą",
+      "description": "Skelbimo aprašymas",
+      "description_description": "Siūlome kuo išsamiau pateikti aprašymą, taip pat patariame patikrinti rašybos klaidas prieš sukuriant skelbimą, stenkites kuo mažiau rašyti didžiosiomis raidėmis",
+      "symbols_left": "Liko simbolių:",
+      "images": "Nuotraukos",
+      "images_description": "Maksimaliai galite ikelti 12 nuotraukų, nuotraukos privalo būti (.png / .jpg) formatų, bei kokybiškos.",
+      "location": "Vietovė",
+      "location_description": "Pasirinkite vietovę, jog pirkėjas galėtų greičiau susisiekti su jumis",
+      "tags": "Žymės",
+      "tags_description": "Pasirinkite žymes, kurios atitinka jūsų skelbimą"
     }
   },
+  "profile": {
+    "header_title": "Mano profilis",
+    "header_desc": "Paskyros nustatymai ir informacija",
+    "email": "El. paštas",
+    "phone": "Tel. numeris",
+    "password": "Slaptažodis",
+    "first_name": "Vardas",
+    "last_name": "Pavardė",
+    "phone_required": "Norėdami naudotis visomis Automiestas.lt paslaugomis patvirtinkite savo paskyrą pridėdami tel. numerį.",
+    "first_name_too_short": "Vardas per trumpas",
+    "first_name_too_long": "Vardas per ilgas",
+    "last_name_too_short": "Pavardė per trumpa",
+    "last_name_too_long": "Pavardė per ilga",
+    "invalid_email_string": "Neteisingas el. pašto formatas",
+    "phone_invalid_string": "Neteisingas tel. numerio formatas"
+  },
+  "my_posts": {
+    "header_title": "Mano skelbimai",
+    "header_description": "Šiame puslapyje galite valdyti visus savo sukurtus skelbimus",
+    "edit_post": "Redaguoti skelbimą",
+    "post_uploaded": "Skelbimas įkeltas:",
+    "next_payment": "Kitas mokėjimas:",
+    "last_boost": "Paskutinis pakėlimas:",
+    "next_boost": "Kitas pakėlimas:",
+    "likes": "Įsiminta:",
+    "actions": "Veiksmai",
+    "cancel_subscription": "Atšaukti prenumeratą",
+    "cancel_subscription_confirmation": "Ar tikrai norite atšaukti prenumeratą?",
+    "delete_post": "Ištrinti skelbimą",
+    "delete_post_confirmation": "Ar tikrai norite ištrinti šį skelbimą?",
+    "boost_post": "Pakelti skelbimą"
+  },
   "general": {
-    "continue": "Tęsti"
+    "continue": "Tęsti",
+    "price": "Kaina",
+    "country": "Šalis",
+    "city": "Miestas",
+    "category": "Kategorija",
+    "search": "Ieškoti",
+    "information": "Informacija",
+    "edit": "Pakeisti"
   }
 }

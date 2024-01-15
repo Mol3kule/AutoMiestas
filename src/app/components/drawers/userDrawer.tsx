@@ -84,7 +84,7 @@ export const UserDrawer = () => {
                         <RenderItem path={`/buy_credits`} title={`Įsigyti kreditų`} color={``}>
                             <WalletCards size={16} className={`text-highlight`} />
                         </RenderItem>
-                        <RenderItem path={`/settings`} title={`Nustatymai`} color={``}>
+                        <RenderItem path={`/profile/settings`} title={`Nustatymai`} color={``}>
                             <Settings size={16} className={`text-highlight`} />
                         </RenderItem>
                         <button type={`button`} onClick={HandleSignOut} className={`flex gap-[0.5rem] rounded-[0.1875rem] py-[0.44rem] px-[0.37rem] items-center hover:bg-highlight_secondary`}>

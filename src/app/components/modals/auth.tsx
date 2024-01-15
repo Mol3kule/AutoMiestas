@@ -17,37 +17,41 @@ export const AuthModal = () => {
     const router = useRouter();
     const { user, isLoaded } = useUser();
 
-    if (!isLoaded) return (
-        <ModalWrapper>
-            <Spinner size={5} />
-        </ModalWrapper>
-    )
-
-    if (isLoaded && user) {
-        router.push('/');
-    }
+    useEffect(() => {
+        if (isLoaded && user) {
+            router.push('/');
+        }
+    }, [isLoaded]);
 
     return (
-        !user && (
-            <ModalWrapper>
-                {viewType === 'login' && (
-                    <Suspense fallback={<Spinner />}>
-                        <LoginPage ChangeView={() => setViewType('register')} ResetPassword={() => setViewType('password_reset')} />
-                    </Suspense>
-                )}
+        <>
+            {!isLoaded ? (
+                <ModalWrapper>
+                    <Spinner size={5} />
+                </ModalWrapper>
+            ) : (
+                !user && (
+                    <ModalWrapper>
+                        {viewType === 'login' && (
+                            <Suspense fallback={<Spinner />}>
+                                <LoginPage ChangeView={() => setViewType('register')} ResetPassword={() => setViewType('password_reset')} />
+                            </Suspense>
+                        )}
 
-                {viewType === 'register' && (
-                    <Suspense fallback={<Spinner />}>
-                        <RegisterPage ChangeView={() => setViewType('login')} />
-                    </Suspense>
-                )}
+                        {viewType === 'register' && (
+                            <Suspense fallback={<Spinner />}>
+                                <RegisterPage ChangeView={() => setViewType('login')} />
+                            </Suspense>
+                        )}
 
-                {viewType === 'password_reset' && (
-                    <Suspense fallback={<Spinner />}>
-                        <PasswordResetPage ChangeView={() => setViewType('login')} />
-                    </Suspense>
-                )}
-            </ModalWrapper>
-        )
-    )
+                        {viewType === 'password_reset' && (
+                            <Suspense fallback={<Spinner />}>
+                                <PasswordResetPage ChangeView={() => setViewType('login')} />
+                            </Suspense>
+                        )}
+                    </ModalWrapper>
+                )
+            )}
+        </>
+    );
 }

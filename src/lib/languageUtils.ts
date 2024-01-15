@@ -10,3 +10,7 @@ export const useLanguage = () => {
     const dictionary = LanguageMap[language];
     return dictionary;
 }
+
+export const getLanguageByLocale = (locale: keyof typeof LanguageMap) => {
+    return LanguageMap[locale];
+}

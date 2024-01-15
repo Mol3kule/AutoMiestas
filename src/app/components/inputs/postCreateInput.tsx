@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
@@ -37,19 +37,18 @@ export const PostCreateInputText = ({ label, value, placeholder = "----", isDisa
 }
 
 export const PostCreateSelectInput = ({ label, value, items, placeholder = "----", isDisabled = false, compareToId = true, setValue }: TInputSelectProps) => {
-    // console.log(items);
     return (
         <div className={`flex flex-col gap-[0.85rem]`}>
             <span className={`text-primary text-base full_hd:text-base_2xl`}>{label}</span>
-            <Select onValueChange={setValue} disabled={isDisabled}>
+            <Select onValueChange={setValue} disabled={isDisabled} value={value}>
                 <SelectTrigger className={`${value.length <= 0 ? `border-error_third` : `border-highlight text-highlight`} capitalize text-base full_hd:text-base_2xl bg-[#FFF] rounded-[0.1875rem] h-full px-[1.56rem] py-[0.69rem] border-l-[0.125rem] border-t-0 border-r-0 border-b-0 focus:ring-0 focus:ring-offset-0`}>
-                    <SelectValue placeholder={placeholder} />
+                    <SelectValue placeholder={placeholder} className="placeholder:text-highlight" />
                 </SelectTrigger>
                 <SelectContent className={`border-none bg-[#FFF]`}>
                     {items.map((item, idx) => (
                         <SelectItem
                             value={item.id}
-                            key={`item_${idx}`}
+                            key={`${item}_${idx}`}
                             className={`text-base full_hd:text-base_2xl rounded-[0.1875rem] capitalize ${compareToId ? value === item.id ? `bg-highlight_secondary` : `` : value.toLowerCase() === item.label.toLowerCase() ? `bg-highlight_secondary` : ``}`}
                         >{item.label}</SelectItem>
                     ))}
@@ -62,7 +61,7 @@ export const PostCreateSelectInput = ({ label, value, items, placeholder = "----
 export const PostCreateSelectInputSearchable = ({ label, value, items, placeholder = "----", isDisabled = false, setValue }: TInputSelectProps) => {
     const [isOpen, setIsOpen] = useState(false);
 
-    return (
+    const RenderInput = useMemo(() => () => (
         <div className={`flex flex-col gap-[0.85rem]`}>
             <span className={`text-primary text-base full_hd:text-base_2xl`}>{label}</span>
             <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -81,7 +80,7 @@ export const PostCreateSelectInputSearchable = ({ label, value, items, placehold
                     <Command>
                         <CommandInput placeholder={`Ieškoti...`} className={`text-base full_hd:text-base_2xl`} />
                         <CommandEmpty className={`text-base full_hd:text-base_2xl text-center pt-[1rem]`}>Nieko neradome.</CommandEmpty>
-                        <CommandGroup className={`border-none max-h-[10rem] overflow-y-auto`}>
+                        <CommandGroup className={`border-none max-h-[15rem] full_hd:max-h-[20rem] overflow-y-auto`}>
                             {items.map((item, idx) => (
                                 <CommandItem
                                     key={`${item}_${idx}`}
@@ -103,5 +102,10 @@ export const PostCreateSelectInputSearchable = ({ label, value, items, placehold
                 </PopoverContent>
             </Popover>
         </div>
+    ), [value, items, isOpen]);
+
+
+    return (
+        <RenderInput />
     );
 }

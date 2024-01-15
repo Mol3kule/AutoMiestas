@@ -1,4 +1,6 @@
+import { auth } from "@clerk/nextjs";
 import { CreatePostPage } from "../components/pages/posts/create/page";
+import { redirect } from "next/navigation";
 
 const getAllMakes = async () => {
     return await fetch(`${process.env.defaultApiEndpoint}/api/vehicles/getAllMakes`)
@@ -7,6 +9,12 @@ const getAllMakes = async () => {
 }
 
 const PostCreatePage = async () => {
+    const { userId } = auth();
+
+    if (!userId) {
+        redirect('/sign-in');
+    }
+
     const { status, data } = await getAllMakes();
 
     return (

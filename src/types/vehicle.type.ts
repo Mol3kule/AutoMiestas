@@ -1,3 +1,5 @@
+import { Prisma } from "@prisma/client";
+
 export type TVehicleMake = {
     id: number;
     make: string;
@@ -13,9 +15,10 @@ export type TVehicleModels = {
 export type TVehicleModel = {
     id: number;
     make_id: number;
-    label: string;
-    year: number;
-    category: string
+    model: string;
+    year: Prisma.JsonArray;
+    engine_l: number;
+    cylinders: number;
 };
 
 /**

@@ -6,6 +6,7 @@ export enum FuelTypes { Gasoline, Diesel, Electric, Hybrid, Other }
 export enum Transmissions { Automatic, Manual }
 export enum Tags { HeatedSeats, HeatedSteeringWheel, LeatherSeats }
 export enum Rating { Equipment, Body }
+export enum SteeringWheel_Side { Left, Right }
 
 export class Vehicle {
     private RequiredFields = ['make', 'model', 'year', 'category', 'condition', 'fuel_type', 'drive_train', 'transmission', 'mileage', "sw_side", "price"];
@@ -68,6 +69,11 @@ export class Vehicle {
         [Rating.Body]: 'body'
     };
 
+    private SteeringWheel_Side: { [key in SteeringWheel_Side]: string } = {
+        [SteeringWheel_Side.Left]: 'left',
+        [SteeringWheel_Side.Right]: 'right'
+    };
+
     public getTypeByIndex(index: Types): string {
         return this.Types[index];
     };
@@ -98,31 +104,58 @@ export class Vehicle {
 
     public getRatingByIndex(index: Rating): string {
         return this.Rating[index];
-    }
+    };
+
+    public getSteeringWheelSideByIndex(index: SteeringWheel_Side): string {
+        return this.SteeringWheel_Side[index];
+    };
 
     public getAllBodyTypes(): { [key in BodyType]: string } {
         return this.BodyTypes;
-    }
+    };
+
+    public getAllConditions(): { [key in Conditions]: string } {
+        return this.Conditions;
+    };
+    
+    public getAllFuelTypes(): { [key in FuelTypes]: string } {
+        return this.FuelTypes;
+    };
+
+    public getAllDrivetrains(): { [key in Drivetrains]: string } {
+        return this.Drivetrains;
+    };
+
+    public getAllTransmissions(): { [key in Transmissions]: string } {
+        return this.Transmissions;
+    };
+
+    public getAllSteeringWheelSides(): { [key in SteeringWheel_Side]: string } {
+        return this.SteeringWheel_Side;
+    };
 
     public getLabelByKeyAndIndex(translation: any, key: string, index: any): string {
         switch (key) {
             case "type": {
-                return translation.vehicleInfo.objKeys[VehicleObj.getTypeByIndex(index)];
+                return translation.vehicleInfo.objKeys[this.getTypeByIndex(index)];
             }
-            case "category": {
-                return translation.vehicleInfo.categories[VehicleObj.getBodyTypeByIndex(index)];
+            case "body_type": {
+                return translation.vehicleInfo.body_type[this.getBodyTypeByIndex(index)];
             }
             case "condition": {
-                return translation.vehicleInfo.conditions[VehicleObj.getConditionByIndex(index)];
+                return translation.vehicleInfo.conditions[this.getConditionByIndex(index)];
             }
             case "fuel_type": {
-                return translation.vehicleInfo.fuelTypes[VehicleObj.getFuelTypeByIndex(index)];
+                return translation.vehicleInfo.fuelTypes[this.getFuelTypeByIndex(index)];
             }
             case "drive_train": {
-                return translation.vehicleInfo.drivetrains[VehicleObj.getDrivetrainByIndex(index)];
+                return translation.vehicleInfo.drivetrains[this.getDrivetrainByIndex(index)];
             }
             case "transmission": {
-                return translation.vehicleInfo.transmission[VehicleObj.getTransmissionByIndex(index)];
+                return translation.vehicleInfo.transmission[this.getTransmissionByIndex(index)];
+            }
+            case "sw_side": {
+                return translation.vehicleInfo.sw_side[this.getSteeringWheelSideByIndex(index)];
             }
             default: {
                 return index;

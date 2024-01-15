@@ -1,7 +1,7 @@
-import { BodyType, Conditions, Drivetrains, FuelTypes, Rating, Tags, Transmissions, Types } from "@/classes/Vehicle";
+import { BodyType, Conditions, Drivetrains, FuelTypes, Rating, SteeringWheel_Side, Tags, Transmissions, Types } from "@/classes/Vehicle";
 
 export type Post = {
-    id: number;
+    id?: number;
     authorId: string;
     information: PostInformation;
     images: PostImage[];
@@ -10,6 +10,10 @@ export type Post = {
     ratingByAuthor: PostRating;
     periods: PostPeriods;
     boosts: PostBoosts;
+    subscriptionId: string;
+    isActive: boolean;
+    isVerified: boolean;
+    category: Types;
 }
 
 export type PostInformation = {
@@ -23,21 +27,23 @@ export type PostInformation = {
 }
 
 export type PostVehicleDataInformation = {
-    type: Types;
-    make: string;
-    model: string;
+    make: number;
+    model: number;
     year: number;
     body_type: BodyType;
+    sw_side: SteeringWheel_Side;
     condition: Conditions;
     fuel_type: FuelTypes;
     drive_train: Drivetrains;
     transmission: Transmissions;
     mileage: number;
     technical_inspection_due_to: string | null;
-    vin: string;
+    vin: string | null;
+    sdk: string | null;
 }
 
 export type PostImage = {
+    key: string;
     url: string;
     isPrimary: boolean;
 }
