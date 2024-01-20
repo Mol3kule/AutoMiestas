@@ -1,6 +1,7 @@
 import { PostPage } from "@/app/components/pages/posts/preview/postPage";
 import { Spinner } from "@/app/components/spinner";
-import { Post } from "@/types/post.type";
+import { PostVehicle } from "@/types/post.type";
+import { auth, clerkClient } from "@clerk/nextjs";
 import axios from "axios";
 import { Suspense } from "react";
 
@@ -13,7 +14,7 @@ type RenderPostPageProps = {
 
 type PostData = {
     status: number;
-    data: Post;
+    data: PostVehicle;
     message?: string;
 }
 
@@ -34,6 +35,12 @@ const RenderPostPage = async ({ params }: RenderPostPageProps) => {
         return null;
     }
 
+    const { getToken } = auth();
+
+    axios.post(`${process.env.defaultApiEndpoint}/api/posts/incrementViewById`, { postId: data.id }, { headers: { 'Authorization': `Bearer ${await getToken()}` } });
+
+    const authorPhone = await clerkClient.users.getUser(data.authorId).then((res) => res.phoneNumbers[0].phoneNumber);
+
     const RenderLoadingPage = () => {
         return (
             <div className={`flex justify-center items-center w-full h-full`}>
@@ -44,7 +51,7 @@ const RenderPostPage = async ({ params }: RenderPostPageProps) => {
 
     return (
         <Suspense fallback={<RenderLoadingPage />}>
-            <PostPage post={data} />
+            <PostPage post={data} params={params.post} phoneNumber={authorPhone}/>
         </Suspense>
     );
 }

@@ -3,17 +3,21 @@ import { BodyType, Conditions, Drivetrains, FuelTypes, Rating, SteeringWheel_Sid
 export type Post = {
     id?: number;
     authorId: string;
-    information: PostInformation;
     images: PostImage[];
     statistics: PostStatistics;
-    tags: PostTags;
     ratingByAuthor: PostRating;
     periods: PostPeriods;
     boosts: PostBoosts;
     subscriptionId: string;
     isActive: boolean;
     isVerified: boolean;
+    isSubscriptionActive: boolean;
     category: Types;
+}
+
+export type PostVehicle = Post & {
+    information: PostInformation;
+    tags: PostTags;
 }
 
 export type PostInformation = {
@@ -49,9 +53,8 @@ export type PostImage = {
 }
 
 export type PostStatistics = {
-    times_viewed: Array<number>;
-    times_displayed: number;
-    times_liked: Array<number>;
+    times_viewed: Array<string>;
+    times_liked: Array<string>;
 }
 
 // Array of enum indexes
@@ -64,10 +67,8 @@ export type PostRating = {
 export type PostPeriods = {
     time_created: number;
     time_updated: number;
-    time_due: number;
 }
 
 export type PostBoosts = {
     time_created: number | null;
-    time_due: number | null;
 }

@@ -5,7 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getVehicles } from "@/lib/getVehicles";
 import { useLanguage } from "@/lib/languageUtils";
 import { useVehicleStore } from "@/store/vehicles/vehicle.store";
-import { Post, PostVehicleDataInformation } from "@/types/post.type";
+import { PostVehicle, PostVehicleDataInformation } from "@/types/post.type";
 import { useEffect, useState } from "react";
 
 export const RenderLocationItem = ({ children }: { children: React.ReactNode }) => {
@@ -16,7 +16,7 @@ export const RenderLocationItem = ({ children }: { children: React.ReactNode }) 
     );
 }
 
-export const GeneralInformationSection = ({ post }: { post: Post }) => {
+export const GeneralInformationSection = ({ post }: { post: PostVehicle }) => {
     const { vehicleMakes, vehicleModels, setMakes, setModels } = useVehicleStore();
     const [isLoading, setIsLoading] = useState(true);
     const t = useLanguage();
@@ -36,8 +36,10 @@ export const GeneralInformationSection = ({ post }: { post: Post }) => {
     }, []);
 
     const RenderInfoItem = ({ objKey, item }: { objKey: string, item: any }) => {
-        if (objKey.includes('type') || !item) return null;
+        console.log(item)
+        if (objKey.includes('type') || item === null) return null;
         const label = VehicleObj.getLabelByKeyAndIndex(t, objKey, item);
+
 
         return (
             vehicleMakes.length > 0 && Object.values(vehicleModels).length > 0 &&

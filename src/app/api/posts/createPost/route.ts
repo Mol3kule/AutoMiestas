@@ -14,7 +14,7 @@ export const POST = async (req: NextRequest) => {
             bodyType, mileage, fuelType, drivetrain,
             transmission, sw_side, condition, price,
             technical_inspection_due, vin, sdk, description,
-            images, country, city
+            images, country, city, specifications
         } = await req.json();
 
         const postData = {
@@ -43,23 +43,18 @@ export const POST = async (req: NextRequest) => {
             },
             images,
             statistics: {
-                times_displayed: 0,
                 times_liked: [],
                 times_viewed: []
             },
             tags: [],
             boosts: {
                 time_created: null,
-                time_due: null
             },
             periods: {
                 time_created: Date.now(),
-                time_due: Date.now(),
                 time_updated: Date.now()
             },
-            ratingByAuthor: {
-                "0": 10, "1": 9
-            },
+            ratingByAuthor: specifications,
             category: category,
         }
 
@@ -69,7 +64,8 @@ export const POST = async (req: NextRequest) => {
                 ...postData,
                 subscriptionId: '',
                 isActive: false,
-                isVerified: false
+                isVerified: false,
+                isSubscriptionActive: false
             },
         });
         // add a response

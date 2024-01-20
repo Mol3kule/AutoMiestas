@@ -5,13 +5,18 @@ import { Inter } from 'next/font/google';
 import { NavBar } from './components/navigation/NavBar';
 import { PageWrapper } from './components/hooks/page.hook';
 
+import { Toaster } from 'react-hot-toast';
+
 const inter = Inter({ subsets: ['latin'] });
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
       <html>
-        <body className={`${inter.className} flex flex-col min-h-[100vh]`}>
+        <body className={`${inter.className} flex flex-col min-h-[100dvh]`}>
+          <Toaster 
+            position='top-center'
+          />
           <NavBar />
           <PageWrapper>
             {children}

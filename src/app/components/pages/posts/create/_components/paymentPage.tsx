@@ -30,7 +30,7 @@ export const PostPaymentPage = () => {
                 <span className={`text-placeholder_secondary text-base full_hd:text-base_2xl`}>Pasirinkite tinkamą planą pagal savo individualius poreikius, finansinius klausimus, bei lūkesčius</span>
             </div>
 
-            <div className={`${isLoading ? `flex items-center justify-center h-[20rem]` : `grid`} grid-cols-1 laptop:grid-cols-3`}>
+            <div className={`${isLoading ? `flex items-center justify-center h-[20rem]` : `grid`} grid-cols-1 laptop:grid-cols-3 gap-[1.25rem]`}>
                 {isLoading ? (
                     <Spinner />
                 ) : (

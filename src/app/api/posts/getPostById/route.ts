@@ -16,12 +16,12 @@ export const POST = async (request: Request) => {
         })
 
         if (!post) {
-            return NextResponse.json({ status: 404, message: 'Post wasnt found' });
+            return NextResponse.json({ status: 404, message: 'Post wasnt found', translation: 'request_error' });
         }
         
         return NextResponse.json({ status: 200, data: post });
     } catch (error) {
         console.log(`[posts/getPostById]: ${error}`);
-        return NextResponse.json({ status: 500 });
+        return NextResponse.json({ status: 500, translation: 'internal_server_error' });
     }
 }

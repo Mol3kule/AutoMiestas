@@ -114,7 +114,9 @@
       "location": "Vietovė",
       "location_description": "Pasirinkite vietovę, jog pirkėjas galėtų greičiau susisiekti su jumis",
       "tags": "Žymės",
-      "tags_description": "Pasirinkite žymes, kurios atitinka jūsų skelbimą"
+      "tags_description": "Pasirinkite žymes, kurios atitinka jūsų skelbimą",
+      "specifications": "Specifikacijos",
+      "more_recommended": "Daugiau panašių skelbimų"
     }
   },
   "profile": {
@@ -131,23 +133,42 @@
     "last_name_too_short": "Pavardė per trumpa",
     "last_name_too_long": "Pavardė per ilga",
     "invalid_email_string": "Neteisingas el. pašto formatas",
-    "phone_invalid_string": "Neteisingas tel. numerio formatas"
+    "phone_invalid_string": "Neteisingas tel. numerio formatas",
+
+    "dialog_change_email_title": "Ar tikrai norite pakeisti el. paštą?",
+    "dialog_change_name_title": "Ar tikrai norite pakeisti vardą?",
+    "dialog_change_phone_title": "Ar tikrai norite pakeisti tel. numerį?",
+    "dialog_change_password_title": "Ar tikrai norite pakeisti slaptažodį?",
+
+    "edit_email_title": "Pakeisti el. paštą",
+    "edit_name_title": "Pakeisti vardą ir pavardę",
+    "edit_phone_title": "Pakeisti tel. numerį",
+    "edit_password_title": "Pakeisti slaptažodį",
+
+    "edit_email_description": "Įveskite naują el. paštą",
+    "edit_name_description": "Įveskite naują vardą ir/ar pavardę",
+    "edit_phone_description": "Įveskite naują tel. numerį",
+    "edit_password_description": "Įveskite naują slaptažodį"
   },
   "my_posts": {
     "header_title": "Mano skelbimai",
     "header_description": "Šiame puslapyje galite valdyti visus savo sukurtus skelbimus",
     "edit_post": "Redaguoti skelbimą",
     "post_uploaded": "Skelbimas įkeltas:",
-    "next_payment": "Kitas mokėjimas:",
-    "last_boost": "Paskutinis pakėlimas:",
-    "next_boost": "Kitas pakėlimas:",
+    "next_payment": "Kitas apmokėjimas:",
+    "last_boost": "Paskutinis iškėlimas:",
+    "next_boost": "Kitas iškėlimas:",
     "likes": "Įsiminta:",
+    "views": "Peržiūrėta:",
     "actions": "Veiksmai",
+    "buy_subscription": "Įsigyti prenumeratą",
     "cancel_subscription": "Atšaukti prenumeratą",
     "cancel_subscription_confirmation": "Ar tikrai norite atšaukti prenumeratą?",
-    "delete_post": "Ištrinti skelbimą",
+    "delete_post": "Pašalinti skelbimą",
     "delete_post_confirmation": "Ar tikrai norite ištrinti šį skelbimą?",
-    "boost_post": "Pakelti skelbimą"
+    "boost_post": "Iškelti skelbimą",
+    "post_boost_cooldown": "Šiuo metu negalite iškelti skelbimo, nes skelbimas buvo neseniai iškeltas.",
+    "post_boost_success": "Skelbimas buvo sėkmingai iškeltas"
   },
   "general": {
     "continue": "Tęsti",
@@ -157,6 +178,18 @@
     "category": "Kategorija",
     "search": "Ieškoti",
     "information": "Informacija",
-    "edit": "Pakeisti"
+    "edit": "Pakeisti",
+    "user_not_logged_in": "Jūs neprisijungęs",
+    "link_copied": "Tel. numeris nukopijuotas",
+    "request_error": "Įvyko klaida, bandykite perkrauti puslapį ir bandyti dar kartą",
+    "internal_server_error": "Įvyko klaida, bandykite perkrauti puslapį ir bandyti dar kartą. Jeigu klaida kartojasi, susisiekite su mūsų komanda.",
+    "post_liked": "Skelbimas įsimintas",
+    "post_disliked": "Skelbimas pašalintas iš įsimintų sąrašo",
+    "action_in_progress": "Laukiamas atsakymas iš serverio.."
+  },
+  "dialog": {
+    "accept": "Patvirtinti",
+    "cancel": "Atšaukti",
+    "edit_description": "Jeigu norite atidaryti koregavimo langą, paspauskite 'Patvirtinti'. Paspaudus 'Atšaukti' jūsų užklausa bus atšaukta."
   }
 }

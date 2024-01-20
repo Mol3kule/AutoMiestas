@@ -62,38 +62,27 @@ export const FilterSelector = () => {
                 <p className={`text-primary text-base full_hd:text-base_2xl underline`}>Detali paieška</p>
             </div>
             <div className={`grid grid-cols-1 laptop:grid-cols-4 gap-[1.25rem] px-[1.25rem] py-[1.25rem] bg-highlight_secondary rounded-[0.1875rem]`}>
-                {!isLoading ? (
-                    <>
-                        <FilterSelectorInput
-                            value={category !== null ? category.toString() : ``}
-                            items={Object.keys(PostObj.getAllCategories()).map((objKey, idx) => ({ id: idx.toString(), label: t.post.categories[PostObj.getLabelByIndex(Number(objKey)) as keyof typeof t.post.categories] }))}
-                            placeholder={t.general.category}
-                            setValue={(value) => setCategory(Number(value))}
-                        />
-                        <PostCreateSelectInputSearchable
-                            value={makeId !== null ? makeId.toString() : ``}
-                            items={vehicleMakes.map((make) => ({ id: make.id.toString(), label: make.make }))}
-                            placeholder={t.vehicleInfo.objKeys.make}
-                            setValue={(value) => setMakeId(Number(value))}
-                        />
-                        <PostCreateSelectInputSearchable
-                            value={makeId !== null ? makeId.toString() : ``}
-                            items={makeId !== null ? Object.values(vehicleModels[makeId]).map((model) => ({ id: model.id.toString(), label: model.model })) : []}
-                            placeholder={t.vehicleInfo.objKeys.model}
-                            setValue={(value) => setModelId(Number(value))}
-                        />
-                        <button type={`button`} className={`flex items-center justify-center bg-primary rounded-[0.1875rem] text-[#FFF] text-base full_hd:text-base_2xl`}>
-                            {t.general.search}
-                        </button>
-                    </>
-                ) : (
-                    <>
-                        <Skeleton className={`w-full rounded-[0.1875rem] h-[2.625rem] bg-primary py-[0.69rem]`} />
-                        <Skeleton className={`w-full rounded-[0.1875rem] h-[2.625rem] bg-primary py-[0.69rem]`} />
-                        <Skeleton className={`w-full rounded-[0.1875rem] h-[2.625rem] bg-primary py-[0.69rem]`} />
-                        <Skeleton className={`w-full rounded-[0.1875rem] h-[2.625rem] bg-primary py-[0.69rem]`} />
-                    </>
-                )}
+                <FilterSelectorInput
+                    value={category !== null ? category.toString() : ``}
+                    items={Object.keys(PostObj.getAllCategories()).map((objKey, idx) => ({ id: idx.toString(), label: t.post.categories[PostObj.getLabelByIndex(Number(objKey)) as keyof typeof t.post.categories] }))}
+                    placeholder={t.general.category}
+                    setValue={(value) => setCategory(Number(value))}
+                />
+                <PostCreateSelectInputSearchable
+                    value={makeId !== null ? makeId.toString() : ``}
+                    items={vehicleMakes.map((make) => ({ id: make.id.toString(), label: make.make }))}
+                    placeholder={t.vehicleInfo.objKeys.make}
+                    setValue={(value) => setMakeId(Number(value))}
+                />
+                <PostCreateSelectInputSearchable
+                    value={makeId !== null ? modelId.toString() : ``}
+                    items={makeId !== null ? Object.values(vehicleModels[makeId]).map((model) => ({ id: model.id.toString(), label: model.model })) : []}
+                    placeholder={t.vehicleInfo.objKeys.model}
+                    setValue={(value) => setModelId(Number(value))}
+                />
+                <button type={`button`} className={`flex items-center justify-center py-[0.69rem] bg-primary rounded-[0.1875rem] text-[#FFF] text-base full_hd:text-base_2xl`}>
+                    {t.general.search}
+                </button>
             </div>
         </div >
     )

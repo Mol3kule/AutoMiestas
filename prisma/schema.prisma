@@ -37,18 +37,19 @@ model users {
 }
 
 model posts {
-  id             Int     @id @default(autoincrement())
-  authorId       String
-  authorRelation users?  @relation(fields: [authorId], references: [userId])
-  information    Json
-  images         Json
-  statistics     Json
-  periods        Json
-  boosts         Json
-  tags           Json
-  ratingByAuthor Json
-  subscriptionId String
-  isActive       Boolean
-  isVerified     Boolean
-  category       Int
+  id                   Int     @id @default(autoincrement())
+  authorId             String
+  authorRelation       users?  @relation(fields: [authorId], references: [userId])
+  information          Json
+  images               Json
+  statistics           Json
+  periods              Json
+  boosts               Json
+  tags                 Json
+  ratingByAuthor       Json
+  category             Int
+  subscriptionId       String
+  isActive             Boolean
+  isVerified           Boolean
+  isSubscriptionActive Boolean
 }

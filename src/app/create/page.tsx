@@ -1,4 +1,4 @@
-import { auth } from "@clerk/nextjs";
+import { auth, clerkClient } from "@clerk/nextjs";
 import { CreatePostPage } from "../components/pages/posts/create/page";
 import { redirect } from "next/navigation";
 
@@ -13,6 +13,12 @@ const PostCreatePage = async () => {
 
     if (!userId) {
         redirect('/sign-in');
+    }
+
+    const user = await clerkClient.users.getUser(userId);
+
+    if (!user.phoneNumbers.length) {
+        redirect('/profile/settings');
     }
 
     const { status, data } = await getAllMakes();

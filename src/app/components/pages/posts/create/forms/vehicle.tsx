@@ -23,6 +23,8 @@ export const CreateVehiclePostForm = () => {
             <hr className={`w-full text-border bg-border`} />
             <CreateVehiclePostFormImages />
             <hr className={`w-full text-border bg-border`} />
+            <CreateVehiclePostFormSpecifications />
+            <hr className={`w-full text-border bg-border`} />
             <CreateVehiclePostFormLocation />
         </>
     );
@@ -261,7 +263,7 @@ export const CreateVehiclePostFormImages = () => {
 
         return (
             <div className={`relative flex w-full h-[6.3125rem] full_hd:h-[10.3125rem] items-center justify-center`}>
-                <Star className={`left-[0.5rem] top-[0.5rem] w-[1.5rem] h-[1.5rem] absolute hover:cursor-pointer ${primaryImg === idx ? `text-highlight` : `text-[#FFF]`}`} onClick={HandlePrimarySelect}/>
+                <Star className={`left-[0.5rem] top-[0.5rem] w-[1.5rem] h-[1.5rem] absolute hover:cursor-pointer ${primaryImg === idx ? `text-highlight` : `text-[#FFF]`}`} onClick={HandlePrimarySelect} />
                 <Trash2 className={`w-[1.5rem] h-[1.5rem] absolute text-[#FFF] hover:cursor-pointer`} onClick={HandleImageRemove} />
                 <Image
                     src={item.url}
@@ -342,6 +344,46 @@ export const CreateVehiclePostFormImages = () => {
                 </div>
             </div>
         </form>
+    )
+}
+
+const CreateVehiclePostFormSpecifications = () => {
+    const t = useLanguage();
+
+    const { specifications, setSpecifications } = usePostCreateStore();
+
+    const RenderRatingItem = ({ value }: { value: number }) => {
+        const setNewRating = (newValue: number) => {
+            const newSpecifications = { ...specifications };
+            newSpecifications[value as keyof typeof specifications] = newValue;
+            setSpecifications(newSpecifications);
+        };
+
+        return (
+            <div className={`flex flex-col gap-[0.88rem]`} >
+                <span className={`text-primary text-base full_hd:text-base_2xl`}>{t.vehicleInfo.rating[VehicleObj.getRatingByIndex(value) as keyof typeof t.vehicleInfo.rating]}</span>
+
+                <div className={`flex gap-[0.63rem]`}>
+                    {Array.from({ length: 10 }).map((_, i) => (
+                        <div onClick={() => setNewRating(i + 1)} className={`w-full h-[0.625rem] full_hd:h-[0.813rem] rounded-[0.125rem] hover:cursor-pointer ${specifications[value as keyof typeof specifications] > i ? `bg-highlight` : `bg-border`}`} key={`v_rating_${i}`}></div>
+                    ))}
+                </div>
+            </div>
+        )
+    }
+
+    return (
+        <div className={`flex flex-col gap-[1.25rem]`}>
+            <div className={`flex flex-col gap-[0.87rem] text-base full_hd:text-base_2xl`}>
+                <span className={`text-primary`}>{t.post.labels.specifications}</span>
+                <span className={`text-placeholder_secondary`}>{`Kaip vertinate savo automobilio kondiciją? Pažymėkite visus laukus`}</span>
+            </div>
+            <div className={`flex flex-col gap-[1.25rem]`}>
+                {Object.keys(VehicleObj.getAllRatings()).map((value) => (
+                    <RenderRatingItem value={Number(value)} key={`rating_item_${value}`} />
+                ))}
+            </div>
+        </div>
     )
 }
 

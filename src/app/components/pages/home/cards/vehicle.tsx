@@ -9,16 +9,20 @@ import { getVehicles } from "@/lib/getVehicles";
 import { Spinner } from "@/app/components/spinner";
 import { VehicleObj } from "@/classes/Vehicle";
 import { useLanguage } from "@/lib/languageUtils";
-import { Post } from "@/types/post.type";
+import { PostVehicle } from "@/types/post.type";
 import { Heart } from "lucide-react";
+import { useUser } from "@clerk/nextjs";
+import { animated, useTransition } from "@react-spring/web";
 
-export const VehiclePostCard = ({ postData, idx }: { postData: Post, idx: number }) => {
+export const VehiclePostCard = ({ postData, idx }: { postData: PostVehicle, idx: number }) => {
     const { vehicleMakes, vehicleModels, setMakes, setModels } = useVehicleStore();
     const { id, images, information, periods } = postData;
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const router = useRouter();
 
     const t = useLanguage();
+
+    const { user, isLoaded } = useUser();
 
     useEffect(() => {
         if (!vehicleMakes.length || !Object.values(vehicleModels).length) {
@@ -31,6 +35,8 @@ export const VehiclePostCard = ({ postData, idx }: { postData: Post, idx: number
                     setIsLoading(false);
                 }
             });
+        } else {
+            setIsLoading(false);
         }
     }, []);
 
@@ -49,26 +55,32 @@ export const VehiclePostCard = ({ postData, idx }: { postData: Post, idx: number
         router.push(newUri);
     }
 
+    const transitions = useTransition(!isLoading, {
+        from: { opacity: 0 },
+        enter: { opacity: 1 },
+        config: { duration: 1000 }
+    });
+
     return (
-        <button className={`w-full bg-highlight_secondary rounded-[0.1875rem]`} onClick={HandlePostClick}>
-            <div>
-                <div className={`object-cover w-full`}>
-                    <Image
-                        alt="Loading.."
-                        src={images.find(image => image.isPrimary)?.url || images[0].url}
-                        className={`rounded-t-[0.1875rem]`}
-                        width={1920}
-                        height={1080}
-                    />
-                </div>
-                <div className={`px-[1.25rem] py-[1.44rem] flex flex-col gap-[0.87rem]`}>
-                    {!isLoading ? (
-                        <>
+        !isLoading ? (
+            transitions((style) => (
+                <animated.button style={style} className={`w-full bg-highlight_secondary rounded-[0.1875rem] h-full`} onClick={HandlePostClick}>
+                    <div>
+                        <div className={`w-full h-[20rem]`}>
+                            <Image
+                                alt="Loading.."
+                                src={images.find(image => image.isPrimary)?.url || images[0].url}
+                                className={`rounded-t-[0.1875rem] h-full object-cover`}
+                                width={1920}
+                                height={1080}
+                            />
+                        </div>
+                        <div className={`px-[1.25rem] py-[1.44rem] flex flex-col gap-[0.87rem]`}>
                             <div className={`flex justify-between gap-[1.25rem] items-center`}>
                                 {vehicleMakes.length > 0 && Object.values(vehicleModels).length > 0 &&
                                     <p className={`text-primary text-base full_hd:text-base_2xl font-medium`}>{Object.values(vehicleMakes).find((make) => make.id === information.vehicleData.make)?.make} {Object.values(vehicleModels[information.vehicleData.make]).find((model) => model.id === information.vehicleData.model)?.model} {Object.values(vehicleModels[information.vehicleData.make]).find((model) => model.id === information.vehicleData.model)?.engine_l.toFixed(1)}l</p>
                                 }
-                                <Heart className={`text-placeholder w-[1.125rem] h-[1.125rem]`} />
+                                <Heart className={`w-[1.125rem] h-[1.125rem] ${isLoaded && user && postData.statistics.times_liked.includes(user.id) ? `text-highlight` : `text-placeholder`}`} />
                             </div>
                             <hr className="bg-border text-border w-full" />
                             <div className={`flex gap-[1.25rem]`}>
@@ -81,12 +93,14 @@ export const VehiclePostCard = ({ postData, idx }: { postData: Post, idx: number
                                 <RenderLocation text={information.location.city} />
                                 <RenderLocation text={information.location.country} />
                             </div>
-                        </>
-                    ) : (
-                        <Spinner />
-                    )}
-                </div>
+                        </div>
+                    </div>
+                </animated.button>
+            ))
+        ) : (
+            <div className={`w-full flex items-center justify-center bg-highlight_secondary py-[2rem]`}>
+                <Spinner />
             </div>
-        </button>
-    )
+        )
+    );
 }

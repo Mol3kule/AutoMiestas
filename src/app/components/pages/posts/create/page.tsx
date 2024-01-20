@@ -37,7 +37,7 @@ export const CreatePostPage = ({ allMakes }: { allMakes: any }) => {
             renderItem: <PostInformationPage />
         },
         [PageWindows.Payment]: {
-            title: 'Apmokėjimas',
+            title: 'Paslaugų apmokėjimas',
             renderItem: <PostPaymentPage />
         }
     };

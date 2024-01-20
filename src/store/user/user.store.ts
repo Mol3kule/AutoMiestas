@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-type Language = 'lt' | 'en';
+type Language = 'lt';
 
 type UserStore = {
     language: Language;

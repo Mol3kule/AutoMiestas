@@ -27,7 +27,7 @@ export const POST = async (request: NextRequest) => {
         const session = await stripe.checkout.sessions.create({
             mode: 'subscription',
             customer: user.stripeCustomerId,
-            success_url: `${process.env.defaultApiEndpoint}`,
+            success_url: `${process.env.defaultApiEndpoint}/my_posts`,
             cancel_url: `${process.env.defaultApiEndpoint}/paymentFailed`,
             line_items: [
                 {
@@ -35,9 +35,11 @@ export const POST = async (request: NextRequest) => {
                     quantity: 1,
                 }
             ],
-            metadata: {
-                payingUserId: user.userId,
-                postId
+            subscription_data: {
+                metadata: {
+                    userId: user.userId,
+                    postId 
+                }
             }
         });
 
@@ -45,7 +47,7 @@ export const POST = async (request: NextRequest) => {
             return NextResponse.json({ status: 500, message: 'Could not create session' });
         }
 
-        return NextResponse.json(session.url);
+        return NextResponse.json({ status: 200, url: session.url });
     } catch (error) {
         console.log(`[getPostByParams]: ${error}`);
         return NextResponse.json({ status: 'error' });

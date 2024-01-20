@@ -11,7 +11,7 @@ export default authMiddleware({
     "/posts/(.*)",
     "/api/posts/getPostByParams",
     "/api/posts/getPostById",
-    "/api/posts/getPosts",
+    "/api/posts/getPostsByCategory",
     "/api/vehicles/getAllMakes",
     "/api/vehicles/getAllModels",
     "/api/vehicles/getAllYears",
@@ -22,6 +22,7 @@ export default authMiddleware({
     // "/api/posts/uploadImage",
     // "/api/uploadthing",
     // "/api/stripe/getProducts" // has to be secured
+    "/api/stripe/webhook"
   ],
   afterAuth(auth, req, evt) {
     // Handle users who aren't authenticated

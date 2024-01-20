@@ -16,8 +16,6 @@ export const GET = async () => {
             }
         });
 
-        console.log(posts);
-
         return NextResponse.json({ status: 200, data: posts });
     } catch (error) {
         console.log(error);

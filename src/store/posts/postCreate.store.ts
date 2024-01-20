@@ -1,5 +1,5 @@
 import { Categories as PostCategories } from "@/classes/PostCategories";
-import { BodyType, Conditions, Drivetrains, FuelTypes, SteeringWheel_Side, Transmissions } from "@/classes/Vehicle";
+import { BodyType, Conditions, Drivetrains, FuelTypes, Rating, SteeringWheel_Side, Transmissions } from "@/classes/Vehicle";
 import { create } from "zustand";
 
 type Store = {
@@ -27,6 +27,8 @@ type Store = {
     countryId: number;
     cityId: number;
 
+    specifications: { [key in Rating]: number };
+
     setCategory: (category: PostCategories) => void;
     setMakeId: (makeId: number) => void;
     setModelId: (modelId: number) => void;
@@ -50,6 +52,7 @@ type Store = {
     setFileImages: (fileImages: File[]) => void;
     setCountryId: (country: number) => void;
     setCityId: (city: number) => void;
+    setSpecifications: (specifications: { [key in Rating]: number }) => void;
 }
 
 export const usePostCreateStore = create<Store>()((set) => ({
@@ -76,6 +79,10 @@ export const usePostCreateStore = create<Store>()((set) => ({
     fileImages: [],
     countryId: null!,
     cityId: null!,
+    specifications: {
+        [Rating.Equipment]: 5,
+        [Rating.Body]: 5,
+    },
 
     setCategory: (category: PostCategories) => set({ category }),
     setMakeId: (makeId: number) => set({ makeId }),
@@ -100,4 +107,5 @@ export const usePostCreateStore = create<Store>()((set) => ({
     setVin: (vin: string) => set({ vin }),
     setSDK: (sdk: any) => set({ sdk }),
     setDescription: (description: string) => set({ description }),
+    setSpecifications: (specifications: { [key in Rating]: number }) => set({ specifications }),
 }));

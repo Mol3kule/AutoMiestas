@@ -1,10 +1,10 @@
 'use client';
 
-import { Post } from "@/types/post.type"
+import { PostVehicle } from "@/types/post.type"
 import { PostImagesSection } from "./ImagesSection";
 import { SecondaryInformationSection } from "./SecondaryInfoSection";
 
-export const PostSecondaryInfo = ({ post }: { post: Post }) => {
+export const PostSecondaryInfo = ({ post }: { post: PostVehicle }) => {
     return (
         <div className={`flex flex-col gap-[1.25rem] w-full`}>
             <PostImagesSection images={post.images} />

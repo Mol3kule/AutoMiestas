@@ -9,8 +9,6 @@ export enum Rating { Equipment, Body }
 export enum SteeringWheel_Side { Left, Right }
 
 export class Vehicle {
-    private RequiredFields = ['make', 'model', 'year', 'category', 'condition', 'fuel_type', 'drive_train', 'transmission', 'mileage', "sw_side", "price"];
-
     private Types: { [key in Types]: string } = {
         [Types.Car]: 'car',
         [Types.Truck]: 'truck',
@@ -133,6 +131,10 @@ export class Vehicle {
     public getAllSteeringWheelSides(): { [key in SteeringWheel_Side]: string } {
         return this.SteeringWheel_Side;
     };
+
+    public getAllRatings(): { [key in Rating]: string } {
+        return this.Rating;
+    }
 
     public getLabelByKeyAndIndex(translation: any, key: string, index: any): string {
         switch (key) {

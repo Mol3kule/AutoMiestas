@@ -9,6 +9,11 @@ export const NavBar = () => {
     const router = useRouter();
     const { user, isLoaded } = useUser();
 
+    const RedirectToPage = (page: string) => {
+        router.push(page);
+        location.reload();
+    }
+
     return (
         <header>
             <nav className={`flex justify-between px-[1.87rem] laptop:px-[15.5rem] hd:px-[31.25rem] py-[20px] border-[1px] border-border gap-[1.25rem]`}>
@@ -25,8 +30,8 @@ export const NavBar = () => {
             </nav>
             <nav className={`flex justify-between px-[1.87rem] laptop:px-[15.5rem] hd:px-[31.25rem] py-[0.88rem] border-b-[1px] border-border gap-[1.25rem]`}>
                 <div className={`flex gap-[1.25rem] text-primary`}>
-                    <button className={`px-[0.62rem] py-[0.38rem] bg-highlight text-base full_hd:text-base_2xl text-[#FFF] rounded-[0.1875rem]`} onClick={() => router.push('/')}>Skelbimai</button>
-                    <button className={`px-[0.62rem] py-[0.38rem] text-base full_hd:text-base_2xl text-primary rounded-[0.1875rem]`} onClick={() => router.push('/create')}>Įkelti skelbimą</button>
+                    <button className={`px-[0.62rem] py-[0.38rem] bg-highlight text-base full_hd:text-base_2xl text-[#FFF] rounded-[0.1875rem]`} onClick={() => RedirectToPage('/')}>Skelbimai</button>
+                    <button className={`px-[0.62rem] py-[0.38rem] text-base full_hd:text-base_2xl text-primary rounded-[0.1875rem]`} onClick={() => RedirectToPage('/create')}>Įkelti skelbimą</button>
                 </div>
             </nav>
         </header>

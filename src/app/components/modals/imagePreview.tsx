@@ -1,5 +1,4 @@
 import { PostImage } from "@/types/post.type";
-import { ModalWrapper } from "../hooks/modal.hook";
 import Modal from 'react-modal';
 import Image from "next/image";
 import { Suspense, useMemo } from "react";

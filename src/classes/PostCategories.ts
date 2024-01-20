@@ -10,11 +10,11 @@ class PostCategories {
         [Categories.agricultural]: 'agricultural',
         [Categories.construction]: 'construction',
         [Categories.trailer]: 'trailers',
-        [Categories.boat]: 'boats',
-        [Categories.plane]: 'planes',
-        [Categories.scooter]: 'scooters',
-        [Categories.tires_wheels]: 'tires_wheels',
-        [Categories.parts]: 'parts'
+        // [Categories.boat]: 'boats',
+        // [Categories.plane]: 'planes',
+        // [Categories.scooter]: 'scooters',
+        // [Categories.tires_wheels]: 'tires_wheels',
+        // [Categories.parts]: 'parts'
     };
 
     public getLabelByIndex(objKey: Categories): string {
