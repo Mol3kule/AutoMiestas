@@ -1,15 +1,17 @@
 import axios from "axios";
-import { TProduct } from "@/app/api/stripe/getProducts/route";
-import { Moon } from "lucide-react";
-import { usePostCreateStore } from "@/store/posts/postCreate.store";
-import { useRouter } from "next/router";
 import { redirect } from "next/navigation";
-import { ILocationCity, useCityStateStore } from "@/store/citystate/citystate.store";
-import { getCityState } from "@/lib/getCityState";
-import { auth } from "@clerk/nextjs";
+import { TProduct } from "@/app/api/stripe/getProducts/route";
+import { usePostCreateStore } from "@/store/posts/postCreate.store";
+import { useCityStateStore } from "@/store/citystate/citystate.store";
+import { Moon } from "lucide-react";
 
 export const RenderProduct = ({ item }: { item: TProduct }) => {
-    const { category, makeId, modelId, modelYear, bodyType, mileage, fuelType, drivetrain, transmission, sw_side, condition, price, technical_inspection_due, vin, sdk, description, fileImages, primaryImg, countryId, cityId, specifications } = usePostCreateStore();
+    const {
+        category, makeId, modelId, modelYear, bodyType, mileage, mileage_type,
+        fuelType, drivetrain, transmission, sw_side, condition, price, technical_inspection_due,
+        vin, sdk, description, fileImages, primaryImg, countryId, cityId, specifications,
+        ccm, power, power_type
+    } = usePostCreateStore();
     const { CountryList, CityList } = useCityStateStore();
 
     const HandleSubscription = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -29,14 +31,15 @@ export const RenderProduct = ({ item }: { item: TProduct }) => {
             redirect('/');
         };
 
-        const newImages = uploadImageResponse.data.map((img: string) => ({ url: img, isPrimary: img.includes(fileImages[primaryImg].name) }));
-
         const createPostResponse = await axios.post(`${process.env.defaultApiEndpoint}/api/posts/createPost`, {
             category, makeId, modelId, modelYear,
             bodyType, mileage, fuelType, drivetrain,
             transmission, sw_side, condition, price,
-            technical_inspection_due, vin, sdk, description, specifications,
-            images: newImages, country: CountryList.find((country) => country.id === countryId)?.name, city: Object.values(CityList[countryId]).find((city) => city.id === cityId)?.name
+            technical_inspection_due, vin, sdk, description,
+            specifications, mileage_type, ccm, power, power_type,
+            images: uploadImageResponse.data.map((img: string) => ({ url: img, isPrimary: img.includes(fileImages[primaryImg].name) })),
+            country: CountryList.find((country) => country.id === countryId)?.name,
+            city: Object.values(CityList[countryId]).find((city) => city.id === cityId)?.name
         }).then((res) => res.data);
 
         if (createPostResponse.status !== 200) {

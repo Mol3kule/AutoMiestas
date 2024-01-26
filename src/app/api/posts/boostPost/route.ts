@@ -1,5 +1,5 @@
 import prisma from "@/prisma/prisma";
-import { PostBoosts } from "@/types/post.type";
+import { PostBoosts, PostStatus } from "@/types/post.type";
 import { auth } from "@clerk/nextjs";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
@@ -15,25 +15,29 @@ export const POST = async (request: NextRequest) => {
         const { postId }: { postId: number | undefined } = await request.json();
 
         if (!postId) {
-            return NextResponse.json({ status: 400, translation: "request_error" });
+            return NextResponse.json({ status: 400, translation: "bad_request" });
         }
 
         const post = await prisma.posts.findUnique({
             where: {
                 id: postId,
-                isActive: true,
-                // isVerified: true,
             }
         });
 
         if (!post) {
-            return NextResponse.json({ status: 400, translation: "request_error" });
+            return NextResponse.json({ status: 400, translation: "bad_request" });
+        }
+
+        const { isPublished } = JSON.parse(post.status as any) as PostStatus;
+
+        if (!isPublished) {
+            return NextResponse.json({ status: 400, translation: "post_not_active" });
         }
 
         const postBoost = post.boosts as PostBoosts;
 
         const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-        const stripeSubscriptionData: any = await stripe.subscriptions.retrieve(post.subscriptionId);
+        const stripeSubscriptionData: any = await stripe.subscriptions.retrieve(post.subscriptionId!);
 
         const { metadata } = await stripe.products.retrieve(stripeSubscriptionData.plan.product);
 

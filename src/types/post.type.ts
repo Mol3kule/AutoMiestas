@@ -1,4 +1,6 @@
-import { BodyType, Conditions, Drivetrains, FuelTypes, Rating, SteeringWheel_Side, Tags, Transmissions, Types } from "@/classes/Vehicle";
+import { Categories } from "@/classes/PostCategories";
+import { BodyType, Conditions, Drivetrains, FuelTypes, Rating, SteeringWheel_Side, Transmissions } from "@/classes/Vehicle";
+import { MileageType, PowerType } from "./vehicle.type";
 
 export type Post = {
     id?: number;
@@ -8,16 +10,20 @@ export type Post = {
     ratingByAuthor: PostRating;
     periods: PostPeriods;
     boosts: PostBoosts;
-    subscriptionId: string;
-    isActive: boolean;
-    isVerified: boolean;
+    subscriptionId: string | null;
+    status: PostStatus;
     isSubscriptionActive: boolean;
-    category: Types;
+    category: Categories;
 }
 
 export type PostVehicle = Post & {
     information: PostInformation;
-    tags: PostTags;
+}
+
+export type PostStatus = {
+    isPublished: boolean;
+    isAttentionRequired: boolean;
+    isEditedAfterAttentionRequired: boolean;
 }
 
 export type PostInformation = {
@@ -41,9 +47,14 @@ export type PostVehicleDataInformation = {
     drive_train: Drivetrains;
     transmission: Transmissions;
     mileage: number;
+    mileage_type: MileageType;
     technical_inspection_due_to: string | null;
     vin: string | null;
     sdk: string | null;
+
+    ccm: number;
+    power: number;
+    power_type: PowerType;
 }
 
 export type PostImage = {
@@ -56,9 +67,6 @@ export type PostStatistics = {
     times_viewed: Array<string>;
     times_liked: Array<string>;
 }
-
-// Array of enum indexes
-export type PostTags = Tags[];
 
 export type PostRating = {
     [key in Rating]: number;

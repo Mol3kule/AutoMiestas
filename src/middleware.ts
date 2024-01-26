@@ -14,7 +14,6 @@ export default authMiddleware({
     "/api/posts/getPostsByCategory",
     "/api/vehicles/getAllMakes",
     "/api/vehicles/getAllModels",
-    "/api/vehicles/getAllYears",
     
     // "/api/scrape/getVehicleModels",
     // "/api/scrape/getVehicleMakes",
@@ -22,7 +21,8 @@ export default authMiddleware({
     // "/api/posts/uploadImage",
     // "/api/uploadthing",
     // "/api/stripe/getProducts" // has to be secured
-    "/api/stripe/webhook"
+    "/api/stripe/webhook",
+    // "/api/scrape/addMotorcycleMakes",
   ],
   afterAuth(auth, req, evt) {
     // Handle users who aren't authenticated

@@ -36,22 +36,11 @@ export const SecondaryInformationSection = ({ post }: PostSecondaryInfoProps) =>
         });
     }, []);
 
-    const TagsSection = () => {
-        return (
-            <div className={`flex flex-wrap gap-[0.88rem] text-center items-center`}>
-                {post.tags?.map((tag, index) => (
-                    <div className={`px-[0.62rem] py-[0.12rem] bg-highlight_secondary rounded-[0.1875rem] text-primary text-base full_hd:text-base_2xl`} key={`v_tag_${index}`}>{t.vehicleInfo.tags[VehicleObj.getTagByIndex(tag) as keyof typeof t.vehicleInfo.tags]}</div>
-                ))}
-            </div>
-        );
-    }
-
     const CommentSection = () => {
         return (
             <div className={`flex flex-col gap-[0.87rem] text-base full_hd:text-base_2xl`}>
                 <span className={`font-medium text-primary`}>{t.post.labels.description}</span>
                 <span className={`text-primary`}>{post.information.description}</span>
-                <TagsSection />
             </div>
         );
     }

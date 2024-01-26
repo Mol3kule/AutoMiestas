@@ -22,11 +22,11 @@ type TInputSelectProps = TInputProps & {
 
 export const PostCreateInputText = ({ label, value, placeholder = "----", isDisabled = false, setValue }: TInputProps) => {
     return (
-        <div className={`flex flex-col gap-[0.85rem]`}>
+        <div className={`flex flex-col gap-[0.85rem] w-full`}>
             <span className={`text-primary text-base full_hd:text-base_2xl`}>{label}</span>
             <input
                 type={`text`}
-                className={`${value.length <= 0 ? `border-error_third` : `border-highlight text-highlight`} bg-[#FFF] rounded-[0.1875rem] px-[1.56rem] py-[0.69rem] text-base full_hd:text-base_2xl focus:outline-none border-l-[0.125rem] placeholder:text-placeholder`}
+                className={`${value.length <= 0 ? `border-error_third` : `border-highlight text-highlight`} disabled:cursor-not-allowed bg-[#FFF] rounded-[0.1875rem] px-[1.56rem] py-[0.69rem] text-base full_hd:text-base_2xl focus:outline-none border-l-[0.125rem] placeholder:text-placeholder`}
                 value={value}
                 placeholder={placeholder}
                 disabled={isDisabled}
@@ -38,14 +38,14 @@ export const PostCreateInputText = ({ label, value, placeholder = "----", isDisa
 
 export const PostCreateSelectInput = ({ label, value, items, placeholder = "----", isDisabled = false, compareToId = true, setValue }: TInputSelectProps) => {
     return (
-        <div className={`flex flex-col gap-[0.85rem]`}>
+        <div className={`flex flex-col gap-[0.85rem] w-full`}>
             <span className={`text-primary text-base full_hd:text-base_2xl`}>{label}</span>
             <Select onValueChange={setValue} disabled={isDisabled} value={value}>
-                <SelectTrigger className={`${value.length <= 0 ? `border-error_third` : `border-highlight text-highlight`} capitalize text-base full_hd:text-base_2xl bg-[#FFF] rounded-[0.1875rem] h-full px-[1.56rem] py-[0.69rem] border-l-[0.125rem] border-t-0 border-r-0 border-b-0 focus:ring-0 focus:ring-offset-0`}>
+                <SelectTrigger className={`${value.length <= 0 ? `border-error_third` : `border-highlight text-highlight`} disabled:cursor-not-allowed capitalize text-base full_hd:text-base_2xl bg-[#FFF] rounded-[0.1875rem] h-full px-[1.56rem] py-[0.69rem] border-l-[0.125rem] border-t-0 border-r-0 border-b-0 focus:ring-0 focus:ring-offset-0`}>
                     <SelectValue placeholder={placeholder} className="placeholder:text-highlight" />
                 </SelectTrigger>
                 <SelectContent className={`border-none bg-[#FFF]`}>
-                    {items.map((item, idx) => (
+                    {items.sort((a, b) => b.label.localeCompare(a.label)).map((item, idx) => (
                         <SelectItem
                             value={item.id}
                             key={`${item}_${idx}`}
@@ -72,7 +72,7 @@ export const PostCreateSelectInputSearchable = ({ label, value, items, placehold
                         aria-expanded={isOpen}
                         className={`${value.length <= 0 ? `border-error_third` : `border-highlight text-highlight`} rounded-[0.1875rem] border-l-[0.125rem] border-t-0 border-r-0 border-b-0 bg-[#FFF] relative h-full text-base full_hd:text-base_2xl justify-between px-[1.56rem] py-[0.69rem]`}
                     >
-                        {value.length <= 0 ? placeholder : items.find((item) => item.id === value)?.label}
+                        {value.length <= 0 ? placeholder : items?.find((item) => item.id === value)?.label}
                         <ChevronDown className="h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                 </PopoverTrigger>
@@ -81,7 +81,7 @@ export const PostCreateSelectInputSearchable = ({ label, value, items, placehold
                         <CommandInput placeholder={`Ieškoti...`} className={`text-base full_hd:text-base_2xl`} />
                         <CommandEmpty className={`text-base full_hd:text-base_2xl text-center pt-[1rem]`}>Nieko neradome.</CommandEmpty>
                         <CommandGroup className={`border-none max-h-[15rem] full_hd:max-h-[20rem] overflow-y-auto`}>
-                            {items.map((item, idx) => (
+                            {items?.sort((a, b) => a.label.localeCompare(b.label))?.map((item, idx) => (
                                 <CommandItem
                                     key={`${item}_${idx}`}
                                     value={item.label}

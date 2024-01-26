@@ -19,49 +19,12 @@ import { useLanguage } from "@/lib/languageUtils";
 export const PostCategoriesPage = () => {
     const t = useLanguage();
 
-    const { category, setCategory } = usePostCreateStore();
+    const { category, setCategory, resetFields } = usePostCreateStore();
 
-    const RenderSvg = ({ category, color }: { category: string, color: string }) => {
-        switch (category) {
-            case "vehicles": {
-                return <VehicleSvg color={color} />
-            }
-            case "motorcycles": {
-                return <MotorcycleSvg color={color} />
-            }
-            case "heavy": {
-                return <HeavyTransportSvg color={color} />
-            }
-            case "agricultural": {
-                return <AgriculturalTransportSvg color={color} />
-            }
-            case "construction": {
-                return <ConstructionTransportSvg color={color} />
-            }
-            case "trailers": {
-                return <TrailerSvg color={color} />
-            }
-            case "boats": {
-                return <BoatSvg color={color} />
-            }
-            case "tires_wheels": {
-                return <Tires_wheelsSvg color={color} />
-            }
-            case "scooters": {
-                return <ScooterSvg color={color} />
-            }
-            case "planes": {
-                return <PlaneSvg color={color} />
-            }
-            case "parts": {
-                return <PartSvg color={color} />
-            }
-
-        }
-    }
     const RenderCategoryItem = ({ item, idx }: { item: string, idx: Categories }) => {
         const CategoryChangeHandler = () => {
             setCategory(idx);
+            resetFields(); // Reset fields on category change
         }
 
         return (
@@ -84,10 +47,49 @@ export const PostCategoriesPage = () => {
             </div>
 
             <div className={`grid grid-cols-2 gap-[1.25rem]`}>
-                {Object.keys(PostObj.getAllCategories()).map((objKey, idx) => (
+                {Object.values(PostObj.getCategories()).map((objKey, idx) => (
                     <RenderCategoryItem item={PostObj.getLabelByIndex(Number(objKey))} idx={Number(objKey)} key={`category_selector_${idx}`} />
                 ))}
             </div>
         </div>
-    )
+    );
+};
+
+const RenderSvg = ({ category, color }: { category: string, color: string }) => {
+    switch (category) {
+        case "vehicles": {
+            return <VehicleSvg color={color} />
+        }
+        case "motorcycles": {
+            return <MotorcycleSvg color={color} />
+        }
+        case "heavy": {
+            return <HeavyTransportSvg color={color} />
+        }
+        case "agricultural": {
+            return <AgriculturalTransportSvg color={color} />
+        }
+        case "construction": {
+            return <ConstructionTransportSvg color={color} />
+        }
+        case "trailers": {
+            return <TrailerSvg color={color} />
+        }
+        case "boats": {
+            return <BoatSvg color={color} />
+        }
+        case "tires_wheels": {
+            return <Tires_wheelsSvg color={color} />
+        }
+        case "scooters": {
+            return <ScooterSvg color={color} />
+        }
+        case "planes": {
+            return <PlaneSvg color={color} />
+        }
+        case "parts": {
+            return <PartSvg color={color} />
+        }
+
+    }
 }

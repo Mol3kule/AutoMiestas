@@ -2,7 +2,7 @@
 
 import { FormEvent, Suspense, useState } from "react";
 import { useSignIn } from "@clerk/nextjs";
-import { AuthWrapper } from "@/app/components/hooks/auth.hook";
+import { AuthWrapper } from "@/app/components/wrappers/auth-wrapper";
 import { Spinner } from "@/app/components/spinner";
 import { CustomInput } from "@/app/components/inputs/CustomInput";
 import { ViewTypes } from "./AuthWrap";

@@ -14,16 +14,14 @@ export const POST = async (req: NextRequest) => {
             bodyType, mileage, fuelType, drivetrain,
             transmission, sw_side, condition, price,
             technical_inspection_due, vin, sdk, description,
-            images, country, city, specifications
+            images, country, city, specifications,
+            mileage_type, ccm, power, power_type,
         } = await req.json();
 
         const postData = {
             information: {
                 description,
-                location: {
-                    city,
-                    country
-                },
+                location: { city, country },
                 vehicleData: {
                     make: makeId,
                     model: modelId,
@@ -34,10 +32,14 @@ export const POST = async (req: NextRequest) => {
                     drive_train: drivetrain,
                     transmission,
                     mileage,
+                    mileage_type,
                     technical_inspection_due_to: technical_inspection_due,
                     sdk,
                     sw_side,
-                    vin
+                    vin,
+                    ccm,
+                    power,
+                    power_type,
                 } as any,
                 price
             },
@@ -46,7 +48,6 @@ export const POST = async (req: NextRequest) => {
                 times_liked: [],
                 times_viewed: []
             },
-            tags: [],
             boosts: {
                 time_created: null,
             },
@@ -62,9 +63,12 @@ export const POST = async (req: NextRequest) => {
             data: {
                 authorRelation: { connect: { userId } },
                 ...postData,
-                subscriptionId: '',
-                isActive: false,
-                isVerified: false,
+                subscriptionId: null,
+                status: {
+                    isPublished: false,
+                    isAttentionRequired: true,
+                    isEditedAfterAttentionRequired: true,
+                },
                 isSubscriptionActive: false
             },
         });

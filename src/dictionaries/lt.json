@@ -11,11 +11,13 @@
       "fuel_type": "Kuro tipas",
       "drive_train": "Varomieji ratai",
       "transmission": "Pavarų dėžė",
-      "mileage": "Rida (km)",
+      "mileage": "Rida",
       "technical_inspection_due_to": "Techninė apžiūra iki",
       "vin": "VIN",
       "sdk": "SDK",
-      "sw_side": "Vairo padėtis"
+      "sw_side": "Vairo padėtis",
+      "power": "Galia",
+      "ccm": "Kubatūra cm³"
     },
     "types": {
       "car": "Automobilis",
@@ -96,10 +98,14 @@
       "fuel_type_not_selected": "Turite pasirinkti kuro tipą!",
       "drivetrain_not_selected": "Turite pasirinkti varomuosius ratus!",
       "mileage_not_selected": "Turite įvesti ridą!",
+      "ccm_not_selected": "Turite įvesti kubatūrą!",
+      "power_not_selected": "Turite įvesti galia!",
       "transmission_not_selected": "Turite pasirinkti pavarų dėžę!",
       "sw_side_not_selected": "Turite pasirinkti vairo pusę!",
       "price_not_selected": "Turite įvesti kainą!",
-      "images_not_selected": "Turite įkelti bent 4 nuotraukas!"
+      "images_not_selected": "Turite įkelti bent 4 nuotraukas!",
+      "country_not_selected": "Turite pasirinkti šalį!",
+      "city_not_selected": "Turite pasirinkti miestą!"
     },
     "labels": {
       "generalInfo": "Pagrindinė informacija",
@@ -111,12 +117,25 @@
       "symbols_left": "Liko simbolių:",
       "images": "Nuotraukos",
       "images_description": "Maksimaliai galite ikelti 12 nuotraukų, nuotraukos privalo būti (.png / .jpg) formatų, bei kokybiškos.",
-      "location": "Vietovė",
-      "location_description": "Pasirinkite vietovę, jog pirkėjas galėtų greičiau susisiekti su jumis",
+      "contacts": "Kontaktai",
+      "contacts_description": "Kontaktiniai duomenys, kurie bus rodomi skelbime",
       "tags": "Žymės",
       "tags_description": "Pasirinkite žymes, kurios atitinka jūsų skelbimą",
       "specifications": "Specifikacijos",
-      "more_recommended": "Daugiau panašių skelbimų"
+      "more_recommended": "Daugiau panašių skelbimų",
+      "mileage_type": "Ridos tipas",
+      "mileage_km": "Kilometrai",
+      "mileage_mi": "Mylios",
+      "ccm": "Kubatūra cm³ (kubiniai centimetrai)",
+      "power": "Galia",
+      "power_type": "Galios tipas",
+      "power_kw": "Kilovatai",
+      "power_hp": "Arklio galios"
+    },
+    "titles": {
+      "category_section": "Skelbimo Kategorija",
+      "information_section": "Skelbimo informacija",
+      "payment_section": "Paslaugų apmokėjimas"
     }
   },
   "profile": {
@@ -134,27 +153,22 @@
     "last_name_too_long": "Pavardė per ilga",
     "invalid_email_string": "Neteisingas el. pašto formatas",
     "phone_invalid_string": "Neteisingas tel. numerio formatas",
-
     "dialog_change_email_title": "Ar tikrai norite pakeisti el. paštą?",
     "dialog_change_name_title": "Ar tikrai norite pakeisti vardą?",
     "dialog_change_phone_title": "Ar tikrai norite pakeisti tel. numerį?",
     "dialog_change_password_title": "Ar tikrai norite pakeisti slaptažodį?",
-
     "edit_email_title": "Pakeisti el. paštą",
     "edit_name_title": "Pakeisti vardą ir pavardę",
     "edit_phone_title": "Pakeisti tel. numerį",
     "edit_password_title": "Pakeisti slaptažodį",
-
     "edit_email_description": "Įveskite naują el. paštą",
     "edit_name_description": "Įveskite naują vardą ir/ar pavardę",
     "edit_phone_description": "Įveskite naują tel. numerį",
     "edit_password_description": "Įveskite naują slaptažodį",
-
     "edit_email_success": "El. paštas pakeistas",
     "edit_name_success": "Vardas ir/ar pavardė pakeisti",
     "edit_phone_success": "Tel. numeris pakeistas",
     "edit_password_success": "Slaptažodis pakeistas",
-
     "edit_name_not_changed": "Negalite pakeisti vardo ir pavardės į tuos pačius"
   },
   "my_posts": {
@@ -162,6 +176,7 @@
     "header_description": "Šiame puslapyje galite valdyti visus savo sukurtus skelbimus",
     "edit_post": "Redaguoti skelbimą",
     "post_uploaded": "Skelbimas įkeltas:",
+    "post_edited": "Skelbimas redaguotas:",
     "next_payment": "Kitas apmokėjimas:",
     "last_boost": "Paskutinis iškėlimas:",
     "next_boost": "Kitas iškėlimas:",
@@ -169,17 +184,19 @@
     "views": "Peržiūrėta:",
     "actions": "Veiksmai",
     "buy_subscription": "Įsigyti prenumeratą",
-    "cancel_subscription": "Atšaukti prenumeratą",
-    "cancel_subscription_confirmation": "Ar tikrai norite atšaukti prenumeratą?",
     "delete_post": "Pašalinti skelbimą",
-    "delete_post_confirmation": "Ar tikrai norite ištrinti šį skelbimą?",
+    "delete_post_confirmation": "Ar tikrai norite ištrinti šį skelbimą? Jeigu ištrinsite skelbimą, jis bus pašalintas iš visų sąrašų ir jo nebebus galima atkurti, taip pat jūsų prenumerata nebus pratęsta.",
     "boost_post": "Iškelti skelbimą",
     "post_boost_cooldown": "Šiuo metu negalite iškelti skelbimo, nes skelbimas buvo neseniai iškeltas.",
-    "post_boost_success": "Skelbimas buvo sėkmingai iškeltas"
+    "post_boost_success": "Skelbimas buvo sėkmingai iškeltas",
+    "post_not_active": "Skelbimas neaktyvus",
+    "post_not_found": "Skelbimas nerastas",
+    "subscription_canceled": "Prenumerata atšaukta",
+    "renew_subscription": "Pratęsti prenumeratą"
   },
   "general": {
     "continue": "Tęsti",
-    "price": "Kaina",
+    "price": "Kaina (eur)",
     "country": "Šalis",
     "city": "Miestas",
     "category": "Kategorija",
@@ -191,9 +208,9 @@
     "post_liked": "Skelbimas įsimintas",
     "post_disliked": "Skelbimas pašalintas iš įsimintų sąrašo",
     "action_in_progress": "Laukiamas atsakymas iš serverio..",
-
     "bad_request": "Įvyko klaida, bandykite perkrauti puslapį ir bandyti dar kartą",
-    "server_error": "Įvyko klaida, bandykite perkrauti puslapį ir bandyti dar kartą. Jeigu klaida kartojasi, susisiekite su mūsų komanda."
+    "server_error": "Įvyko klaida, bandykite perkrauti puslapį ir bandyti dar kartą. Jeigu klaida kartojasi, susisiekite su mūsų komanda.",
+    "id": "ID"
   },
   "dialog": {
     "accept": "Patvirtinti",

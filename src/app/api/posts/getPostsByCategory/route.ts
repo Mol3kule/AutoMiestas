@@ -11,8 +11,10 @@ export const POST = async (request: NextRequest) => {
 
         const posts = await prisma.posts.findMany({
             where: {
-                isActive: true,
-                isVerified: true,
+                status: {
+                    path: '$.isPublished',
+                    equals: true
+                },
                 category: category
             }
         });

@@ -51,7 +51,7 @@ const RenderPostPage = async ({ params }: RenderPostPageProps) => {
 
     return (
         <Suspense fallback={<RenderLoadingPage />}>
-            <PostPage post={data} params={params.post} phoneNumber={authorPhone}/>
+            <PostPage post={data} phoneNumber={authorPhone}/>
         </Suspense>
     );
 }

@@ -1,15 +1,19 @@
 'use client';
 
 import { useEffect, useRef, useState } from "react";
+import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
-import { PostCreateInputText, PostCreateSelectInput, PostCreateSelectInputSearchable } from "@/app/components/inputs/postCreateInput";
-import { PostObj } from "@/classes/PostCategories";
-import { useLanguage } from "@/lib/languageUtils";
+
+import { ILocationCity, useCityStateStore } from "@/store/citystate/citystate.store";
 import { usePostCreateStore } from "@/store/posts/postCreate.store";
 import { useVehicleStore } from "@/store/vehicles/vehicle.store";
+
+import { PostObj } from "@/classes/PostCategories";
 import { VehicleObj } from "@/classes/Vehicle";
+
+import { PostCreateInputText, PostCreateSelectInput, PostCreateSelectInputSearchable } from "@/app/components/inputs/postCreateInput";
+import { useLanguage } from "@/lib/languageUtils";
 import { getCityState } from "@/lib/getCityState";
-import { ILocationCity, useCityStateStore } from "@/store/citystate/citystate.store";
 import { Star, Trash2, Upload } from "lucide-react";
 
 export const CreateVehiclePostForm = () => {
@@ -31,20 +35,14 @@ export const CreateVehiclePostForm = () => {
 }
 
 export const CreateVehiclePostFormGeneralInformation = () => {
+    const { category, makeId, modelId, modelYear, bodyType,
+        mileage, fuelType, drivetrain, transmission, sw_side, price, condition, ccm, power, mileage_type, power_type,
+        setMakeId, setModelId, setModelYear, setBodyType, setMileage,
+        setFuelType, setDrivetrain, setTransmission, setSteeringWheelSide, setPrice,
+        setCondition, setCCM, setPower, setMileageType, setPowerType
+    } = usePostCreateStore();
+    const { vehicleMakes, vehicleModels } = useVehicleStore();
     const t = useLanguage();
-    const { category, makeId, modelId, modelYear, bodyType, mileage, fuelType, drivetrain, transmission, sw_side, price, condition, setMakeId, setModelId, setModelYear, setBodyType, setMileage, setFuelType, setDrivetrain, setTransmission, setSteeringWheelSide, setPrice, setCondition } = usePostCreateStore();
-    const { vehicleMakes, vehicleModels, setModels } = useVehicleStore(); // Global store
-
-    useEffect(() => {
-        if (Object.keys(vehicleModels).length > 0) return;
-
-        fetch(`${process.env.defaultApiEndpoint}/api/vehicles/getAllModels`, {
-            method: 'GET',
-        }).then(async (res) => {
-            const { data } = await res.json();
-            setModels(data);
-        }).catch((err) => console.log(err));
-    }, []);
 
     const MakeOnChange = (newValue: string) => {
         setMakeId(Number(newValue));
@@ -73,7 +71,7 @@ export const CreateVehiclePostFormGeneralInformation = () => {
                     label={t.vehicleInfo.objKeys.make}
                     value={makeId !== null ? makeId.toString() : ``}
                     placeholder={`----`}
-                    items={vehicleMakes ? vehicleMakes.map((item) => ({ id: item.id.toString(), label: item.make })) : []}
+                    items={vehicleMakes ? vehicleMakes.filter((item) => item.type.includes(category)).map((item) => ({ id: item.id.toString(), label: item.make })) : []}
                     setValue={MakeOnChange}
                     compareToId={false}
                 />
@@ -81,14 +79,14 @@ export const CreateVehiclePostFormGeneralInformation = () => {
                     label={t.vehicleInfo.objKeys.model}
                     value={modelId !== null ? modelId.toString() : ``}
                     placeholder={`----`}
-                    items={makeId !== null ? Object.values(vehicleModels[makeId])?.map((value) => ({ id: value.id.toString(), label: value.model })) ?? [] : []}
+                    items={makeId !== null ? Object.values(vehicleModels[makeId])?.filter((item) => item.type.includes(category)).map((value) => ({ id: value.id.toString(), label: value.model })) ?? [] : []}
                     setValue={ModelOnChange}
                     isDisabled={makeId === null}
                 />
                 <PostCreateSelectInput
                     label={t.vehicleInfo.objKeys.year}
                     value={modelYear !== null && modelId !== null ? modelYear.toString() : ``}
-                    items={makeId !== null && modelId !== null ? Object.values(vehicleModels[makeId]).find((model) => model.id === modelId)?.year.map((year, idx) => ({ id: year?.toString()!, label: year?.toString() as string })) ?? [] : []}
+                    items={Array.from({ length: new Date().getFullYear() - 1929 }, (_, index) => ({ id: (index + 1930).toString(), label: (index + 1930).toString() }))}
                     setValue={(value) => setModelYear(Number(value))}
                     isDisabled={modelId === null}
                 />
@@ -98,11 +96,37 @@ export const CreateVehiclePostFormGeneralInformation = () => {
                     items={Object.keys(VehicleObj.getAllBodyTypes()).map((keyIdx) => ({ id: keyIdx, label: t.vehicleInfo.body_type[VehicleObj.getBodyTypeByIndex(Number(keyIdx)) as keyof typeof t.vehicleInfo.body_type] }))}
                     setValue={(value) => setBodyType(Number(value))}
                 />
+                <div className={`flex gap-[1.25rem] flex-wrap laptop:flex-nowrap`}>
+                    <PostCreateInputText
+                        label={t.vehicleInfo.objKeys.mileage}
+                        value={mileage ? mileage.toString() : ``}
+                        setValue={(value) => setMileage(Number(value))}
+                    />
+                    <PostCreateSelectInput
+                        label={t.post.labels.mileage_type}
+                        value={Object.values(VehicleObj.getAllMileageTypes()).findIndex(item => item === mileage_type).toString()}
+                        items={Object.values(VehicleObj.getAllMileageTypes()).map((item, idx) => ({ id: idx.toString(), label: t.post.labels[`mileage_${item}` as keyof typeof t.post.labels].toString() }))}
+                        setValue={(value) => setMileageType(VehicleObj.getMileageTypeByIndex(Number(value)))}
+                    />
+                </div>
                 <PostCreateInputText
-                    label={t.vehicleInfo.objKeys.mileage}
-                    value={mileage ? mileage.toString() : ``}
-                    setValue={(value) => setMileage(Number(value))}
+                    label={t.post.labels.ccm}
+                    value={ccm ? ccm.toString() : ``}
+                    setValue={(value) => setCCM(Number(value))}
                 />
+                <div className={`flex gap-[1.25rem] flex-wrap laptop:flex-nowrap`}>
+                    <PostCreateInputText
+                        label={t.post.labels.power}
+                        value={power ? power.toString() : ``}
+                        setValue={(value) => setPower(Number(value))}
+                    />
+                    <PostCreateSelectInput
+                        label={t.post.labels.power_type}
+                        value={Object.values(VehicleObj.getAllPowerTypes()).findIndex(item => item === power_type).toString()}
+                        items={Object.values(VehicleObj.getAllPowerTypes()).map((item, idx) => ({ id: idx.toString(), label: t.post.labels[`power_${item}` as keyof typeof t.post.labels].toString()  }))}
+                        setValue={(value) => setPowerType(VehicleObj.getPowerTypeByIndex(Number(value)))}
+                    />
+                </div>
                 <PostCreateSelectInput
                     label={t.vehicleInfo.objKeys.fuel_type}
                     value={fuelType !== null ? fuelType.toString() : ``}
@@ -390,6 +414,8 @@ const CreateVehiclePostFormSpecifications = () => {
 const CreateVehiclePostFormLocation = () => {
     const t = useLanguage();
 
+    const { user } = useUser();
+
     const { CountryList, CityList, setCountryList, setCityList } = useCityStateStore();
     const { countryId, cityId, setCountryId, setCityId } = usePostCreateStore();
 
@@ -404,10 +430,10 @@ const CreateVehiclePostFormLocation = () => {
     return (
         <div className={`flex flex-col gap-[1.25rem]`}>
             <div className={`flex flex-col gap-[0.87rem] text-base full_hd:text-base_2xl`}>
-                <span className={`text-primary`}>{t.post.labels.location}</span>
-                <span className={`text-placeholder_secondary`}>{t.post.labels.location_description}</span>
+                <span className={`text-primary`}>{t.post.labels.contacts}</span>
+                <span className={`text-placeholder_secondary`}>{t.post.labels.contacts_description}</span>
             </div>
-            <div className={`grid grid-cols-2 p-[2.19rem] gap-[1.25rem] bg-highlight_secondary rounded-[0.1875rem]`}>
+            <div className={`grid grid-cols-1 laptop:grid-cols-2 p-[2.19rem] gap-[1.25rem] bg-highlight_secondary rounded-[0.1875rem]`}>
                 <PostCreateSelectInputSearchable
                     label={t.general.country}
                     value={countryId !== null ? countryId.toString() : ``}
@@ -420,6 +446,13 @@ const CreateVehiclePostFormLocation = () => {
                     value={cityId ? cityId.toString() : ``}
                     setValue={(value) => setCityId(Number(value))}
                     items={countryId !== null ? Object.values(CityList[countryId]).map((item) => ({ id: item.id.toString(), label: item.name })) : []}
+                    isDisabled={countryId === null}
+                />
+
+                <PostCreateInputText
+                    label={t.profile.phone}
+                    isDisabled={true}
+                    value={user ? user.primaryPhoneNumber?.phoneNumber ?? `` : ``}
                 />
             </div>
         </div>

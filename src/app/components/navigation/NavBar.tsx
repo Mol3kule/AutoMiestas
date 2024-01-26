@@ -11,7 +11,7 @@ export const NavBar = () => {
 
     const RedirectToPage = (page: string) => {
         router.push(page);
-        location.reload();
+        // location.reload();
     }
 
     return (
@@ -31,7 +31,7 @@ export const NavBar = () => {
             <nav className={`flex justify-between px-[1.87rem] laptop:px-[15.5rem] hd:px-[31.25rem] py-[0.88rem] border-b-[1px] border-border gap-[1.25rem]`}>
                 <div className={`flex gap-[1.25rem] text-primary`}>
                     <button className={`px-[0.62rem] py-[0.38rem] bg-highlight text-base full_hd:text-base_2xl text-[#FFF] rounded-[0.1875rem]`} onClick={() => RedirectToPage('/')}>Skelbimai</button>
-                    <button className={`px-[0.62rem] py-[0.38rem] text-base full_hd:text-base_2xl text-primary rounded-[0.1875rem]`} onClick={() => RedirectToPage('/create')}>Įkelti skelbimą</button>
+                    <button className={`px-[0.62rem] py-[0.38rem] bg-highlight_secondary text-base full_hd:text-base_2xl text-primary rounded-[0.1875rem]`} onClick={() => RedirectToPage('/create')}>+ Įkelti skelbimą</button>
                 </div>
             </nav>
         </header>

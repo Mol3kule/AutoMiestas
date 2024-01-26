@@ -1,8 +1,17 @@
 import { Prisma } from "@prisma/client";
 
+export type MileageType = 'km' | 'mi';
+export type PowerType = 'hp' | 'kw';
+
+/**
+ * @param id - Database ID
+ * @param make - Make name
+ * @param type - Supported vehicle types `(e.g. [0, 1, 2])`
+ */
 export type TVehicleMake = {
     id: number;
     make: string;
+    type: number[];
 };
 
 /**
@@ -12,26 +21,15 @@ export type TVehicleModels = {
     [key: number]: TVehicleModel;
 };
 
+/**
+ * @param id - Database ID
+ * @param make_id - Make ID from `make` table
+ * @param model - Model name
+ * @param type - Supported vehicle types `(e.g. [0, 1, 2])`
+ */
 export type TVehicleModel = {
     id: number;
     make_id: number;
     model: string;
-    year: Prisma.JsonArray;
-    engine_l: number;
-    cylinders: number;
-};
-
-/**
- * @param key - Model ID
- */
-export type TVehicleYears = {
-    [key: number]: {
-        [key: string]: TVehicleYear[];
-    };
-};
-
-export type TVehicleYear = {
-    id: number;
-    make_id: number;
-    year: number;
+    type: Prisma.JsonArray;
 };

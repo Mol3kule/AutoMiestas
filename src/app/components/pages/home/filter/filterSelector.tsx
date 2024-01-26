@@ -64,7 +64,7 @@ export const FilterSelector = () => {
             <div className={`grid grid-cols-1 laptop:grid-cols-4 gap-[1.25rem] px-[1.25rem] py-[1.25rem] bg-highlight_secondary rounded-[0.1875rem]`}>
                 <FilterSelectorInput
                     value={category !== null ? category.toString() : ``}
-                    items={Object.keys(PostObj.getAllCategories()).map((objKey, idx) => ({ id: idx.toString(), label: t.post.categories[PostObj.getLabelByIndex(Number(objKey)) as keyof typeof t.post.categories] }))}
+                    items={Object.values(PostObj.getCategories()).map((objKey, idx) => ({ id: idx.toString(), label: t.post.categories[PostObj.getLabelByIndex(Number(objKey)) as keyof typeof t.post.categories] }))}
                     placeholder={t.general.category}
                     setValue={(value) => setCategory(Number(value))}
                 />

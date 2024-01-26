@@ -20,7 +20,6 @@ const MyPostsPage = async () => {
     const { status, data, message }: { status: number, data: PostVehicle[], message: string } = await getAuthorPosts(token);
 
     if (status !== 200) {
-        // console.log(message);
         return null;
     }
 

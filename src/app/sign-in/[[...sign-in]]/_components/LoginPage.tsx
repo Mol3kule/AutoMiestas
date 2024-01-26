@@ -4,7 +4,7 @@ import { FormEvent, useState } from "react";
 import { useSignIn } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/auth/auth.store";
-import { AuthWrapper } from "@/app/components/hooks/auth.hook";
+import { AuthWrapper } from "@/app/components/wrappers/auth-wrapper";
 import { CustomInput } from "@/app/components/inputs/CustomInput";
 import { LoginWithGoogleButton } from "@/app/components/buttons/loginWithGoogleButton";
 import { Spinner } from "@/app/components/spinner";

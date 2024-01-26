@@ -1,6 +1,7 @@
-import prisma from "@/prisma/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import prisma from "@/prisma/prisma";
 import Stripe from "stripe";
+import { PostStatus } from "@/types/post.type";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -9,66 +10,57 @@ export const POST = async (req: NextRequest) => {
         const buf = await req.text();
         const sig = req.headers.get("stripe-signature")!;
 
-        let event: Stripe.Event;
+        const event = stripe.webhooks.constructEvent(buf, sig, process.env.STRIPE_WEBHOOK_SECRET!);
 
-        try {
-            event = stripe.webhooks.constructEvent(buf, sig, process.env.STRIPE_WEBHOOK_SECRET!);
-        } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : "Unknown error";
-            // On error, log and return the error message.
-            if (err! instanceof Error) console.log(err);
-            console.log(`❌ Error message: ${errorMessage}`);
-
-            return NextResponse.json(
-                {
-                    error: {
-                        message: `Webhook Error: ${errorMessage}`,
-                    },
-                },
-                { status: 400 }
-            );
+        if (!event) {
+            console.log(`⚠️ Webhook signature verification failed.`)
+            return NextResponse.json({ status: 500 });
         }
 
         // getting to the data we want from the event
-        const subscription = event.data.object as Stripe.Subscription;
+        const subscription = event.data.object as any;
         const subscriptionId = subscription.id;
 
         switch (event.type) {
-            case "customer.subscription.created": {
+            case "invoice.paid": {
+                const { postId, userId } = subscription.subscription_details.metadata;
+
                 await prisma.posts.update({
                     where: {
-                        id: Number(subscription.metadata.postId),
-                        authorId: subscription.metadata.userId
+                        id: Number(postId),
+                        authorId: userId
                     },
                     data: {
-                        subscriptionId: subscriptionId,
-                        isActive: true,
+                        subscriptionId: subscription.subscription,
+                        status: {
+                            isPublished: false,
+                            isAttentionRequired: true,
+                            isEditedAfterAttentionRequired: true
+                        },
                         isSubscriptionActive: true
                     }
                 });
                 break;
             }
             case "customer.subscription.deleted": {
-                await prisma.posts.update({
+                await prisma.posts.delete({
                     where: {
                         id: Number(subscription.metadata.postId),
+                        authorId: subscription.metadata.userId,
                         subscriptionId: subscriptionId
-                    },
-                    data: {
-                        isSubscriptionActive: false
                     }
                 });
                 break;
             }
+            // To do: handle subscription expiration
             default: {
-                console.warn(`🤷‍♀️ Unhandled event type: ${event.type}`);
+                // console.warn(`🤷‍♀️ Unhandled event type: ${event.type}`);
                 break;
             }
         }
 
-        // Return a response to acknowledge receipt of the event.
-        return NextResponse.json({ received: true });
+        return NextResponse.json({ status: 200 });
     } catch {
-        return NextResponse.json({ error: { message: `Method Not Allowed`, }, }, { status: 405 }).headers.set("Allow", "POST");
+        return NextResponse.json({ status: 500 });
     }
 }

@@ -3,7 +3,7 @@ import { ClerkProvider } from '@clerk/nextjs';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { NavBar } from './components/navigation/NavBar';
-import { PageWrapper } from './components/hooks/page.hook';
+import { PageWrapper } from './components/wrappers/page-wrapper';
 
 import { Toaster } from 'react-hot-toast';
 

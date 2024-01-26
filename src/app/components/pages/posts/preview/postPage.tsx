@@ -5,56 +5,64 @@ import { PostGeneralInfo } from "./PostGeneralInfo";
 import { PostSecondaryInfo } from "./PostSecondaryInfo";
 import { useImgPreviewStore } from "@/store/image_preview/imagePreview.store";
 import { ImagePreviewModal } from "../../../modals/imagePreview";
-import { useEffect } from "react";
-import { useVehicleStore } from "@/store/vehicles/vehicle.store";
-import { getVehicles } from "@/lib/getVehicles";
-import { TVehicleMake, TVehicleModels } from "@/types/vehicle.type";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { UserType } from "@/types/user.type";
 
 type PostPageProps = {
     post: PostVehicle;
-    params: string[],
     phoneNumber: string;
 }
 
-export const PostPage = ({ post, params, phoneNumber }: PostPageProps) => {
-    const { vehicleMakes, vehicleModels, setMakes, setModels } = useVehicleStore();
+export const PostPage = ({ post, phoneNumber }: PostPageProps) => {
+    const { status } = post;
     const { isPreviewActive } = useImgPreviewStore();
 
-    const router = useRouter();
+    const [userData, setUserData] = useState<UserType>(null!);
 
     useEffect(() => {
-        if (!vehicleMakes.length || !vehicleModels.length) {
-            getVehicles().then(async (res) => {
-                const { makesData, modelsData }: { makesData: { status: number, data: TVehicleMake[] }, modelsData: { status: number, data: TVehicleModels[] } } = res;
-
-                if (makesData.status === 200 && modelsData.status === 200) {
-                    setMakes(makesData.data);
-                    setModels(modelsData.data);
-                    if (params[1] !== encodeURI(`${makesData.data.find(make => make.id === post.information.vehicleData.make)?.make}-${Object.values(modelsData.data[post.information.vehicleData.make]).find(model => model.id === post.information.vehicleData.model)?.model}-${post.information.vehicleData.year}`)) {
-                        router.replace(`/posts/${post.id}/${encodeURI(`${makesData.data.find(make => make.id === post.information.vehicleData.make)?.make}-${Object.values(modelsData.data[post.information.vehicleData.make]).find(model => model.id === post.information.vehicleData.model)?.model}-${post.information.vehicleData.year}`)}/${post.periods.time_created}`);
-                    }
-                }
-            });
-        }
+        axios.get(`${process.env.defaultApiEndpoint}/api/auth/getUser`).then((res) => {
+            const { status, data }: { status: number, data: UserType } = res.data;
+            if (status === 200) {
+                setUserData(data);
+            }
+        });
     }, []);
 
+    const isAdmin = userData && userData.admin_rank > 0;
+
+    const RenderPage = () => (
+        <>
+            <div className={`flex flex-col laptop:flex-row gap-[2.19rem] laptop:hidden`}>
+                <PostSecondaryInfo post={post} />
+                <PostGeneralInfo post={post} phoneNumber={phoneNumber} />
+            </div>
+            <div className={`hidden laptop:flex laptop:flex-row gap-[2.19rem]`}>
+                <PostGeneralInfo post={post} phoneNumber={phoneNumber} />
+                <PostSecondaryInfo post={post} />
+            </div>
+        </>
+    );
+
     return (
-        <div>
-            {post.isActive && post.isVerified ? (
-                <>
-                    <div className={`flex flex-col laptop:flex-row gap-[2.19rem] laptop:hidden`}>
-                        <PostSecondaryInfo post={post} />
-                        <PostGeneralInfo post={post} phoneNumber={phoneNumber} />
-                    </div>
-                    <div className={`hidden laptop:flex laptop:flex-row gap-[2.19rem]`}>
-                        <PostGeneralInfo post={post} phoneNumber={phoneNumber} />
-                        <PostSecondaryInfo post={post} />
-                    </div>
-                </>
+        <div className={`flex flex-col justify-center items-center flex-1 gap-[1.25rem]`}>
+            {status.isPublished ? (
+                <RenderPage />
             ) : (
-                <div className={`flex items-center justify-center text-header_2xl`}>Skelbimas nepasiekiamas, laukiama administracijos patvirtinimo</div>
+                <>
+                    {isAdmin ? (
+                        <RenderPage />
+                    ) : (
+                        <div className={`flex flex-col`}>
+                            <div className={`text-center`}>
+                                <span className={`text-primary text-[8rem]`}>404</span>
+                            </div>
+                            <span className={`text-placeholder_secondary flex items-center justify-center text-base full_hd:text-base_2xl`}>Skelbimas nepasiekiamas</span>
+                        </div>
+                    )}
+                </>
             )}
+
             {isPreviewActive && (
                 <ImagePreviewModal images={post.images} />
             )}

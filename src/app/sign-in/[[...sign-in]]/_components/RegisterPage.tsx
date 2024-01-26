@@ -5,7 +5,7 @@ import { useSignUp } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 
 import { CustomInput } from "@/app/components/inputs/CustomInput";
-import { AuthWrapper } from "@/app/components/hooks/auth.hook";
+import { AuthWrapper } from "@/app/components/wrappers/auth-wrapper";
 import { LoginWithGoogleButton } from "@/app/components/buttons/loginWithGoogleButton";
 
 import { useAuthStore } from "@/store/auth/auth.store";

@@ -11,16 +11,15 @@ model makes {
   id          Int           @id @default(autoincrement())
   make        String        @unique
   make_models make_models[]
+  type        Json          @default(dbgenerated())
 }
 
 model make_models {
-  id        Int    @id @default(autoincrement())
-  make_id   Int
-  model     String
-  makes     makes  @relation(fields: [make_id], references: [id])
-  year      Json
-  engine_l  Float?
-  cylinders Int?
+  id      Int    @id @default(autoincrement())
+  make_id Int
+  model   String
+  makes   makes  @relation(fields: [make_id], references: [id])
+  type    Json   @default(dbgenerated())
 }
 
 model users {
@@ -31,9 +30,10 @@ model users {
   first_name       String
   last_name        String
   phone_number     String
-  organization     String
+  organization     String?
   date_registered  DateTime @default(now())
   posts            posts[]
+  admin_rank       Int      @default(0)
 }
 
 model posts {
@@ -45,11 +45,9 @@ model posts {
   statistics           Json
   periods              Json
   boosts               Json
-  tags                 Json
   ratingByAuthor       Json
   category             Int
-  subscriptionId       String
-  isActive             Boolean
-  isVerified           Boolean
+  subscriptionId       String?
+  status               Json?
   isSubscriptionActive Boolean
 }

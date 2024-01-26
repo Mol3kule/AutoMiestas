@@ -7,7 +7,6 @@ import { useRouter, usePathname } from "next/navigation";
 import { Archive, Heart, LogOut, Settings, User } from "lucide-react";
 import Link from "next/link";
 
-
 export const UserDrawer = () => {
     const router = useRouter();
     const [isExpanded, setIsExpanded] = useState(false);

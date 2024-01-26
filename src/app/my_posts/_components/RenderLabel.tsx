@@ -1,39 +1,34 @@
 "use client";
 
-import { getVehicles } from "@/lib/getVehicles";
+import { VehicleObj, getVehicleDataProps } from "@/classes/Vehicle";
+import { getPostUrl } from "@/lib/getPostUrl";
 import { useVehicleStore } from "@/store/vehicles/vehicle.store";
 import { PostVehicle } from "@/types/post.type";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-export const RenderVehicleLabel = ({ post, makeId, modelId, year }: { post: PostVehicle, makeId: number, modelId: number, year: number }) => {
+export const RenderVehicleLabel = ({ post }: { post: PostVehicle }) => {
+    const { information: { vehicleData } } = post;
     const { vehicleMakes, vehicleModels, setMakes, setModels } = useVehicleStore();
     const router = useRouter();
 
-    useEffect(() => {
-        if (!vehicleMakes.length || !Object.values(vehicleModels).length) {
-            getVehicles().then(async (res) => {
-                const { makesData, modelsData } = res;
+    const [getVehicleData, setVehicleData] = useState<getVehicleDataProps>(null!);
 
-                if (makesData.status === 200 && modelsData.status === 200) {
-                    setMakes(makesData.data);
-                    setModels(modelsData.data);
-                }
-            });
-        }
-    }, []);
+    useEffect(() => {
+        if (!vehicleMakes.length || !Object.values(vehicleModels).length) return;
+
+        const vData = VehicleObj.getVehicleDataByIdx(vehicleMakes, vehicleModels, vehicleData.make, vehicleData.model, vehicleData.body_type, vehicleData.condition, vehicleData.fuel_type, vehicleData.drive_train, vehicleData.transmission, vehicleData.sw_side);
+        setVehicleData(vData);
+    }, [vehicleMakes, vehicleModels]);
 
     const RedirectToPost = () => {
-        const make = encodeURI(vehicleMakes.find(make => make.id === makeId)?.make!);
-        const model = encodeURI(Object.values(vehicleModels[makeId]).find(model => model.id === modelId)?.model!);
-        const newUrl = encodeURI(`posts/${post.id}/${make}-${model}-${year}/${post.periods.time_created}`);
-
-        router.push(newUrl);
+        const url = getPostUrl({ vehicleMakes, vehicleModels, post });
+        router.push(url);
     }
 
-
     return (
-        vehicleMakes.length > 0 && Object.values(vehicleModels).length > 0 &&
-        <span className={`text-base full_hd:text-base_2xl text-highlight hover:cursor-pointer`} onClick={RedirectToPost}>{vehicleMakes.find(item => item.id === makeId)?.make} {Object.values(vehicleModels[makeId]).find((item => item.id === modelId))?.model}</span>
+        getVehicleData && (
+            <span className={`text-base full_hd:text-base_2xl text-highlight hover:cursor-pointer`} onClick={RedirectToPost}>{getVehicleData.make?.make} {getVehicleData.model?.model}</span>
+        )
     );
 }

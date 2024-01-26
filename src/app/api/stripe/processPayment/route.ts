@@ -49,7 +49,7 @@ export const POST = async (request: NextRequest) => {
 
         return NextResponse.json({ status: 200, url: session.url });
     } catch (error) {
-        console.log(`[getPostByParams]: ${error}`);
+        console.log(`[processPayment]: ${error}`);
         return NextResponse.json({ status: 'error' });
     }
 }

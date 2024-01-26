@@ -11,7 +11,7 @@ export const GET = async () => {
 
         return NextResponse.json({ status: 404, message: 'No data was found' });
     } catch (error) {
-        console.log(`[getPostByParams]: ${error}`)
+        console.log(`[getAllMakes]: ${error}`)
         return NextResponse.json({ status: 500 });
     }
 }

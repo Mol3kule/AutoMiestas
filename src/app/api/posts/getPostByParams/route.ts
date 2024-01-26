@@ -5,6 +5,10 @@ export const POST = async (request: Request) => {
     try {
         const { postId, timestamp } = await request.json();
 
+        if (typeof postId !== 'number' || !timestamp) {
+            return NextResponse.json({ status: 400, message: 'Bad request' });
+        }
+
         const post = await prisma.posts.findFirst({
             where: {
                 id: postId,

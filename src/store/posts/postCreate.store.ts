@@ -1,5 +1,6 @@
 import { Categories as PostCategories } from "@/classes/PostCategories";
 import { BodyType, Conditions, Drivetrains, FuelTypes, Rating, SteeringWheel_Side, Transmissions } from "@/classes/Vehicle";
+import { MileageType, PowerType } from "@/types/vehicle.type";
 import { create } from "zustand";
 
 type Store = {
@@ -14,6 +15,11 @@ type Store = {
     transmission: Transmissions;
     sw_side: SteeringWheel_Side;
     condition: Conditions;
+
+    ccm: number;
+    power: number;
+    power_type: PowerType;
+    mileage_type: MileageType;
 
     // Additional
     technical_inspection_due: string;
@@ -53,9 +59,16 @@ type Store = {
     setCountryId: (country: number) => void;
     setCityId: (city: number) => void;
     setSpecifications: (specifications: { [key in Rating]: number }) => void;
+
+    setCCM: (ccm: number) => void;
+    setPower: (power: number) => void;
+    setPowerType: (power_type: PowerType) => void;
+    setMileageType: (mileage_type: MileageType) => void;
+    checkFields: () => { status: boolean, message?: string };
+    resetFields: () => void;
 }
 
-export const usePostCreateStore = create<Store>()((set) => ({
+export const usePostCreateStore = create<Store>()((set, get) => ({
     category: PostCategories.vehicle,
     makeId: null!,
     modelId: null!,
@@ -68,6 +81,11 @@ export const usePostCreateStore = create<Store>()((set) => ({
     sw_side: null!,
     condition: null!,
     price: null!,
+
+    ccm: null!,
+    power: null!,
+    power_type: 'kw',
+    mileage_type: 'km',
 
     // Additional
     technical_inspection_due: null!,
@@ -102,10 +120,73 @@ export const usePostCreateStore = create<Store>()((set) => ({
     setCountryId: (countryId: number) => set({ countryId }),
     setCityId: (cityId: number) => set({ cityId }),
 
+    setCCM: (ccm: number) => set({ ccm }),
+    setPower: (power: number) => set({ power }),
+    setPowerType: (power_type: PowerType) => set({ power_type }),
+    setMileageType: (mileage_type: MileageType) => set({ mileage_type }),
+
     // Additional
     setTechnicalInspectionDue: (technical_inspection_due: string) => set({ technical_inspection_due }),
     setVin: (vin: string) => set({ vin }),
     setSDK: (sdk: any) => set({ sdk }),
     setDescription: (description: string) => set({ description }),
     setSpecifications: (specifications: { [key in Rating]: number }) => set({ specifications }),
+
+    checkFields: () => {
+        const { category, makeId, modelId, modelYear, bodyType, mileage, ccm, power, fuelType, drivetrain, transmission, sw_side, condition, price, fileImages, cityId, countryId } = get();
+        if (category === null) return { status: false, message: "category_not_selected" };
+        if (makeId === null) return { status: false, message: "make_not_selected" };
+        if (modelId === null) return { status: false, message: "model_not_selected" };
+        if (modelYear === null) return { status: false, message: "year_not_selected" };
+        if (bodyType === null) return { status: false, message: "body_type_not_selected" };
+        if (mileage === null) return { status: false, message: "mileage_not_selected" };
+        if (ccm === null) return { status: false, message: "ccm_not_selected" };
+        if (power === null) return { status: false, message: "power_not_selected" };
+        if (fuelType === null) return { status: false, message: "fuel_type_not_selected" };
+        if (drivetrain === null) return { status: false, message: "drivetrain_not_selected" };
+        if (transmission === null) return { status: false, message: "transmission_not_selected" };
+        if (sw_side === null) return { status: false, message: "sw_side_not_selected" };
+        if (condition === null) return { status: false, message: "condition_not_selected" };
+        if (price === null) return { status: false, message: "price_not_selected" };
+        if (fileImages.length < 4) return { status: false, message: "images_not_selected" };
+
+        if(countryId === null) return { status: false, message: "country_not_selected" };
+        if(cityId === null) return { status: false, message: "city_not_selected" };
+
+        return { status: true };
+    },
+
+    resetFields: () => set({
+        makeId: null!,
+        modelId: null!,
+        modelYear: null!,
+        bodyType: null!,
+        mileage: null!,
+        fuelType: null!,
+        drivetrain: null!,
+        transmission: null!,
+        sw_side: null!,
+        condition: null!,
+        price: null!,
+
+        ccm: null!,
+        power: null!,
+        power_type: 'kw',
+        mileage_type: 'km',
+
+        // Additional
+        technical_inspection_due: null!,
+        vin: null!,
+        sdk: null!,
+        description: null!,
+
+        primaryImg: null!,
+        fileImages: [],
+        countryId: null!,
+        cityId: null!,
+        specifications: {
+            [Rating.Equipment]: 5,
+            [Rating.Body]: 5,
+        },
+    })
 }));

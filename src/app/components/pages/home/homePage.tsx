@@ -1,22 +1,37 @@
 "use client";
 
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { VehiclePostCard } from "./cards/vehicle";
 import { FilterSelector } from "./filter/filterSelector";
 import { PostVehicle } from "@/types/post.type";
-import axios from "axios";
 import { useFilterStore } from "@/store/filter/filter.store";
 import { PaginationWrapper } from "../../hooks/pagination.hook";
 
+const ItemsDisplayCount = 9;
 export const HomePage = ({ searchParams }: { searchParams: { page?: number } }) => {
     const [posts, setPosts] = useState<PostVehicle[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(searchParams.page ? Number(searchParams.page) : 1);
     const { category } = useFilterStore();
 
-    const ItemsDisplayCount = 1;
     const ItemsOffset = (currentPage - 1) * ItemsDisplayCount;
 
-    const ItemsToRender = posts?.slice(ItemsOffset, ItemsOffset + ItemsDisplayCount);
+    const SortedItems = posts?.sort((a, b) => {
+        if (!a.boosts.time_created || !b.boosts.time_created) {
+            if (!a.boosts.time_created && b.boosts.time_created) return 1;
+            if (a.boosts.time_created && !b.boosts.time_created) return -1;
+            return 0;
+        }
+        
+        if (a.boosts.time_created < b.boosts.time_created) return 1;
+        if (a.boosts.time_created > b.boosts.time_created) return -1;
+        return 0;
+    });
+    const ItemsToRender = SortedItems?.slice(ItemsOffset, ItemsOffset + ItemsDisplayCount);
+
+    useEffect(() => {
+        setCurrentPage(searchParams.page ? Number(searchParams.page) : 1);
+    }, [searchParams]);
 
     useEffect(() => {
         axios.post(`${process.env.defaultApiEndpoint}/api/posts/getPostsByCategory`, { category }).then(res => {

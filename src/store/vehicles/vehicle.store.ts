@@ -13,6 +13,6 @@ export const useVehicleStore = create<Store>()((set) => ({
     vehicleMakes: [],
     setMakes: (vehicleMakes: TVehicleMake[]) => set({ vehicleMakes }),
 
-    vehicleModels: [],
+    vehicleModels: {} as TVehicleModels[],
     setModels: (vehicleModels: TVehicleModels[]) => set({ vehicleModels }),
 }));

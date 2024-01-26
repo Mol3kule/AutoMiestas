@@ -1,4 +1,6 @@
-export enum Types { Car, Truck, Motorcycle, Boat, RV, Other }
+import { MileageType, PowerType, TVehicleMake, TVehicleModel, TVehicleModels } from "@/types/vehicle.type";
+import { Categories } from "./PostCategories";
+
 export enum BodyType { Sedan, SUV, Truck, Van, Coupe, Convertible, Hatchback, Wagon, Crossover, Minivan, Other }
 export enum Conditions { New, Used }
 export enum Drivetrains { FWD, RWD, AWD }
@@ -8,15 +10,29 @@ export enum Tags { HeatedSeats, HeatedSteeringWheel, LeatherSeats }
 export enum Rating { Equipment, Body }
 export enum SteeringWheel_Side { Left, Right }
 
+export type getVehicleDataProps = {
+    make: TVehicleMake | undefined;
+    model: TVehicleModel | undefined;
+    body_type: string;
+    condition: string;
+    fuel_type: string;
+    drive_train: string;
+    transmission: string;
+    sw_side: string;
+}
+
 export class Vehicle {
-    private Types: { [key in Types]: string } = {
-        [Types.Car]: 'car',
-        [Types.Truck]: 'truck',
-        [Types.Motorcycle]: 'motorcycle',
-        [Types.Boat]: 'boat',
-        [Types.RV]: 'rv',
-        [Types.Other]: 'other'
-    };
+    private Types: { [key: number]: number } = {
+        [0]: Categories.vehicle,
+        [1]: Categories.motorcycle,
+        [2]: Categories.heavy,
+        [3]: Categories.agricultural,
+        [4]: Categories.construction,
+        [5]: Categories.trailer,
+        [6]: Categories.boat,
+        [7]: Categories.plane,
+        [8]: Categories.scooter
+    }
 
     private BodyTypes: { [key in BodyType]: string } = {
         [BodyType.Sedan]: 'sedan',
@@ -72,8 +88,14 @@ export class Vehicle {
         [SteeringWheel_Side.Right]: 'right'
     };
 
-    public getTypeByIndex(index: Types): string {
-        return this.Types[index];
+    private MileageTypes: { [key: number]: MileageType } = {
+        [0]: 'km',
+        [1]: 'mi'
+    };
+
+    private PowerTypes: { [key: number]: PowerType } = {
+        [0]: 'hp',
+        [1]: 'kw'
     };
 
     public getBodyTypeByIndex(index: BodyType): string {
@@ -108,6 +130,18 @@ export class Vehicle {
         return this.SteeringWheel_Side[index];
     };
 
+    public getMileageTypeByIndex(index: number): MileageType {
+        return this.MileageTypes[index];
+    };
+
+    public getPowerTypeByIndex(index: number): PowerType {
+        return this.PowerTypes[index];
+    };
+
+    public getAllTypes(): { [key: number]: number } {
+        return this.Types;
+    };
+
     public getAllBodyTypes(): { [key in BodyType]: string } {
         return this.BodyTypes;
     };
@@ -115,7 +149,7 @@ export class Vehicle {
     public getAllConditions(): { [key in Conditions]: string } {
         return this.Conditions;
     };
-    
+
     public getAllFuelTypes(): { [key in FuelTypes]: string } {
         return this.FuelTypes;
     };
@@ -136,11 +170,16 @@ export class Vehicle {
         return this.Rating;
     }
 
+    public getAllMileageTypes(): { [key: number]: MileageType } {
+        return this.MileageTypes;
+    };
+
+    public getAllPowerTypes(): { [key: number]: string } {
+        return this.PowerTypes;
+    };
+
     public getLabelByKeyAndIndex(translation: any, key: string, index: any): string {
         switch (key) {
-            case "type": {
-                return translation.vehicleInfo.objKeys[this.getTypeByIndex(index)];
-            }
             case "body_type": {
                 return translation.vehicleInfo.body_type[this.getBodyTypeByIndex(index)];
             }
@@ -159,11 +198,41 @@ export class Vehicle {
             case "sw_side": {
                 return translation.vehicleInfo.sw_side[this.getSteeringWheelSideByIndex(index)];
             }
+            case "ccm": {
+                return translation.vehicleInfo.ccm
+            }
+            case "power": {
+                return translation.vehicleInfo.power
+            }
             default: {
                 return index;
             }
         }
     };
+
+    // Getters
+    public getVehicleDataByIdx(vehicleMakes: TVehicleMake[], vehicleModels: TVehicleModels[], makeId: number, modelId: number, bodyTypeId: number, conditionId: number, fuelTypeId: number, driveTrainId: number, transmissionId: number, steeringWheelSideId: number) {
+        return {
+            make: this.getVehicleMakeDataByIdx(vehicleMakes, makeId),
+            model: this.getVehicleModelDataByIdx(vehicleModels, makeId, modelId),
+            body_type: this.getBodyTypeByIndex(bodyTypeId),
+            condition: this.getConditionByIndex(conditionId),
+            fuel_type: this.getFuelTypeByIndex(fuelTypeId),
+            drive_train: this.getDrivetrainByIndex(driveTrainId),
+            transmission: this.getTransmissionByIndex(transmissionId),
+            sw_side: this.getSteeringWheelSideByIndex(steeringWheelSideId)
+        }
+    };
+
+    public getVehicleMakeDataByIdx(vehicleMakes: TVehicleMake[], makeId: number) {
+        return vehicleMakes.find((make) => make.id === makeId);
+    };
+
+    public getVehicleModelDataByIdx(vehicleModels: TVehicleModels[], makeId: number, modelId: number) {
+        return Object.values(vehicleModels[makeId]).find(model => model.id === modelId);
+    };
+
+
 };
 
 export const VehicleObj = new Vehicle();

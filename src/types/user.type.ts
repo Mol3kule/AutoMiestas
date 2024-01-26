@@ -6,5 +6,7 @@ export type UserType = {
     last_name: string;
     phone_number: string;
     stripeCustomerId: string;
+    organization: string | null;
     date_registered: string;
+    admin_rank: number;
 }

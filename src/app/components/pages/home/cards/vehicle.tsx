@@ -67,18 +67,20 @@ export const VehiclePostCard = ({ postData, idx }: { postData: PostVehicle, idx:
                 <animated.button style={style} className={`w-full bg-highlight_secondary rounded-[0.1875rem] h-full`} onClick={HandlePostClick}>
                     <div>
                         <div className={`w-full h-[20rem]`}>
-                            <Image
-                                alt="Loading.."
-                                src={images.find(image => image.isPrimary)?.url || images[0].url}
-                                className={`rounded-t-[0.1875rem] h-full object-cover`}
-                                width={1920}
-                                height={1080}
-                            />
+                            {images && images.length > 0 && (
+                                <Image
+                                    alt="Loading.."
+                                    src={images?.find(image => image.isPrimary)?.url || images[0].url}
+                                    className={`rounded-t-[0.1875rem] h-full object-cover`}
+                                    width={1920}
+                                    height={1080}
+                                />
+                            )}
                         </div>
                         <div className={`px-[1.25rem] py-[1.44rem] flex flex-col gap-[0.87rem]`}>
                             <div className={`flex justify-between gap-[1.25rem] items-center`}>
                                 {vehicleMakes.length > 0 && Object.values(vehicleModels).length > 0 &&
-                                    <p className={`text-primary text-base full_hd:text-base_2xl font-medium`}>{Object.values(vehicleMakes).find((make) => make.id === information.vehicleData.make)?.make} {Object.values(vehicleModels[information.vehicleData.make]).find((model) => model.id === information.vehicleData.model)?.model} {Object.values(vehicleModels[information.vehicleData.make]).find((model) => model.id === information.vehicleData.model)?.engine_l.toFixed(1)}l</p>
+                                    <p className={`text-primary text-base full_hd:text-base_2xl font-medium`}>{Object.values(vehicleMakes).find((make) => make.id === information.vehicleData.make)?.make} {Object.values(vehicleModels[information.vehicleData.make]).find((model) => model.id === information.vehicleData.model)?.model}</p>
                                 }
                                 <Heart className={`w-[1.125rem] h-[1.125rem] ${isLoaded && user && postData.statistics.times_liked.includes(user.id) ? `text-highlight` : `text-placeholder`}`} />
                             </div>
