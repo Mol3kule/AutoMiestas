@@ -17,7 +17,8 @@
       "sdk": "SDK",
       "sw_side": "Vairo padėtis",
       "power": "Galia",
-      "ccm": "Kubatūra cm³"
+      "ccm": "Kubatūra cm³",
+      "partNumber": "Originalios dalies numeris"
     },
     "types": {
       "car": "Automobilis",

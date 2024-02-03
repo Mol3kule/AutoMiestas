@@ -1,10 +1,10 @@
-import { PostVehicle } from "@/types/post.type";
+import { Post } from "@/types/post.type";
 import { TVehicleMake, TVehicleModels } from "@/types/vehicle.type";
 
 type getPostUrlProps = {
     vehicleMakes: TVehicleMake[];
     vehicleModels: TVehicleModels[];
-    post: PostVehicle;
+    post: Post;
 }
 
 export const getPostUrl = ({ vehicleMakes, vehicleModels, post }: getPostUrlProps) => {

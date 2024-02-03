@@ -2,16 +2,18 @@
 
 import { PaginationWrapper } from "@/app/components/hooks/pagination.hook";
 import { getUrlParams } from "@/lib/getUrlParams";
-import { PostVehicle } from "@/types/post.type";
+import { Post } from "@/types/post.type";
 import { useUser } from "@clerk/nextjs";
-import axios from "axios";
 import { redirect, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { RenderActivePostCard, RenderInactivePostCard } from "./RenderCard";
+import { useQuery } from "@tanstack/react-query";
+import { Spinner } from "@/app/components/spinner";
+import { getPosts } from "@/actions/posts/post.actions";
 
 type PostTypes = {
-    active: PostVehicle[];
-    inactive: PostVehicle[];
+    active: Post[];
+    inactive: Post[];
 }
 
 const ItemsDisplayCount = 9;
@@ -31,37 +33,53 @@ export const PostAdminPage = () => {
     const ActivePosts = posts.active?.slice(ItemsOffset, ItemsOffset + ItemsDisplayCount);
     const InactivePosts = posts.inactive?.slice(ItemsOffset, ItemsOffset + ItemsDisplayCount);
 
-    useEffect(() => {
-        axios.get(`${process.env.defaultApiEndpoint}/api/posts/getPosts`).then(res => {
-            const { status, active, inactive } = res.data;
+    const { isLoading } = useQuery({
+        queryKey: ["getPosts"],
+        queryFn: async () => {
+            const { active, inactive } = await getPosts();
+            setPosts({ active, inactive });
+            return true;
+        },
+        staleTime: 1000 * 60 * 5, // 5 minutes
+    });
 
-            if (status === 200) {
-                setPosts({ active, inactive });
-            }
-        });
-    }, []);
+    const isCentered = isLoading || (params.includes("active") && !posts.active.length) || (params.includes("inactive") && !posts.inactive.length);
 
     return (
-        <div>
-            {params?.includes("active") && posts.active.length > 0 && (
-                <div className={`grid grid-cols-1 laptop:grid-cols-3 flex-wrap gap-[1.56rem] justify-between`}>
-                    {ActivePosts.map((post, idx) => (
-                        <RenderActivePostCard post={post} key={`admin_active_post_${idx}`} />
-                    ))}
-                    <div className={`laptop:absolute left-0 flex items-center justify-center bottom-[1rem] w-full`}>
-                        <PaginationWrapper currentPage={currentPage} pages={Math.ceil(posts.active.length / ItemsDisplayCount)} />
-                    </div>
-                </div>
-            )}
-            {params?.includes("inactive") && posts.inactive.length > 0 && (
-                <div className={`grid grid-cols-1 laptop:grid-cols-3 flex-wrap gap-[1.56rem] justify-between`}>
-                    {InactivePosts.map((post, idx) => (
-                        <RenderInactivePostCard post={post} key={`admin_inactive_post_${idx}`} />
-                    ))}
-                    <div className={`laptop:absolute left-0 flex items-center justify-center bottom-[1rem] w-full`}>
-                        <PaginationWrapper currentPage={currentPage} pages={Math.ceil(posts.inactive.length / ItemsDisplayCount)} />
-                    </div>
-                </div>
+        <div className={`flex-1 ${isCentered ? `flex items-center justify-center` : ``}`}>
+            {!isLoading ? (
+                <>
+                    {params?.includes("active") && (
+                        posts.active.length > 0 ? (
+                            <div className={`grid grid-cols-1 laptop:grid-cols-3 flex-wrap gap-[1.56rem] justify-between`}>
+                                {ActivePosts.map((post, idx) => (
+                                    <RenderActivePostCard post={post} key={`admin_active_post_${idx}`} />
+                                ))}
+                                <div className={`laptop:absolute left-0 flex items-center justify-center bottom-[1rem] w-full`}>
+                                    <PaginationWrapper currentPage={currentPage} pages={Math.ceil(posts.active.length / ItemsDisplayCount)} />
+                                </div>
+                            </div>
+                        ) : (
+                            <span className={`text-placeholder_secondary text-base full_hd:text-base_2xl`}>Atsiprašome, skelbimų nerasta.</span>
+                        )
+                    )}
+                    {params?.includes("inactive") && (
+                        posts.inactive.length > 0 ? (
+                            <div className={`grid grid-cols-1 laptop:grid-cols-3 flex-wrap gap-[1.56rem] justify-between`}>
+                                {InactivePosts.map((post, idx) => (
+                                    <RenderInactivePostCard post={post} key={`admin_inactive_post_${idx}`} />
+                                ))}
+                                <div className={`laptop:absolute left-0 flex items-center justify-center bottom-[1rem] w-full`}>
+                                    <PaginationWrapper currentPage={currentPage} pages={Math.ceil(posts.inactive.length / ItemsDisplayCount)} />
+                                </div>
+                            </div>
+                        ) : (
+                            <span className={`text-placeholder_secondary text-base full_hd:text-base_2xl`}>Atsiprašome, skelbimų nerasta.</span>
+                        )
+                    )}
+                </>
+            ) : (
+                <Spinner />
             )}
         </div>
     )

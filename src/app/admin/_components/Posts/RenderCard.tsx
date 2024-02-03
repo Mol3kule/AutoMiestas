@@ -9,6 +9,11 @@ import { PostVehicle } from "@/types/post.type";
 import { getDateFromTimestampWithTime } from "@/lib/getDate";
 import { getPostUrl } from "@/lib/getPostUrl";
 import { useRouter } from "next/navigation";
+import { ApprovePost } from "@/actions/posts/post.actions";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import { animated, useTransition } from "@react-spring/web";
+import { Spinner } from "@/app/components/spinner";
 
 type PostStatus = "active" | "inactive";
 
@@ -35,7 +40,7 @@ const PostCard = ({ children, post }: PostCardProps) => {
 
         const getVehicleData = VehicleObj.getVehicleDataByIdx(vehicleMakes, vehicleModels, vehicleData.make, vehicleData.model, vehicleData.body_type, vehicleData.condition, vehicleData.fuel_type, vehicleData.drive_train, vehicleData.transmission, vehicleData.sw_side);
         setVehicleData(getVehicleData);
-    }, [vehicleModels]);
+    }, [vehicleMakes, vehicleModels]);
 
     const RedirectToPost = () => {
         if (!useVehicleData) return;
@@ -43,62 +48,105 @@ const PostCard = ({ children, post }: PostCardProps) => {
         router.push(url);
     };
 
+    const transitions = useTransition(vehicleData, {
+        from: { opacity: 0 },
+        enter: { opacity: 1 },
+        config: { duration: 1000 }
+    });
+
     return (
-        <div className={`flex flex-col gap-[1.25rem] px-[1.75rem] py-[1.56rem] bg-highlight_secondary rounded-[0.1875rem]`}>
-            <div className={`w-max px-[0.62rem] py-[0.25rem] rounded-[0.1875rem] ${isPublished ? `bg-[rgba(92,131,116,0.08)] text-highlight` : `bg-[rgba(255,168,0,0.08)] text-error_third`}`}>
-                <span className={`text-base full_hd:text-base_2xl`}>{isPublished ? PostStatuses.active : PostStatuses.inactive}</span>
-            </div>
-            <div className={`flex gap-[1.25rem] items-center`}>
-                <div className={`w-[3.125rem] h-[3.125rem] rounded-full`}>
-                    {post.images && (
-                        <Image
-                            src={images.find(img => img.isPrimary)?.url || images[0].url}
-                            alt="post_image"
-                            className={`rounded-full w-full h-full object-cover`}
-                            width={1920}
-                            height={1080}
-                        />
-                    )}
-                </div>
-                {useVehicleData && (
-                    <div className={`flex flex-col text-primary text-base full_hd:text-base_2xl hover:cursor-pointer hover:opacity-60 duration-500`} onClick={RedirectToPost}>
-                        <span>{useVehicleData.make?.make} {useVehicleData.model?.model}</span>
-                        <span>{t.general.id}: #{id}</span>
+        !vehicleData ? (
+            <Spinner />
+        ) : (
+            transitions((style) => (
+                <animated.div style={style} className={`flex flex-col gap-[1.25rem] px-[1.75rem] py-[1.56rem] bg-highlight_secondary rounded-[0.1875rem]`}>
+                    <div className={`w-max px-[0.62rem] py-[0.25rem] rounded-[0.1875rem] ${isPublished ? `bg-[rgba(92,131,116,0.08)] text-highlight` : `bg-[rgba(255,168,0,0.08)] text-error_third`}`}>
+                        <span className={`text-base full_hd:text-base_2xl`}>{isPublished ? PostStatuses.active : PostStatuses.inactive}</span>
                     </div>
-                )}
-            </div>
-            <div className={`text-highlight text-base full_hd:text-base_2xl flex flex-col`}>
-                <span>{t.my_posts.post_uploaded} {getDateFromTimestampWithTime(post.periods.time_created)}</span>
-                <span>{t.my_posts.post_edited} {getDateFromTimestampWithTime(post.periods.time_updated)}</span>
-            </div>
-            {children}
-        </div>
-    )
+                    <div className={`flex gap-[1.25rem] items-center`}>
+                        <div className={`w-[3.125rem] h-[3.125rem] rounded-full`}>
+                            {post.images && (
+                                <Image
+                                    src={images.find(img => img.isPrimary)?.url || images[0].url}
+                                    alt="post_image"
+                                    className={`rounded-full w-full h-full object-cover`}
+                                    width={1920}
+                                    height={1080}
+                                />
+                            )}
+                        </div>
+                        {useVehicleData ? (
+                            <div className={`flex flex-col text-primary text-base full_hd:text-base_2xl hover:cursor-pointer hover:opacity-60 duration-500`} onClick={RedirectToPost}>
+                                <span>{useVehicleData.make?.make} {useVehicleData.model?.model}</span>
+                                <span>{t.general.id}: #{id}</span>
+                            </div>
+                        ) : (
+                            <Spinner size={1.2} />
+                        )}
+                    </div>
+                    <div className={`text-highlight text-base full_hd:text-base_2xl flex flex-col`}>
+                        <span>{t.my_posts.post_uploaded} {getDateFromTimestampWithTime(post.periods.time_created)}</span>
+                        <span>{t.my_posts.post_edited} {getDateFromTimestampWithTime(post.periods.time_updated)}</span>
+                    </div>
+                    {children}
+                </animated.div>
+            ))
+        )
+    );
 };
 
 export const RenderActivePostCard = ({ post }: { post: PostVehicle }) => {
+    const StopBtn = async () => { };
+
+    const DeleteBtn = async () => { };
+
     return (
         <PostCard post={post}>
             <div className={`flex gap-[0.87rem]`}>
-                <RenderActionButton className={`bg-highlight text-[#FFF]`}>Sustabdyti skelbimą</RenderActionButton>
-                <RenderActionButton className={`bg-error_secondary text-[#FFF]`}>Pašalinti</RenderActionButton>
+                <RenderActionButton className={`bg-highlight text-[#FFF]`} onClick={StopBtn}>Sustabdyti skelbimą</RenderActionButton>
+                <RenderActionButton className={`bg-error_secondary text-[#FFF]`} onClick={DeleteBtn}>Pašalinti</RenderActionButton>
             </div>
         </PostCard>
     )
 };
 export const RenderInactivePostCard = ({ post }: { post: PostVehicle }) => {
+    const queryClient = useQueryClient();
+
+    const { mutateAsync: approvePost } = useMutation({
+        mutationFn: async () => {
+            return await ApprovePost(post.id!);
+        },
+        onSuccess: (response) => {
+            if (response) {
+                toast.success(`Sėkmingai patvirtinote skelbimą - #${post.id}`);
+            } else {
+                toast.error(`Nepavyko patvirtinti skelbimo - #${post.id}`);
+            }
+            queryClient.invalidateQueries({ queryKey: ["getPosts"], exact: true });
+        }
+    });
+
+    const ApproveBtn = async () => {
+        await approvePost();
+    };
+
+    const RejectBtn = async () => { };
+
+    const DeleteBtn = async () => { };
+
     return (
         <PostCard post={post}>
             <div className={`flex gap-[0.87rem]`}>
-                <RenderActionButton className={`bg-highlight text-[#FFF]`}>Sustabdyti skelbimą</RenderActionButton>
-                <RenderActionButton className={`bg-error_secondary text-[#FFF]`}>Pašalinti</RenderActionButton>
+                <RenderActionButton className={`bg-highlight text-[#FFF]`} onClick={ApproveBtn}>Patvirtinti</RenderActionButton>
+                <RenderActionButton className={`bg-error_third text-[#FFF]`} onClick={RejectBtn}>Atmesti</RenderActionButton>
+                <RenderActionButton className={`bg-error_secondary text-[#FFF]`} onClick={DeleteBtn}>Pašalinti</RenderActionButton>
             </div>
         </PostCard>
     )
 };
 
-const RenderActionButton = ({ children, className }: { children: React.ReactNode, className?: string }) => {
+const RenderActionButton = ({ children, className, onClick }: { children: React.ReactNode, className?: string, onClick: () => void }) => {
     return (
-        <button className={`px-[0.62rem] py-[0.5rem] rounded-[0.1875rem] ${className}`}>{children}</button>
+        <button className={`px-[0.62rem] py-[0.5rem] rounded-[0.1875rem] ${className} hover:opacity-80 duration-500`} onClick={onClick}>{children}</button>
     )
 };

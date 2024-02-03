@@ -1,16 +1,15 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useLanguage } from "@/lib/languageUtils";
 import { usePostCreateStore } from "@/store/posts/postCreate.store";
-import { useVehicleStore } from "@/store/vehicles/vehicle.store";
-import { getVehicles } from "@/lib/getVehicles";
 
-import { PostCategoriesPage } from "./_components/categoriesPage";
-import { PostInformationPage } from "./_components/informationPage";
-import { PostPaymentPage } from "./_components/paymentPage";
-import ErrorBox from "@/app/components/errorBox";
-import { NextButton } from "@/app/components/buttons/nextButton";
+import { PostCategoriesPage } from "./categories-view";
+import { PostInformationPage } from "./information-view";
+import { PostPaymentPage } from "./payment-view";
+import ErrorBox from "@/components/errorBox";
+import { NextButton } from "@/components/buttons/nextButton";
+import { VehicleObj } from "@/classes/Vehicle";
 
 enum PageWindows { Category, Information, Payment };
 
@@ -23,22 +22,8 @@ export const CreatePostPage = () => {
     const [activeWindow, setActiveWindow] = useState<PageWindows>(PageWindows.Category);
     const [errorMessage, setErrorMessage] = useState<string>("");
 
-    const { vehicleMakes, vehicleModels, setMakes, setModels } = useVehicleStore();
-    const { checkFields } = usePostCreateStore();
+    const { category, checkFields, checkFieldsItem } = usePostCreateStore();
     const t = useLanguage();
-
-    useEffect(() => {
-        if (!vehicleMakes.length || !Object.values(vehicleModels).length) {
-            getVehicles().then(async (res) => {
-                const { makesData, modelsData } = res;
-
-                if (makesData.status === 200 && modelsData.status === 200) {
-                    setMakes(makesData.data);
-                    setModels(modelsData.data);
-                }
-            });
-        }
-    }, []);
 
     const PagesMap: { [key in PageWindows]: PageMapItem } = {
         [PageWindows.Category]: {
@@ -63,12 +48,13 @@ export const CreatePostPage = () => {
         if (activeWindow === targetPage) return false;
 
         if (targetPage === PageWindows.Payment) {
-            const { status, message } = checkFields();
+            const { status, message } = Object.keys(VehicleObj.getAllTypes()).includes(category.toString()) ? checkFields() : checkFieldsItem();
             if (!status) {
                 setErrorMessage(t.post.errors[message as keyof typeof t.post.errors]);
                 ScrollToTop();
                 return false;
             }
+            setErrorMessage("");
         }
 
         return true;
@@ -109,9 +95,11 @@ export const CreatePostPage = () => {
                 ))}
             </div>
             {PagesMap[activeWindow].renderItem}
-            <div className={`flex justify-end`}>
-                <NextButton onClick={HandleWindowSwitch}>{t.general.continue}</NextButton>
-            </div>
+            {activeWindow !== PageWindows.Payment &&
+                <div className={`flex justify-end`}>
+                    <NextButton onClick={HandleWindowSwitch}>{t.general.continue}</NextButton>
+                </div>
+            }
         </div>
     );
 };

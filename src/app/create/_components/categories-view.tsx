@@ -1,18 +1,18 @@
 'use client';
 
-import TrailerSvg from "@/app/components/svg/categories/trailerSvg";
-import VehicleSvg from "@/app/components/svg/categories/vehicleSvg";
-import Tires_wheelsSvg from "@/app/components/svg/categories/tires_wheelsSvg";
-import ScooterSvg from "@/app/components/svg/categories/scooterSvg";
-import PlaneSvg from "@/app/components/svg/categories/planeSvg";
-import PartSvg from "@/app/components/svg/categories/partSvg";
-import MotorcycleSvg from "@/app/components/svg/categories/motorcycleSvg";
-import HeavyTransportSvg from "@/app/components/svg/categories/heavySvg";
-import AgriculturalTransportSvg from "@/app/components/svg/categories/agriculturalSvg";
-import ConstructionTransportSvg from "@/app/components/svg/categories/constructionSvg";
-import BoatSvg from "@/app/components/svg/categories/boatSvg";
+import TrailerSvg from "@/components/svg/categories/trailerSvg";
+import VehicleSvg from "@/components/svg/categories/vehicleSvg";
+import Tires_wheelsSvg from "@/components/svg/categories/tires_wheelsSvg";
+import ScooterSvg from "@/components/svg/categories/scooterSvg";
+import PlaneSvg from "@/components/svg/categories/planeSvg";
+import PartSvg from "@/components/svg/categories/partSvg";
+import MotorcycleSvg from "@/components/svg/categories/motorcycleSvg";
+import HeavyTransportSvg from "@/components/svg/categories/heavySvg";
+import AgriculturalTransportSvg from "@/components/svg/categories/agriculturalSvg";
+import ConstructionTransportSvg from "@/components/svg/categories/constructionSvg";
+import BoatSvg from "@/components/svg/categories/boatSvg";
 
-import { usePostCreateStore } from "@store/posts/postCreate.store";
+import { usePostCreateStore } from "@/store/posts/postCreate.store";
 import { Categories, PostObj } from "@/classes/PostCategories";
 import { useLanguage } from "@/lib/languageUtils";
 

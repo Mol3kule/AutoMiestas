@@ -1,11 +1,10 @@
 "use client";
 
-import Modal from 'react-modal';
-import { TProduct } from "@/app/api/stripe/getProducts/route";
-import { getProducts } from "@/lib/stripeActions";
 import { Moon, X } from "lucide-react";
-import { useEffect, useState } from "react";
-import { ModalWrapper } from '@/app/components/wrappers/modal-wrapper';
+import { ModalWrapper } from '@/components/wrappers/modal-wrapper';
+import { useQuery } from "@tanstack/react-query";
+import { TProduct, getProducts } from "@/actions/stripe/stripe.actions";
+import { Spinner } from "../spinner";
 
 type RenderProductsProps = {
     isOpen: boolean;
@@ -14,13 +13,16 @@ type RenderProductsProps = {
 };
 
 export const ProductsModal = ({ isOpen, setOpen, onSelect }: RenderProductsProps) => {
-    const [products, setProducts] = useState<TProduct[]>([]);
-
-    useEffect(() => {
-        getProducts().then((res) => {
-            setProducts(res);
-        });
-    }, []);
+    const { isLoading, data: products } = useQuery({
+        queryKey: ["getStripeProducts"],
+        queryFn: async () => {
+            const { status, products } = await getProducts();
+            if (status === 200) {
+                return products as TProduct[];
+            }
+            return [];
+        }
+    });
 
     const HandleSubscription = (priceId: string) => {
         onSelect(priceId);
@@ -49,9 +51,13 @@ export const ProductsModal = ({ isOpen, setOpen, onSelect }: RenderProductsProps
         <ModalWrapper isOpen={isOpen} setOpen={setOpen}>
             <X className={`absolute top-[1rem] right-[1rem] w-[2rem] h-[2rem] text-highlight_secondary hover:cursor-pointer`} onClick={() => setOpen(false)} />
             <div className={`flex flex-col laptop:flex-row gap-[1.25rem] items-center justify-center`}>
-                {products?.map((item, idx) => (
-                    <RenderItem item={item} key={`product_item_${idx}`} />
-                ))}
+                {!isLoading ? (
+                    products?.map((item, idx) => (
+                        <RenderItem item={item} key={`product_item_${idx}`} />
+                    ))
+                ) : (
+                    <Spinner/>
+                )}
             </div>
         </ModalWrapper>
     );

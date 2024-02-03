@@ -5,7 +5,7 @@ import {
     PaginationContent,
     PaginationItem,
     PaginationLink,
-} from "@/components/ui/pagination";
+} from "@/shadcn-components/ui/pagination";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { useRouter } from "next/navigation";

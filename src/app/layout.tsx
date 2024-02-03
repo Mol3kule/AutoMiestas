@@ -6,23 +6,26 @@ import { NavBar } from './components/navigation/NavBar';
 import { PageWrapper } from './components/wrappers/page-wrapper';
 
 import { Toaster } from 'react-hot-toast';
+import { ReactQueryProviderWrapper } from './components/wrappers/query-provider-wrapper';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
-      <html>
-        <body className={`${inter.className} flex flex-col min-h-[100dvh]`}>
-          <Toaster 
-            position='top-center'
-          />
-          <NavBar />
-          <PageWrapper>
-            {children}
-          </PageWrapper>
-        </body>
-      </html>
+      <ReactQueryProviderWrapper>
+        <html>
+          <body className={`${inter.className} flex flex-col min-h-[100dvh]`}>
+            <Toaster
+              position='top-center'
+            />
+            <NavBar />
+            <PageWrapper>
+              {children}
+            </PageWrapper>
+          </body>
+        </html>
+      </ReactQueryProviderWrapper>
     </ClerkProvider>
   );
 }

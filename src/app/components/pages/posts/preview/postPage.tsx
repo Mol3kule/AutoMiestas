@@ -1,16 +1,16 @@
 'use client';
 
-import { PostVehicle } from "@/types/post.type";
+import { Post } from "@/types/post.type";
 import { PostGeneralInfo } from "./PostGeneralInfo";
 import { PostSecondaryInfo } from "./PostSecondaryInfo";
 import { useImgPreviewStore } from "@/store/image_preview/imagePreview.store";
 import { ImagePreviewModal } from "../../../modals/imagePreview";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { UserType } from "@/types/user.type";
+import { useQuery } from "@tanstack/react-query";
+import { getUser } from "@/actions/users/user.actions";
+import { Spinner } from "@/components/spinner";
 
 type PostPageProps = {
-    post: PostVehicle;
+    post: Post;
     phoneNumber: string;
 }
 
@@ -18,18 +18,14 @@ export const PostPage = ({ post, phoneNumber }: PostPageProps) => {
     const { status } = post;
     const { isPreviewActive } = useImgPreviewStore();
 
-    const [userData, setUserData] = useState<UserType>(null!);
+    const { isLoading, data: userData } = useQuery({
+        queryKey: ['getUser'],
+        queryFn: async () => {
+            return await getUser();
+        }
+    });
 
-    useEffect(() => {
-        axios.get(`${process.env.defaultApiEndpoint}/api/auth/getUser`).then((res) => {
-            const { status, data }: { status: number, data: UserType } = res.data;
-            if (status === 200) {
-                setUserData(data);
-            }
-        });
-    }, []);
-
-    const isAdmin = userData && userData.admin_rank > 0;
+    const isAdmin = userData && userData.admin_rank > 0 ? true : false;
 
     const RenderPage = () => (
         <>
@@ -46,21 +42,19 @@ export const PostPage = ({ post, phoneNumber }: PostPageProps) => {
 
     return (
         <div className={`flex flex-col justify-center items-center flex-1 gap-[1.25rem]`}>
-            {status.isPublished ? (
-                <RenderPage />
-            ) : (
-                <>
-                    {isAdmin ? (
-                        <RenderPage />
-                    ) : (
-                        <div className={`flex flex-col`}>
-                            <div className={`text-center`}>
-                                <span className={`text-primary text-[8rem]`}>404</span>
-                            </div>
-                            <span className={`text-placeholder_secondary flex items-center justify-center text-base full_hd:text-base_2xl`}>Skelbimas nepasiekiamas</span>
+            {!isLoading ? (
+                status.isPublished || isAdmin ? (
+                    <RenderPage />
+                ) : (
+                    <div className={`flex flex-col`}>
+                        <div className={`text-center`}>
+                            <span className={`text-primary text-[8rem]`}>404</span>
                         </div>
-                    )}
-                </>
+                        <span className={`text-placeholder_secondary flex items-center justify-center text-base full_hd:text-base_2xl`}>Skelbimas nepasiekiamas</span>
+                    </div>
+                )
+            ) : (
+                <Spinner />
             )}
 
             {isPreviewActive && (

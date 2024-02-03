@@ -6,15 +6,15 @@ import Image from "next/image";
 import { useVehicleStore } from "@/store/vehicles/vehicle.store";
 import { getVehicles } from "@/lib/getVehicles";
 
-import { Spinner } from "@/app/components/spinner";
+import { Spinner } from "@/components/spinner";
 import { VehicleObj } from "@/classes/Vehicle";
 import { useLanguage } from "@/lib/languageUtils";
-import { PostVehicle } from "@/types/post.type";
+import { Post } from "@/types/post.type";
 import { Heart } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import { animated, useTransition } from "@react-spring/web";
 
-export const VehiclePostCard = ({ postData, idx }: { postData: PostVehicle, idx: number }) => {
+export const VehiclePostCard = ({ postData, idx }: { postData: Post, idx: number }) => {
     const { vehicleMakes, vehicleModels, setMakes, setModels } = useVehicleStore();
     const { id, images, information, periods } = postData;
     const [isLoading, setIsLoading] = useState<boolean>(true);

@@ -1,16 +1,14 @@
 'use client';
 
 import { PostObj } from "@/classes/PostCategories";
-import { Button } from "@/components/ui/button";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/shadcn-components/ui/button";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/shadcn-components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/shadcn-components/ui/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shadcn-components/ui/select";
 import { getVehicles } from "@/lib/getVehicles";
 import { useLanguage } from "@/lib/languageUtils";
 import { useFilterStore } from "@/store/filter/filter.store";
 import { useVehicleStore } from "@/store/vehicles/vehicle.store";
-import axios from "axios";
 import { Check, ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";

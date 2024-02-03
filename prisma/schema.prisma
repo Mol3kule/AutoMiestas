@@ -23,17 +23,18 @@ model make_models {
 }
 
 model users {
-  id               Int      @id @default(autoincrement())
-  userId           String   @unique
-  stripeCustomerId String   @unique
-  email            String   @unique
+  id               Int       @id @default(autoincrement())
+  userId           String    @unique
+  stripeCustomerId String    @unique
+  email            String    @unique
   first_name       String
   last_name        String
   phone_number     String
   organization     String?
-  date_registered  DateTime @default(now())
+  date_registered  DateTime  @default(now())
   posts            posts[]
-  admin_rank       Int      @default(0)
+  admin_rank       Int       @default(0)
+  mailbox          mailbox[]
 }
 
 model posts {
@@ -45,9 +46,20 @@ model posts {
   statistics           Json
   periods              Json
   boosts               Json
-  ratingByAuthor       Json
   category             Int
   subscriptionId       String?
   status               Json?
   isSubscriptionActive Boolean
+  slug                 String
+}
+
+model mailbox {
+  id               Int      @id @default(autoincrement())
+  authorId         String
+  receiverId       String
+  data             Json
+  isReaded         Boolean  @default(false)
+  receivedDate     DateTime @default(now())
+  type             Int
+  receiverRelation users    @relation(fields: [receiverId], references: [userId])
 }

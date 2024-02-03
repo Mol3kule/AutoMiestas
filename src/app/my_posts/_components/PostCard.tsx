@@ -3,22 +3,20 @@
 import Image from "next/image";
 import { animated, useTransition } from "@react-spring/web";
 
-import { PostVehicle } from "@/types/post.type";
+import { Post } from "@/types/post.type";
 import { InformationSection } from "./InformationSection";
 import { ActionsSection } from "./ActionsSection";
 import { RenderVehicleLabel } from "./RenderLabel";
 
-export const RenderPostCard = ({ postData }: { postData: PostVehicle }) => {
-    const { information, images, status } = postData;
+export const RenderPostCard = ({ postData }: { postData: Post }) => {
+    const { images, status } = postData;
 
     const transition = useTransition(true, {
         from: { opacity: 0 },
         enter: { opacity: 1 }
     })
 
-    const HandleEdit = () => {
-
-    };
+    const HandleEdit = () => { };
 
     return (
         transition((style) => (

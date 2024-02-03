@@ -1,36 +1,39 @@
 'use client';
 
 import { useMemo, useState } from "react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shadcn-components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/shadcn-components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/shadcn-components/ui/command";
 import { Check, ChevronDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shadcn-components/ui/button";
 
 type TInputProps = {
-    label: string,
-    value: string,
-    placeholder?: string,
-    isDisabled?: boolean,
-    compareToId?: boolean,
-    setValue?: (value: string) => void
+    type?: "text" | "number";
+    label: string;
+    value: string;
+    placeholder?: string;
+    isDisabled?: boolean;
+    compareToId?: boolean;
+    maxLength?: number;
+    setValue?: (value: string) => void;
 }
 
 type TInputSelectProps = TInputProps & {
-    items: Array<{ id: string, label: string }> | []
+    items: Array<{ id: string, label: string }> | [];
 }
 
-export const PostCreateInputText = ({ label, value, placeholder = "----", isDisabled = false, setValue }: TInputProps) => {
+export const PostCreateInputText = ({ type = 'text', label, value, placeholder = "----", isDisabled = false, setValue, maxLength = 30 }: TInputProps) => {
     return (
         <div className={`flex flex-col gap-[0.85rem] w-full`}>
             <span className={`text-primary text-base full_hd:text-base_2xl`}>{label}</span>
             <input
-                type={`text`}
+                type={type}
                 className={`${value.length <= 0 ? `border-error_third` : `border-highlight text-highlight`} disabled:cursor-not-allowed bg-[#FFF] rounded-[0.1875rem] px-[1.56rem] py-[0.69rem] text-base full_hd:text-base_2xl focus:outline-none border-l-[0.125rem] placeholder:text-placeholder`}
                 value={value}
                 placeholder={placeholder}
                 disabled={isDisabled}
                 onChange={(e) => setValue && setValue(e.target.value)}
+                maxLength={maxLength}
             />
         </div>
     )

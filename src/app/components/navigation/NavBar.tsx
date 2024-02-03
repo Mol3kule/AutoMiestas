@@ -1,6 +1,6 @@
 'use client';
 
-import { Mail } from "lucide-react";
+import { Bell } from "lucide-react";
 import { UserDrawer } from '../drawers/userDrawer';
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
@@ -23,7 +23,7 @@ export const NavBar = () => {
                 </div>
                 <div className={`flex gap-[1.25rem] items-center`}>
                     {isLoaded && user && (
-                        <Mail className={`text-primary w-[1.375rem] h-[1.375rem]`} />
+                        <Bell className={`text-primary w-[1.375rem] h-[1.375rem]`} />
                     )}
                     <UserDrawer />
                 </div>

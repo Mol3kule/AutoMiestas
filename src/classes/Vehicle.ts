@@ -30,8 +30,7 @@ export class Vehicle {
         [4]: Categories.construction,
         [5]: Categories.trailer,
         [6]: Categories.boat,
-        [7]: Categories.plane,
-        [8]: Categories.scooter
+        [7]: Categories.plane
     }
 
     private BodyTypes: { [key in BodyType]: string } = {
@@ -231,8 +230,6 @@ export class Vehicle {
     public getVehicleModelDataByIdx(vehicleModels: TVehicleModels[], makeId: number, modelId: number) {
         return Object.values(vehicleModels[makeId]).find(model => model.id === modelId);
     };
-
-
 };
 
 export const VehicleObj = new Vehicle();

@@ -1,3 +1,4 @@
+import { CategoriesAsVehicleCategories } from "@/actions/posts/post.actions";
 import { Categories as PostCategories } from "@/classes/PostCategories";
 import { BodyType, Conditions, Drivetrains, FuelTypes, Rating, SteeringWheel_Side, Transmissions } from "@/classes/Vehicle";
 import { MileageType, PowerType } from "@/types/vehicle.type";
@@ -35,6 +36,10 @@ type Store = {
 
     specifications: { [key in Rating]: number };
 
+    // Item
+    title: string;
+    partNumber: string;
+
     setCategory: (category: PostCategories) => void;
     setMakeId: (makeId: number) => void;
     setModelId: (modelId: number) => void;
@@ -60,11 +65,16 @@ type Store = {
     setCityId: (city: number) => void;
     setSpecifications: (specifications: { [key in Rating]: number }) => void;
 
+    // Item
+    setTitle: (title: string) => void;
+    setPartNumber: (partNumber: string) => void;
+
     setCCM: (ccm: number) => void;
     setPower: (power: number) => void;
     setPowerType: (power_type: PowerType) => void;
     setMileageType: (mileage_type: MileageType) => void;
     checkFields: () => { status: boolean, message?: string };
+    checkFieldsItem: () => { status: boolean, message?: string };
     resetFields: () => void;
 }
 
@@ -102,6 +112,10 @@ export const usePostCreateStore = create<Store>()((set, get) => ({
         [Rating.Body]: 5,
     },
 
+    // Item
+    title: null!,
+    partNumber: null!,
+
     setCategory: (category: PostCategories) => set({ category }),
     setMakeId: (makeId: number) => set({ makeId }),
     setModelId: (modelId: number) => set({ modelId }),
@@ -132,6 +146,10 @@ export const usePostCreateStore = create<Store>()((set, get) => ({
     setDescription: (description: string) => set({ description }),
     setSpecifications: (specifications: { [key in Rating]: number }) => set({ specifications }),
 
+    // Item
+    setTitle: (title: string) => set({ title }),
+    setPartNumber: (partNumber: string) => set({ partNumber }),
+
     checkFields: () => {
         const { category, makeId, modelId, modelYear, bodyType, mileage, ccm, power, fuelType, drivetrain, transmission, sw_side, condition, price, fileImages, cityId, countryId } = get();
         if (category === null) return { status: false, message: "category_not_selected" };
@@ -150,8 +168,23 @@ export const usePostCreateStore = create<Store>()((set, get) => ({
         if (price === null) return { status: false, message: "price_not_selected" };
         if (fileImages.length < 4) return { status: false, message: "images_not_selected" };
 
-        if(countryId === null) return { status: false, message: "country_not_selected" };
-        if(cityId === null) return { status: false, message: "city_not_selected" };
+        if (countryId === null) return { status: false, message: "country_not_selected" };
+        if (cityId === null) return { status: false, message: "city_not_selected" };
+
+        return { status: true };
+    },
+
+    checkFieldsItem: () => {
+        const { category, title, partNumber, condition, price, fileImages, countryId, cityId } = get();
+        if (category === null) return { status: false, message: "category_not_selected" };
+        if (title === null) return { status: false, message: "title_not_selected" };
+        if (partNumber === null && category !== 8) return { status: false, message: "part_number_not_selected" }; // Scooter is excluded
+        if (condition === null) return { status: false, message: "condition_not_selected" };
+        if (price === null) return { status: false, message: "price_not_selected" };
+        if (fileImages.length < 4) return { status: false, message: "images_not_selected" };
+
+        if (countryId === null) return { status: false, message: "country_not_selected" };
+        if (cityId === null) return { status: false, message: "city_not_selected" };
 
         return { status: true };
     },
@@ -179,6 +212,10 @@ export const usePostCreateStore = create<Store>()((set, get) => ({
         vin: null!,
         sdk: null!,
         description: null!,
+
+        // Item
+        title: null!,
+        partNumber: null!,
 
         primaryImg: null!,
         fileImages: [],

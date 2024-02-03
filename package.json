@@ -36,6 +36,7 @@
   },
   "devDependencies": {
     "@prisma/client": "^5.7.0",
+    "@tanstack/react-query": "^5.17.19",
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",

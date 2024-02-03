@@ -6,14 +6,15 @@ import toast from "react-hot-toast";
 import axios from "axios";
 
 import { animated, useSpring } from '@react-spring/web';
-import { Spinner } from "@/app/components/spinner";
+import { Spinner } from "@/components/spinner";
 import { Heart, Link, Phone } from "lucide-react";
 
 import { useLanguage } from "@/lib/languageUtils";
-import { PostVehicle } from "@/types/post.type";
+import { Post, PostStatistics } from "@/types/post.type";
 import { useRouter } from "next/navigation";
+import { getPostById } from "@/actions/posts/post.actions";
 
-export const AuthorContactsSection = ({ post, phoneNumber }: { post: PostVehicle, phoneNumber: string }) => {
+export const AuthorContactsSection = ({ post, phoneNumber }: { post: Post, phoneNumber: string }) => {
     const t = useLanguage();
     const { user, isLoaded } = useUser();
     const [isPhoneExpanded, setIsPhoneExpanded] = useState<boolean>(false);
@@ -61,14 +62,16 @@ export const AuthorContactsSection = ({ post, phoneNumber }: { post: PostVehicle
             return;
         }
 
-        const getPostResponse: { status: number, data: PostVehicle, translation: string } = await axios.post(`${process.env.defaultApiEndpoint}/api/posts/getPostById`, { postId: post.id }).then(res => res.data);
+        const getPostResponse = await getPostById(post.id!);
 
-        if (getPostResponse.status !== 200) {
-            toast.error(t.general[getPostResponse.translation as keyof typeof t.general], { duration: 5000 });
+        if (!getPostResponse) {
+            toast.error('Error, post not found', { duration: 5000 });
             return;
         }
 
-        setPostLikes(getPostResponse.data.statistics.times_liked);
+        const postStats = getPostResponse.statistics as PostStatistics;
+
+        setPostLikes(postStats.times_liked);
 
         await toast.promise(favoriteResponse, {
             loading: t.general.action_in_progress,

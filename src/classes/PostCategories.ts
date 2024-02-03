@@ -1,10 +1,10 @@
-export enum Categories { vehicle, motorcycle, heavy, agricultural, construction, trailer, boat, plane, scooter, tires_wheels, parts }
+export enum Categories { vehicle, motorcycle, heavy, agricultural, construction, trailer, boat, plane, scooter, tires_wheels, parts };
 
 type CategoryType = { [key: number]: Categories };
 type CategoryLabelType = { [key in Categories]: string };
 
 class PostCategories {
-    private CategoryTypes: CategoryType = {
+    protected CategoryTypes: CategoryType = {
         [0]: Categories.vehicle,
         [1]: Categories.motorcycle,
         [2]: Categories.heavy,
@@ -18,7 +18,7 @@ class PostCategories {
         [10]: Categories.parts
     };
 
-    private CategoryLabels: CategoryLabelType = {
+    protected CategoryLabels: CategoryLabelType = {
         [Categories.vehicle]: 'vehicles',
         [Categories.motorcycle]: 'motorcycles',
         [Categories.heavy]: 'heavy',

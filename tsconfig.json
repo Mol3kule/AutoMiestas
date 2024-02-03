@@ -19,10 +19,16 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
+      "@/shadcn-components/*": ["./src/components/*"],
+      "@/components/*": ["./src/app/components/*"],
       "@/prisma/*": ["./prisma/*"],
-      "@store/*": ["./src/store/*"],
-      "@components/*": ["./src/app/components/*"],
+      "@/store/*": ["./src/store/*"],
+      "@/actions/*": ["./src/actions/*"],
+      "@/types/*": ["./src/types/*"],
+      "@/classes/*": ["./src/classes/*"],
+      "@/lib/*": ["./src/lib/*"],
+      "@/dictionaries/*": ["./src/dictionaries/*"],
+      "@/styles/*": ["./src/styles/*"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

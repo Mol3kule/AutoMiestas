@@ -8,7 +8,7 @@ ReactModal.setAppElement('body');
 
 export const PageWrapper = ({ children }: { children: React.ReactNode }) => {
     const { vehicleMakes, vehicleModels, setMakes, setModels } = useVehicleStore();
-    
+
     useEffect(() => {
         if (!vehicleMakes.length || !Object.values(vehicleModels).length) {
             getVehicles().then(async (res) => {

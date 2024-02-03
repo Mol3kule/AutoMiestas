@@ -19,8 +19,6 @@ export default authMiddleware({
     // "/api/scrape/getVehicleMakes",
 
     // "/api/posts/uploadImage",
-    // "/api/uploadthing",
-    // "/api/stripe/getProducts" // has to be secured
     "/api/stripe/webhook",
     // "/api/scrape/addMotorcycleMakes",
   ],

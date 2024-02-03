@@ -1,25 +1,16 @@
-import { Post } from "../post.type";
+import { Conditions } from "@/classes/Vehicle";
+import { PostType, PostInformation } from "../post.type";
 
-export enum PostItemConditions { New, Used };
-
-export type PostItem = Post & {
+export type PostItem = PostType & {
     information: PostItemInformation;
 };
 
-type PostItemInformation = {
+type PostItemInformation = PostInformation & {
     title: string;
-    description: string;
-    location: PostItemLocation;
-    itemData: PostItemDataInformation;
-    price: number;
+    itemData: PostItemData;
 }
 
-type PostItemDataInformation = {
-    condition: PostItemConditions;
-    
-}
-
-type PostItemLocation = {
-    city: string;
-    country: string;
+export type PostItemData = {
+    condition: Conditions;
+    partNumber?: string;
 }

@@ -1,28 +1,22 @@
-import axios from "axios";
 import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs";
-import { UserType } from "@/types/user.type";
 import { AdminPage } from "./_components/AdminPage";
+import { getUserById } from "@/actions/users/user.actions";
 
-type PageProps = {
-    params: {},
-    searchParams: any
-}
-
-const Page = async ({ searchParams }: PageProps) => {
-    const { userId, getToken } = auth();
+const Page = async () => {
+    const { userId } = auth();
 
     if (!userId) {
         redirect("/sign-in");
     };
 
-    const { status, data }: { status: number, data: UserType } = await axios.get(`${process.env.defaultApiEndpoint}/api/auth/getUser`, { headers: { "Authorization": `Bearer ${await getToken()}` } }).then(res => res.data);
+    const { status, data: userData } = await getUserById(userId);
 
-    if (status !== 200) {
+    if (status !== 200 || !userData) {
         redirect("/");
     };
-    
-    if (data.admin_rank <= 0) {
+
+    if (userData.admin_rank <= 0) {
         redirect("/");
     };
 

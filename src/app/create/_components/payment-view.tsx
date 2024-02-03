@@ -1,27 +1,21 @@
 "use client";
 
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { RenderProduct } from "./renderProduct";
-import { Spinner } from "@/app/components/spinner";
-import { TProduct } from "@/app/api/stripe/getProducts/route";
+import { RenderProduct } from "./render-products-view";
+import { Spinner } from "@/components/spinner";
+import { useQuery } from "@tanstack/react-query";
+import { TProduct, getProducts } from "@/actions/stripe/stripe.actions";
 
 export const PostPaymentPage = () => {
-    const [products, setProducts] = useState<TProduct[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        axios.get(`${process.env.defaultApiEndpoint}/api/stripe/getProducts`, {
-            headers: {
-                method: "GET"
+    const { isLoading, data: products } = useQuery({
+        queryKey: ["getStripeProducts"],
+        queryFn: async () => {
+            const { status, products } = await getProducts();
+            if (status === 200) {
+                return products as TProduct[];
             }
-        }).then(async (response) => {
-            const { products } = await response.data;
-            setProducts(products)
-            setIsLoading(false);
-        })
-            .catch(error => console.log(error));
-    }, []);
+            return [];
+        }
+    });
 
     return (
         <div className={`flex flex-col gap-[1.25rem] `}>
@@ -31,12 +25,12 @@ export const PostPaymentPage = () => {
             </div>
 
             <div className={`${isLoading ? `flex items-center justify-center h-[20rem]` : `grid`} grid-cols-1 laptop:grid-cols-3 gap-[1.25rem]`}>
-                {isLoading ? (
-                    <Spinner />
-                ) : (
+                {!isLoading ? (
                     products && products.map((product, idx) => (
                         <RenderProduct item={product} key={`product_payment_${idx}`} />
                     ))
+                ) : (
+                    <Spinner />
                 )}
             </div>
         </div>

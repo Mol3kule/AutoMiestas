@@ -33,7 +33,7 @@ export const PostSection = () => {
 
     const PageButtons: { [key in PostSectionWindows]: string } = {
         active: "Aktyvūs skelbimai",
-        inactive: "Neaktyvūs skelbimai"
+        inactive: "Skelbimai laukiantys patvirtinimo"
     };
 
     useEffect(() => {
@@ -47,7 +47,7 @@ export const PostSection = () => {
     }, [activeWindow]);
 
     return (
-        <div className={`flex flex-col gap-[2.19rem]`}>
+        <div className={`flex flex-col gap-[2.19rem] flex-1`}>
             <div className={`flex gap-[1.25rem]`}>
                 {AvailableWindows.map((window, idx) => (
                     <RenderButton activeWindow={activeWindow} window={window} setActive={setActiveWindow} key={`admin_post_window_${idx}`}>{PageButtons[window as keyof typeof PageButtons]}</RenderButton>

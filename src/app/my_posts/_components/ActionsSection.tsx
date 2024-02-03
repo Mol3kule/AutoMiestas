@@ -6,11 +6,11 @@ import toast from "react-hot-toast";
 import axios from "axios";
 
 import { useLanguage } from "@/lib/languageUtils";
-import { ProductsModal } from "@components/modals/products-modal";
-import { DialogBox } from "@/app/components/dialogs/dialogBox";
-import { PostVehicle } from "@/types/post.type";
+import { ProductsModal } from "@/components/modals/products-modal";
+import { DialogBox } from "@/components/dialogs/dialogBox";
+import { Post } from "@/types/post.type";
 
-export const ActionsSection = ({ postData }: { postData: PostVehicle }) => {
+export const ActionsSection = ({ postData }: { postData: Post }) => {
     const { status, isSubscriptionActive } = postData;
     const router = useRouter();
     const t = useLanguage();
