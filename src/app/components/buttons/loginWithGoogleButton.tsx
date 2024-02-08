@@ -11,7 +11,7 @@ export const LoginWithGoogleButton = () => {
         await signIn?.authenticateWithRedirect({
             strategy: 'oauth_google',
             redirectUrl: '/sso-callback',
-            redirectUrlComplete: '/google-sign-in'
+            redirectUrlComplete: '/sign-in'
         }).catch((error) => {
             console.log(error)
         });

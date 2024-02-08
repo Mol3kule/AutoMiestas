@@ -1,11 +1,11 @@
 "use client";
 import { getUrlParams } from "@/lib/getUrlParams";
-import { ReadonlyURLSearchParams, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PostAdminPage } from "./PostPage";
 
-type PostSectionWindows = "active" | "inactive";
-const AvailableWindows: PostSectionWindows[] = ["active", "inactive"];
+type PostSectionWindows = "active" | "inactive" | "drafts";
+const AvailableWindows: PostSectionWindows[] = ["active", "inactive", "drafts"];
 
 type RenderButtonProps = {
     children: React.ReactNode;
@@ -33,7 +33,8 @@ export const PostSection = () => {
 
     const PageButtons: { [key in PostSectionWindows]: string } = {
         active: "Aktyvūs skelbimai",
-        inactive: "Skelbimai laukiantys patvirtinimo"
+        inactive: "Skelbimai laukiantys patvirtinimo",
+        drafts: "Skelbimai be prenumeratos"
     };
 
     useEffect(() => {

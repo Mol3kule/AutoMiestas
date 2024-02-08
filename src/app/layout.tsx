@@ -16,9 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <ReactQueryProviderWrapper>
         <html>
           <body className={`${inter.className} flex flex-col min-h-[100dvh]`}>
-            <Toaster
-              position='top-center'
-            />
+            <Toaster position='top-center' />
             <NavBar />
             <PageWrapper>
               {children}

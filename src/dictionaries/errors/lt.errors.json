@@ -1,0 +1,13 @@
+{
+    "error_uploading": "Įvyko klaida įkeliant skelbimą.",
+
+    "error_information": "Klaidinga informacija",
+    "error_contacts": "Klaidingi kontaktiniai duomenys",
+    "error_images": "Netinkamos nuotraukos",
+
+    "error_title": "Įvestas blogas pavadinimas",
+    "error_description": "Įvestas blogas aprašymas",
+    "error_category": "Pasirinkote blogą kategoriją.",
+
+    "error_stopping_post": "Nepavyko sustabdyti skelbimo - #{{id}}"
+}

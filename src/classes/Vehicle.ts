@@ -210,7 +210,7 @@ export class Vehicle {
     };
 
     // Getters
-    public getVehicleDataByIdx(vehicleMakes: TVehicleMake[], vehicleModels: TVehicleModels[], makeId: number, modelId: number, bodyTypeId: number, conditionId: number, fuelTypeId: number, driveTrainId: number, transmissionId: number, steeringWheelSideId: number) {
+    public getVehicleDataByIdx(vehicleMakes: TVehicleMake[], vehicleModels: TVehicleModels, makeId: number, modelId: number, bodyTypeId: number, conditionId: number, fuelTypeId: number, driveTrainId: number, transmissionId: number, steeringWheelSideId: number) {
         return {
             make: this.getVehicleMakeDataByIdx(vehicleMakes, makeId),
             model: this.getVehicleModelDataByIdx(vehicleModels, makeId, modelId),
@@ -227,7 +227,7 @@ export class Vehicle {
         return vehicleMakes.find((make) => make.id === makeId);
     };
 
-    public getVehicleModelDataByIdx(vehicleModels: TVehicleModels[], makeId: number, modelId: number) {
+    public getVehicleModelDataByIdx(vehicleModels: TVehicleModels, makeId: number, modelId: number) {
         return Object.values(vehicleModels[makeId]).find(model => model.id === modelId);
     };
 };

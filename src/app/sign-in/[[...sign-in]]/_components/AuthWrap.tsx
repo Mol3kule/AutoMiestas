@@ -1,6 +1,6 @@
 "use client";
 
-import { Spinner } from "@/app/components/spinner";
+import { Spinner } from "@/components/spinner";
 import { Suspense, useState } from "react";
 import { LoginPage } from "./LoginPage";
 import { RegisterPage } from "./RegisterPage";

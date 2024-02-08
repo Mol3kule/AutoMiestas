@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useVehicleStore } from "@/store/vehicles/vehicle.store";
-import { getVehicles } from "@/lib/getVehicles";
 
 import { Spinner } from "@/components/spinner";
 import { VehicleObj } from "@/classes/Vehicle";
@@ -24,22 +23,6 @@ export const VehiclePostCard = ({ postData, idx }: { postData: Post, idx: number
 
     const { user, isLoaded } = useUser();
 
-    useEffect(() => {
-        if (!vehicleMakes.length || !Object.values(vehicleModels).length) {
-            getVehicles().then(async (res) => {
-                const { makesData, modelsData } = res;
-
-                if (makesData.status === 200 && modelsData.status === 200) {
-                    setMakes(makesData.data);
-                    setModels(modelsData.data);
-                    setIsLoading(false);
-                }
-            });
-        } else {
-            setIsLoading(false);
-        }
-    }, []);
-
     const RenderLocation = ({ text }: { text: string }) => {
         return (
             <div className={`flex gap-[1.25] bg-primary px-[0.62rem] py-[0.25rem] rounded-[0.1875rem]`}>
@@ -49,10 +32,10 @@ export const VehiclePostCard = ({ postData, idx }: { postData: Post, idx: number
     }
 
     const HandlePostClick = () => {
-        const encodedMake = encodeURI(vehicleMakes.find((make) => make.id === information.vehicleData.make)!.make);
-        const encodedModel = encodeURI(Object.values(vehicleModels[Number(information.vehicleData.make)]).find((model) => model.id === information.vehicleData.model)?.model!);
-        const newUri = encodeURI(`posts/${id}/${encodedMake}-${encodedModel}-${information.vehicleData.year}/${periods.time_created}`)
-        router.push(newUri);
+        // const encodedMake = encodeURI(vehicleMakes.find((make) => make.id === information.vehicleData.make)!.make);
+        // const encodedModel = encodeURI(Object.values(vehicleModels[Number(information.vehicleData.make)]).find((model) => model.id === information.vehicleData.model)?.model!);
+        // const newUri = encodeURI(`posts/${id}/${encodedMake}-${encodedModel}-${information.vehicleData.year}/${periods.time_created}`)
+        // router.push(newUri);
     }
 
     const transitions = useTransition(!isLoading, {

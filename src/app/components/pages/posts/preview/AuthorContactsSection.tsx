@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import toast from "react-hot-toast";
-import axios from "axios";
 
 import { animated, useSpring } from '@react-spring/web';
 import { Spinner } from "@/components/spinner";
@@ -11,20 +10,33 @@ import { Heart, Link, Phone } from "lucide-react";
 
 import { useLanguage } from "@/lib/languageUtils";
 import { Post, PostStatistics } from "@/types/post.type";
-import { useRouter } from "next/navigation";
-import { getPostById } from "@/actions/posts/post.actions";
+import { addToFavoritesById, getPostById } from "@/actions/posts/post.actions";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const AuthorContactsSection = ({ post, phoneNumber }: { post: Post, phoneNumber: string }) => {
     const t = useLanguage();
     const { user, isLoaded } = useUser();
     const [isPhoneExpanded, setIsPhoneExpanded] = useState<boolean>(false);
-    const [postLikes, setPostLikes] = useState<string[]>(post.statistics.times_liked);
 
     const [phoneButtonSpring, api] = useSpring(() => ({
         config: { duration: 1000 }
     }));
 
-    const router = useRouter();
+    const queryClient = useQueryClient();
+
+    const { isLoading, data: postStats } = useQuery({
+        queryKey: ['getPostStatistics'],
+        queryFn: async () => {
+            const getPostResponse = await getPostById(post.id!);
+            if (!getPostResponse) {
+                location.reload();
+                return null;
+            }
+
+            return getPostResponse.statistics as PostStatistics;
+        },
+        staleTime: Infinity
+    });
 
     const HandlePhoneClick = () => {
         if (!user) {
@@ -54,30 +66,25 @@ export const AuthorContactsSection = ({ post, phoneNumber }: { post: Post, phone
             return;
         }
 
-        const favoriteResponse = axios.post(`${process.env.defaultApiEndpoint}/api/posts/setFavoriteById`, { postId: post.id }).then(res => res.data);
-
-        const responseData = await favoriteResponse as { status: number, translation: string };
-        if (responseData.status !== 200) {
-            toast.error(t.general[responseData.translation as keyof typeof t.general], { duration: 5000 });
+        const { status, translation } = await addToFavoritesById(post.id!);
+        if (status !== 200) {
+            toast.error(t.general[translation as keyof typeof t.general], { duration: 5000 });
             return;
         }
 
-        const getPostResponse = await getPostById(post.id!);
+        // const getPostResponse = await getPostById(post.id!);
 
-        if (!getPostResponse) {
-            toast.error('Error, post not found', { duration: 5000 });
-            return;
-        }
+        // if (!getPostResponse) {
+        //     toast.error('Error, post not found', { duration: 5000 });
+        //     return;
+        // }
 
-        const postStats = getPostResponse.statistics as PostStatistics;
+        // const postStats = getPostResponse.statistics as PostStatistics;
 
-        setPostLikes(postStats.times_liked);
+        // setPostLikes(postStats.times_liked);
 
-        await toast.promise(favoriteResponse, {
-            loading: t.general.action_in_progress,
-            error: t.general.server_error,
-            success: t.general[responseData.translation as keyof typeof t.general],
-        }, { duration: 5000 });
+        toast.success(t.general[translation as keyof typeof t.general], { duration: 5000 });
+        await queryClient.invalidateQueries({ queryKey: ['getPostStatistics'] });
     };
 
     return (
@@ -98,9 +105,11 @@ export const AuthorContactsSection = ({ post, phoneNumber }: { post: Post, phone
                             <button type="button" onClick={HandleCopyLinkClick} className={`flex bg-[#FFF] w-full px-[1.31rem] py-[0.94rem] laptop:py-0 rounded-[0.1875rem] items-center justify-center hover:opacity-[0.6] duration-700`}>
                                 <Link className={`text-primary w-[0.9375rem] h-[0.9375rem] full_hd:w-[1.25rem] full_hd:h-[1.25rem]`} />
                             </button>
-                            <button type="button" onClick={HandleLikeClick} className={`flex bg-[#FFF] w-full px-[1.31rem] py-[0.94rem] laptop:py-0 rounded-[0.1875rem] items-center justify-center hover:opacity-[0.6] duration-700`}>
-                                <Heart className={`${user && postLikes.includes(user.id) ? `text-highlight` : `text-primary`} w-[0.9375rem] h-[0.9375rem] full_hd:w-[1.25rem] full_hd:h-[1.25rem]`} />
-                            </button>
+                            {!isLoading && postStats && (
+                                <button type="button" onClick={HandleLikeClick} className={`flex bg-[#FFF] w-full px-[1.31rem] py-[0.94rem] laptop:py-0 rounded-[0.1875rem] items-center justify-center hover:opacity-[0.6] duration-700`}>
+                                    <Heart className={`${user && postStats.times_liked.includes(user.id) ? `text-highlight` : `text-primary`} w-[0.9375rem] h-[0.9375rem] full_hd:w-[1.25rem] full_hd:h-[1.25rem]`} />
+                                </button>
+                            )}
                         </>
                     )}
                 </>

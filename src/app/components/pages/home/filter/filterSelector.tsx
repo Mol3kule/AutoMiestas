@@ -5,7 +5,6 @@ import { Button } from "@/shadcn-components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/shadcn-components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shadcn-components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shadcn-components/ui/select";
-import { getVehicles } from "@/lib/getVehicles";
 import { useLanguage } from "@/lib/languageUtils";
 import { useFilterStore } from "@/store/filter/filter.store";
 import { useVehicleStore } from "@/store/vehicles/vehicle.store";
@@ -28,30 +27,9 @@ type TInputSelectProps = TInputProps & {
 export const FilterSelector = () => {
     const router = useRouter();
     const { category, makeId, modelId, setCategory, setMakeId, setModelId } = useFilterStore();
-    const { vehicleMakes, vehicleModels, setMakes, setModels } = useVehicleStore();
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const { vehicleMakes, vehicleModels } = useVehicleStore();
 
     const t = useLanguage();
-
-    useEffect(() => {
-        if (vehicleMakes.length > 0 && vehicleModels.length > 0) {
-            setIsLoading(false);
-            return;
-        }
-
-        setIsLoading(true);
-        if (!vehicleMakes.length || !vehicleModels.length) {
-            getVehicles().then(async (res) => {
-                const { makesData, modelsData } = res;
-
-                if (makesData.status === 200 && modelsData.status === 200) {
-                    setMakes(makesData.data);
-                    setModels(modelsData.data);
-                }
-            });
-        }
-        setIsLoading(false);
-    }, []);
 
     return (
         <div className={`flex flex-col gap-[0.87rem]`}>

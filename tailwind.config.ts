@@ -26,7 +26,7 @@ module.exports = {
       highlight: "#5C8374",
       highlight_secondary: "#F5F6F9",
       error: "#FDBDBD",
-      error_secondary: "#FF6F6F",
+      error_secondary: "#E74F71",
       error_third: "#FFA800"
     },
     screens: {

@@ -3,6 +3,8 @@
 import Stripe from 'stripe';
 import { auth } from '@clerk/nextjs';
 import prisma from '@/prisma/prisma';
+import { deleteImages } from '../s3/s3.actions';
+import { PostImage } from '@/types/post.type';
 
 export type TProduct = {
     id: string;
@@ -89,3 +91,97 @@ export const getProducts = async () => {
         return { status: 500, error };
     }
 };
+
+export const getSubscription = async (subscriptionId: string) => {
+    try {
+        const { userId } = auth();
+
+        if (!userId) {
+            return { status: 401, translation: 'unauthorized' };
+        }
+
+        if (!subscriptionId) {
+            return { status: 400, translation: "bad_request" };
+        }
+
+        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+        const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+
+        const product = await stripe.products.retrieve(subscription.items.data[0].price.product as string);
+
+        const subscriptionData = {
+            id: subscription.id,
+            current_period_end: subscription.current_period_end,
+        }
+
+        const productData = {
+            id: product.id,
+            name: product.name,
+            metadata: product.metadata
+        }
+
+        return { status: 200, subscription: subscriptionData, product: productData };
+    } catch (error) {
+        console.log(`[getSubscription]: ${error}`);
+        return { status: 500, error };
+    }
+};
+
+export const deleteSubscription = async (postId: number) => {
+    try {
+        const { userId } = auth();
+
+        if (!userId) {
+            return { status: 401, error: "Unauthorized" };
+        }
+
+        if (typeof postId !== "number") {
+            return { status: 400, error: 'Bad request' };
+        }
+
+        const post = await prisma.posts.findUnique({
+            where: {
+                id: postId,
+                authorId: userId
+            },
+            select: {
+                id: true, subscriptionId: true, images: true
+            }
+        });
+
+        if (!post) {
+            return { status: 404, error: 'Post not found' };
+        }
+
+        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+        try {
+            await stripe.subscriptions.cancel(post.subscriptionId!);
+        } catch (error) {
+            console.log(error);
+            return { status: 500 };
+        }
+
+        const deleteImagesResponse = await deleteImages(post.images as PostImage[]);
+        if (deleteImagesResponse.status !== 200) {
+            return { status: 500, error: deleteImagesResponse.message };
+        }
+
+        return { status: 200 };
+    } catch (error) {
+        console.log(`[deleteSubscription]: ${error}`);
+        return { status: 500, error };
+    }
+};
+
+export const createCustomer = async (email: string) => {
+    try {
+        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+        const customer = await stripe.customers.create({
+            email
+        });
+        return { status: 200, customer };
+    } catch (error) {
+        console.log(`[createCustomer]: ${error}`);
+        return { status: 500, error };
+    }
+}

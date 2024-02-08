@@ -1,4 +1,4 @@
-import { authMiddleware, redirectToSignIn } from "@clerk/nextjs";
+import { authMiddleware } from "@clerk/nextjs";
 import { NextResponse } from "next/server";
 
 export default authMiddleware({
@@ -6,21 +6,10 @@ export default authMiddleware({
     "/",
     "/api/auth/createUser",
     "/sso-callback",
-    "/google-sign-in",
     
     "/posts/(.*)",
-    "/api/posts/getPostByParams",
-    "/api/posts/getPostById",
-    "/api/posts/getPostsByCategory",
-    "/api/vehicles/getAllMakes",
-    "/api/vehicles/getAllModels",
     
-    // "/api/scrape/getVehicleModels",
-    // "/api/scrape/getVehicleMakes",
-
-    // "/api/posts/uploadImage",
     "/api/stripe/webhook",
-    // "/api/scrape/addMotorcycleMakes",
   ],
   afterAuth(auth, req, evt) {
     // Handle users who aren't authenticated

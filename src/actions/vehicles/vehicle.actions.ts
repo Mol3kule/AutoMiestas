@@ -1,17 +1,24 @@
 "use server";
 
 import prisma from "@/prisma/prisma";
-import { TVehicleModel } from "@/types/vehicle.type";
+import { TVehicleMake, TVehicleModels } from "@/types/vehicle.type";
 import { Prisma } from "@prisma/client";
 
+export const getVehicles = async () => {
+    const makes = await getVehicleMakes();
+    const models = await getVehicleModels();
+
+    return { makes, models };
+}
+
 export const getVehicleMakes = async () => {
-    return await prisma.makes.findMany();
+    return await prisma.makes.findMany() as TVehicleMake[];
 };
 
 export const getVehicleModels = async () => {
     const result = await prisma.make_models.findMany();
 
-    const modelsByMakeId: { [key: string]: Array<TVehicleModel> } = {};
+    const modelsByMakeId: TVehicleModels = {};
     await Promise.all(result?.map((modelData) => {
         const makeId = modelData.make_id;
 

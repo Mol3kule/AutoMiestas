@@ -2,7 +2,7 @@ import { AuthenticateWithRedirectCallback } from "@clerk/nextjs"
 
 const SSOCallbackPage = () => {
     return (
-        <AuthenticateWithRedirectCallback afterSignInUrl={'/google-sign-in'} afterSignUpUrl={'/google-sign-in'} />
+        <AuthenticateWithRedirectCallback afterSignInUrl={'/sign-in'} afterSignUpUrl={'/sign-in'} />
     )
 }
 

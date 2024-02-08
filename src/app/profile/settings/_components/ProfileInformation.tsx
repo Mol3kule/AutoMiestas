@@ -4,7 +4,7 @@ import { useLanguage } from "@/lib/languageUtils";
 import { UserType } from "@/types/user.type";
 import { useState } from "react";
 import { NameEditModal } from "./_modals/NameEdit.modal";
-import { DialogBox } from "@/app/components/dialogs/dialogBox";
+import { DialogBox } from "@/components/dialogs/dialogBox";
 
 export const ProfileInformation = ({ userData }: { userData: UserType }) => {
     const t = useLanguage();

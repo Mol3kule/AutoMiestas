@@ -1,32 +1,33 @@
 "use client";
 
+import { getSubscription } from "@/actions/stripe/stripe.actions";
 import { getDateFromTimestamp, getDateFromTimestampWithTime } from "@/lib/getDate";
 import { useLanguage } from "@/lib/languageUtils";
-import { PostVehicle } from "@/types/post.type";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import Stripe from "stripe";
+import { Post } from "@/types/post.type";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 
-export const InformationSection = ({ postData }: { postData: PostVehicle }) => {
+export const InformationSection = ({ postData }: { postData: Post }) => {
     const t = useLanguage();
-    const [stripeData, setStripeData] = useState<Stripe.Response<Stripe.Subscription>>(null!);
     const [boostAvailableTimestamp, setBoostAvailableTimestamp] = useState<number>(null!);
 
     const { boosts } = postData;
 
-    useEffect(() => {
-        axios.post(`${process.env.defaultApiEndpoint}/api/stripe/getStripeDataBySubId`, {
-            subscriptionId: postData.subscriptionId
-        }).then((res) => {
-            const { status, data, metadata } = res.data;
+    const { isLoading, data: subscriptionData } = useQuery({
+        queryKey: ["getSubscriptionData", { subscriptionId: postData.subscriptionId }],
+        queryFn: async () => {
+            if (!postData.subscriptionId) return null;
+            const { status, subscription, product } = await getSubscription(postData.subscriptionId);
 
-            if (status === 200) {
-                setStripeData(data);
-                setBoostAvailableTimestamp(new Date(Number(boosts.time_created)).setDate(new Date(Number(boosts.time_created)).getDate() + Number(metadata.boost_timeout)));
+            if (status !== 200 || !subscription) {
+                return null;
             }
-        });
-    }, []);
 
+            setBoostAvailableTimestamp(new Date(Number(boosts.time_created)).setDate(new Date(Number(boosts.time_created)).getDate() + Number(product.metadata.boost_timeout)));
+            return { subscription };
+        },
+        staleTime: Infinity
+    });
 
     return (
         <div className={`flex flex-col mt-[0.88rem] gap-[1.25rem] text-base full_hd:text-base_2xl`}>
@@ -35,15 +36,19 @@ export const InformationSection = ({ postData }: { postData: PostVehicle }) => {
                 <CardItem placeholder={t.my_posts.likes} text={postData.statistics.times_liked.length.toString()} />
                 <CardItem placeholder={t.my_posts.views} text={postData.statistics.times_viewed.length.toString()} />
                 <CardItem placeholder={t.my_posts.post_uploaded} text={getDateFromTimestamp(postData.periods.time_created)} />
-                {stripeData && (
+                {!isLoading && (
                     <>
-                        <CardItem placeholder={t.my_posts.next_payment} text={getDateFromTimestamp(stripeData.current_period_end * 1000)} />
-                    </>
-                )}
-                {postData.boosts.time_created && boostAvailableTimestamp && (
-                    <>
-                        <CardItem placeholder={t.my_posts.last_boost} text={getDateFromTimestampWithTime(postData.boosts.time_created)} />
-                        <CardItem placeholder={t.my_posts.next_boost} text={getDateFromTimestampWithTime(boostAvailableTimestamp)} />
+                        {subscriptionData && (
+                            <>
+                                <CardItem placeholder={t.my_posts.next_payment} text={getDateFromTimestamp(subscriptionData.subscription.current_period_end * 1000)} />
+                            </>
+                        )}
+                        {postData.boosts.time_created && boostAvailableTimestamp && (
+                            <>
+                                <CardItem placeholder={t.my_posts.last_boost} text={getDateFromTimestampWithTime(postData.boosts.time_created)} />
+                                <CardItem placeholder={t.my_posts.next_boost} text={getDateFromTimestampWithTime(boostAvailableTimestamp)} />
+                            </>
+                        )}
                     </>
                 )}
             </div>

@@ -17,9 +17,7 @@ export type TVehicleMake = {
 /**
  * @param key - Make ID
  */
-export type TVehicleModels = {
-    [key: number]: TVehicleModel;
-};
+export type TVehicleModels = { [key: number]: Array<TVehicleModel> };
 
 /**
  * @param id - Database ID

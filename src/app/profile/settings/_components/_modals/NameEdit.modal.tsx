@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 
 import { useLanguage } from "@/lib/languageUtils";
 import { EditWrapperModal } from "./EditWrapper.modal";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { Label } from "@/shadcn-components/ui/label";
+import { Input } from "@/shadcn-components/ui/input";
 import toast from "react-hot-toast";
 
 type NameEditModalProps = {

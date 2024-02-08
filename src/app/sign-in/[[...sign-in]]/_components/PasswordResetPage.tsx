@@ -2,12 +2,12 @@
 
 import { FormEvent, Suspense, useState } from "react";
 import { useSignIn } from "@clerk/nextjs";
-import { AuthWrapper } from "@/app/components/wrappers/auth-wrapper";
-import { Spinner } from "@/app/components/spinner";
-import { CustomInput } from "@/app/components/inputs/CustomInput";
+import { AuthWrapper } from "@/components/wrappers/auth-wrapper";
+import { Spinner } from "@/components/spinner";
+import { CustomInput } from "@/components/inputs/CustomInput";
 import { ViewTypes } from "./AuthWrap";
 import { useAuthStore } from "@/store/auth/auth.store";
-import { CooldownButton } from "@/app/components/buttons/cooldownButton";
+import { CooldownButton } from "@/components/buttons/cooldownButton";
 import { useRouter } from "next/navigation";
 
 type PasswordResetPageProps = {

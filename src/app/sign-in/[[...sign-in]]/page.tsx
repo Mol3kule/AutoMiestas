@@ -1,12 +1,17 @@
-import { auth } from "@clerk/nextjs";
+import { auth, clerkClient } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 import { AuthWrap } from "./_components/AuthWrap";
+import { createUser } from "@/actions/users/user.actions";
 
-const SignInPage = () => {
+const SignInPage = async () => {
     const { userId } = auth();
 
-    if (userId !== null) {
-        redirect('/');
+    if (userId) {
+        const userData = await clerkClient.users.getUser(userId!);
+        if (userData) {
+            const { status } = await createUser(userId!, userData.emailAddresses[0].emailAddress, userData.firstName!, userData.lastName!, userData.phoneNumbers[0].phoneNumber, null!);
+            if (status === 200) redirect('/');
+        }
     }
 
     return (

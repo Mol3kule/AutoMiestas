@@ -2,8 +2,6 @@ import { getPostBySlug } from "@/actions/posts/post.actions";
 import { PostPage } from "@/components/pages/posts/preview/postPage";
 import { Spinner } from "@/components/spinner";
 import { Post } from "@/types/post.type";
-import { auth, clerkClient } from "@clerk/nextjs";
-import axios from "axios";
 import { Suspense } from "react";
 
 type RenderPostPageProps = {

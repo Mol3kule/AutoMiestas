@@ -4,15 +4,15 @@ import { FormEvent, useState } from "react";
 import { useSignUp } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 
-import { CustomInput } from "@/app/components/inputs/CustomInput";
-import { AuthWrapper } from "@/app/components/wrappers/auth-wrapper";
-import { LoginWithGoogleButton } from "@/app/components/buttons/loginWithGoogleButton";
+import { CustomInput } from "@/components/inputs/CustomInput";
+import { AuthWrapper } from "@/components/wrappers/auth-wrapper";
+import { LoginWithGoogleButton } from "@/components/buttons/loginWithGoogleButton";
 
 import { useAuthStore } from "@/store/auth/auth.store";
 import { ViewTypes } from "./AuthWrap";
 import { z } from "zod";
-import { CodeVerifyModal } from "@/app/components/modals/code_verify";
-import axios from "axios";
+import { CodeVerifyModal } from "@/components/modals/code_verify";
+import { createUser } from "@/actions/users/user.actions";
 
 type LoginPageProps = {
     ChangeView: (type: ViewTypes) => void;
@@ -148,9 +148,6 @@ export const RegisterPage = ({ ChangeView }: LoginPageProps) => {
             });
             setVerificationCode(''); // Clear input
 
-            console.log(verificationResponse);
-            console.log(verificationResponse?.status);
-
             if (verificationResponse?.status === "missing_requirements") {
                 await signUp?.prepareVerification({ strategy: 'phone_code' });
                 setIsLoading(false);
@@ -198,16 +195,8 @@ export const RegisterPage = ({ ChangeView }: LoginPageProps) => {
             if (verificationResponse?.status === "complete") {
                 if (!setActive) return;
 
-                const createResponse = await axios.post(`${process.env.defaultApiEndpoint}/api/auth/createUser`, {
-                    userId: verificationResponse.createdUserId,
-                    emailAddress: email,
-                    first_name,
-                    last_name,
-                    phone_number,
-                    organization
-                }).then((response) => response.data);
-
-                if (createResponse.status === 200) {
+                const { status } = await createUser(verificationResponse.createdUserId!, email, first_name, last_name, phone_number, organization);
+                if (status === 200) {
                     setActive({ session: verificationResponse.createdSessionId });
                     setVerificationCode(''); // Clear input
                     setEmail('');

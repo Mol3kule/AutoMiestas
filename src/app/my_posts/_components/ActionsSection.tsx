@@ -1,45 +1,47 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import axios from "axios";
 
 import { useLanguage } from "@/lib/languageUtils";
 import { ProductsModal } from "@/components/modals/products-modal";
 import { DialogBox } from "@/components/dialogs/dialogBox";
 import { Post } from "@/types/post.type";
+import { boostPost } from "@/actions/posts/post.actions";
+import { useQueryClient } from "@tanstack/react-query";
+import { createCheckoutSession, deleteSubscription } from "@/actions/stripe/stripe.actions";
 
 export const ActionsSection = ({ postData }: { postData: Post }) => {
     const { status, isSubscriptionActive } = postData;
-    const router = useRouter();
     const t = useLanguage();
+
+    const queryClient = useQueryClient();
 
     const [productsDisplayed, setProductsDisplayed] = useState<boolean>(false);
     const [isDeleting, setIsDeleting] = useState(false);
 
     const handleSubscription = async (priceId: string) => {
-        const { status, url } = await axios.post(`${process.env.defaultApiEndpoint}/api/stripe/processPayment`, {
-            priceId: priceId,
-            postId: postData.id
-        }).then((res) => res.data);
-
-        if (status !== 200) {
-            location.reload();
+        const { status, url } = await createCheckoutSession(priceId, postData.id!);
+        
+        if (status !== 200 || !url) {
+            toast.error('Ivyko klaida, perkraukite puslapį ir bandykite dar kartą', { duration: 5000 });
             return;
         }
 
         window.location.assign(url);
     };
 
-    const boostPost = async () => {
-        const boostResponse = await axios.post(`${process.env.defaultApiEndpoint}/api/posts/boostPost`, { postId: postData.id }).then((res) => res.data);
-        if (boostResponse.status === 200) {
-            toast.success(t.my_posts.post_boost_success, { duration: 5000 });
-            router.refresh();
-        } else {
-            toast.error(t.my_posts[boostResponse.translation as keyof typeof t.my_posts], { duration: 5000 });
+    const boostPostBtn = async () => {
+        if (typeof postData.id !== 'number') return;
+        const { status, translation } = await boostPost(postData.id);
+        if (status !== 200) {
+            if (!translation) return;
+            toast.error(t.my_posts[translation as keyof typeof t.my_posts], { duration: 5000 });
+            return;
         }
+
+        await queryClient.invalidateQueries({ queryKey: ["getMyPosts"] });
+        toast.success(t.my_posts.post_boost_success, { duration: 5000 });
     };
 
 
@@ -49,13 +51,13 @@ export const ActionsSection = ({ postData }: { postData: Post }) => {
             return;
         }
 
-        const deleteResponse = await axios.post(`${process.env.defaultApiEndpoint}/api/stripe/deleteSubscription`, { postId: Number(postData.id) }).then(res => res.data);
-        if (deleteResponse.status !== 200) {
+        const { status: deleteStatus } = await deleteSubscription(Number(postData.id));
+        if (deleteStatus !== 200) {
             toast.error(t.general.bad_request, { duration: 5000 });
             return;
         }
 
-        location.reload();
+        await queryClient.invalidateQueries({ queryKey: ["getMyPosts"] });
     };
 
     return (
@@ -71,7 +73,7 @@ export const ActionsSection = ({ postData }: { postData: Post }) => {
                         <>
                             <div className={`flex gap-[1.25rem]`}>
                                 {status.isPublished && (
-                                    <button type="button" className={`px-[0.62rem] py-[0.5rem] text-[#FFF] rounded-[0.1875rem] bg-highlight disabled:cursor-not-allowed disabled:opacity-80`} onClick={boostPost}>{t.my_posts.boost_post}</button>
+                                    <button type="button" className={`px-[0.62rem] py-[0.5rem] text-[#FFF] rounded-[0.1875rem] bg-highlight disabled:cursor-not-allowed disabled:opacity-80`} onClick={boostPostBtn}>{t.my_posts.boost_post}</button>
                                 )}
                                 <button type="button" className={`px-[0.62rem] py-[0.5rem] w-full laptop:w-auto text-[#FFF] rounded-[0.1875rem] bg-error_secondary`} onClick={() => setIsDeleting(true)}>{t.my_posts.delete_post}</button>
                             </div>

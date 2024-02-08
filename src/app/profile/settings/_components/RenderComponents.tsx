@@ -5,7 +5,6 @@ import { UserType } from "@/types/user.type";
 import { ProfileInformation } from "./ProfileInformation";
 import { FormEvent, useEffect, useState } from "react";
 import { useLanguage } from "@/lib/languageUtils";
-import axios from "axios";
 
 const formValidationSchema = z.object({
     first_name: z.string().min(3).max(20),

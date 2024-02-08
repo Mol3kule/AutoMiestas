@@ -1,9 +1,16 @@
-enum MailType { Success, Error, Warning, Info };
+export enum MailType { Success, Error, Warning, Info };
 
-export type MailDataType = {
-    title: number;
-    message: number | string;
-}; 
+type MailMessageType = {
+    title: string;
+    message: string;
+};
+
+type MailMessagePostType = {
+    type: Number;
+    errors: Number[];
+}
+
+export type MailDataType = MailMessageType | MailMessagePostType;
 
 export type MailBoxType = {
     id?: number; // Autoincrement

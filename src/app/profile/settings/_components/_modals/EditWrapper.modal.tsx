@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/shadcn-components/ui/button"
 import {
     Dialog,
     DialogContent,
@@ -8,7 +8,7 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/shadcn-components/ui/dialog";
 import { useLanguage } from "@/lib/languageUtils";
 
 type EditWrapperModalProps = {

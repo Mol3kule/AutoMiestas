@@ -1,7 +1,5 @@
 'use client';
 
-import axios from "axios";
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useFilterStore } from "@/store/filter/filter.store";
 import { Rating, VehicleObj } from "@/classes/Vehicle";
@@ -11,6 +9,8 @@ import { useVehicleStore } from "@/store/vehicles/vehicle.store";
 import { Heart } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { getPostsByCategory } from "@/actions/posts/post.actions";
 
 type PostSecondaryInfoProps = {
     post: Post;
@@ -19,7 +19,6 @@ type PostSecondaryInfoProps = {
 export const SecondaryInformationSection = ({ post }: PostSecondaryInfoProps) => {
     const t = useLanguage();
     const { category } = useFilterStore();
-    const [recommendedPosts, setRecommendedPosts] = useState<Post[]>([]);
     const router = useRouter();
 
     const { user, isLoaded } = useUser();
@@ -28,15 +27,12 @@ export const SecondaryInformationSection = ({ post }: PostSecondaryInfoProps) =>
 
     const { information } = post;
 
-    useEffect(() => {
-        axios.post(`${process.env.defaultApiEndpoint}/api/posts/getPostsByCategory`, { category }).then(res => {
-            const { status, data } = res.data;
-
-            if (status === 200) {
-                setRecommendedPosts(data);
-            }
-        });
-    }, []);
+    const { isLoading, data: recommendedPosts } = useQuery({
+        queryKey: ['getPostsByCategory'],
+        queryFn: async () => {
+            return await getPostsByCategory(category) as Post[];
+        }
+    });
 
     const CommentSection = () => {
         return (
@@ -72,11 +68,7 @@ export const SecondaryInformationSection = ({ post }: PostSecondaryInfoProps) =>
         if (postData.id === post.id) return null; // Do not display the same post
 
         const RedirectToPost = () => {
-            // const make = encodeURI(vehicleMakes.find(make => make.id === vehicleData.make)?.make!);
-            // const model = encodeURI(Object.values(vehicleModels[vehicleData.make]).find(model => model.id === vehicleData.model)?.model!);
-            // const newUrl = encodeURI(`/posts/${id}/${make}-${model}-${vehicleData.year}/${periods.time_created}`);
-
-            // router.push(newUrl);
+            router.push(`/posts/${postData.slug}`);
         }
 
         return (
@@ -124,7 +116,7 @@ export const SecondaryInformationSection = ({ post }: PostSecondaryInfoProps) =>
             <div className={`flex flex-col gap-[0.8rem]`}>
                 <span className={`text-primary text-base full_hd:text-base_2xl font-medium`}>{t.post.labels.more_recommended}</span>
                 <div className={`grid grid-cols-1 laptop:grid-cols-3 flex-wrap gap-[1.56rem] justify-between pt-[0.8rem]`}>
-                    {recommendedPosts.map((post, idx) => (
+                    {recommendedPosts && recommendedPosts.map((post, idx) => (
                         <VehiclePostCard postData={post} key={`vehicle_post_card_${idx}`} />
                     ))}
                 </div>
@@ -141,7 +133,7 @@ export const SecondaryInformationSection = ({ post }: PostSecondaryInfoProps) =>
                 </>
             )}
             <VehicleSpecs />
-            {recommendedPosts.length > 0 && (
+            {!isLoading && recommendedPosts && recommendedPosts.length > 0 && (
                 <>
                     <hr className={`text-border bg-border`} />
                     <MorePosts />

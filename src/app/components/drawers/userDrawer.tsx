@@ -51,7 +51,8 @@ export const UserDrawer = () => {
     const HandleSignOut = async () => {
         setIsExpanded(false);
         await signOut();
-        router.push('/');
+        router.push(`/`);
+        router.refresh();
     }
 
     return (
