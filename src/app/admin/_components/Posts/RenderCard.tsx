@@ -16,6 +16,8 @@ import { animated, useTransition } from "@react-spring/web";
 import toast from "react-hot-toast";
 import { useState } from "react";
 import { StopPostModal } from "@/components/modals/stop-post-modal";
+import { DialogBox } from "@/components/dialogs/dialogBox";
+import { deleteSubscription } from "@/actions/stripe/stripe.actions";
 
 type PostStatus = "active" | "inactive";
 
@@ -103,6 +105,7 @@ const PostCard = ({ children, post }: PostCardProps) => {
 
 export const RenderActivePostCard = ({ post }: { post: Post }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isDeleteActive, setIsDeleteActive] = useState(false);
 
     const queryClient = useQueryClient();
     const t = useLanguage();
@@ -120,15 +123,22 @@ export const RenderActivePostCard = ({ post }: { post: Post }) => {
         toast.success(`Sėkmingai sustabdytas skelbimas - #${post.id}`);
     };
 
-    const DeleteBtn = async () => { };
+    const DeleteBtn = async (value: boolean) => {
+        setIsDeleteActive(false);
+        if (!value) return;
+
+        await deleteSubscription(post.id!);
+        await queryClient.invalidateQueries({ queryKey: ["getAllPosts"], exact: true });
+    };
 
     return (
         <PostCard post={post}>
             <div className={`flex gap-[0.87rem]`}>
                 <RenderActionButton className={`bg-highlight text-[#FFF]`} onClick={() => setIsModalOpen(true)}>Sustabdyti skelbimą</RenderActionButton>
-                <RenderActionButton className={`bg-error_secondary text-[#FFF]`} onClick={DeleteBtn}>Pašalinti</RenderActionButton>
+                <RenderActionButton className={`bg-error_secondary text-[#FFF]`} onClick={() => setIsDeleteActive(true)}>Pašalinti</RenderActionButton>
             </div>
             <StopPostModal isOpen={isModalOpen} setOpen={setIsModalOpen} onSelect={HandleStop} />
+            <DialogBox isOpen={isDeleteActive} title={`Skelbimo pašalinimas`} description={`Ar tikrai norite pašalinti skelbimą? Šis veiksmas ištrins skelbimą ir atšauks prenumeratą.`} onSubmit={DeleteBtn} />
         </PostCard>
     )
 };

@@ -1,16 +1,16 @@
 'use client';
 
-import { PostObj } from "@/classes/PostCategories";
+import { Categories, PostObj } from "@/classes/PostCategories";
 import { Button } from "@/shadcn-components/ui/button";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/shadcn-components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/shadcn-components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shadcn-components/ui/select";
 import { useLanguage } from "@/lib/languageUtils";
-import { useFilterStore } from "@/store/filter/filter.store";
 import { useVehicleStore } from "@/store/vehicles/vehicle.store";
 import { Check, ChevronDown } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState } from "react";
+import { VehicleObj } from "@/classes/Vehicle";
 
 type TInputProps = {
     value: string,
@@ -25,37 +25,62 @@ type TInputSelectProps = TInputProps & {
 }
 
 export const FilterSelector = () => {
+    const searchParams = useSearchParams();
     const router = useRouter();
-    const { category, makeId, modelId, setCategory, setMakeId, setModelId } = useFilterStore();
+    const t = useLanguage();
+
     const { vehicleMakes, vehicleModels } = useVehicleStore();
 
-    const t = useLanguage();
+    const [isExpanded, setIsExpanded] = useState(false);
+    const category = searchParams && searchParams.get("category") ? Number(searchParams.get("category")) : Categories.vehicle;
+    const makeId = searchParams && searchParams.get("make") ? Number(searchParams.get("make")) : null;
+    const modelId = searchParams && searchParams.get("model") ? Number(searchParams.get("model")) : null;
+
+    const onCategoryChange = (value: number) => {
+        if (value === category) return;
+        router.push(`?category=${value}`);
+    };
+
+    const onMakeChange = (value: number) => {
+        if (value === makeId) return;
+        router.push(`?category=${category}&make=${value}`);
+    };
+
+    const onModelChange = (value: number) => {
+        if (value === modelId) return;
+        router.push(`?category=${category}&make=${makeId}&model=${value}`);
+    };
 
     return (
         <div className={`flex flex-col gap-[0.87rem]`}>
             <div className={`w-full flex justify-between`}>
                 <p className={`text-primary text-base full_hd:text-base_2xl`}>Paieška</p>
-                <p className={`text-primary text-base full_hd:text-base_2xl underline`}>Detali paieška</p>
+                <button className={`text-primary text-base full_hd:text-base_2xl underline`} onClick={() => setIsExpanded(prev => !prev)}>{isExpanded ? `Uždaryti` : `Detali paieška`}</button>
             </div>
             <div className={`grid grid-cols-1 laptop:grid-cols-4 gap-[1.25rem] px-[1.25rem] py-[1.25rem] bg-highlight_secondary rounded-[0.1875rem]`}>
                 <FilterSelectorInput
                     value={category !== null ? category.toString() : ``}
                     items={Object.values(PostObj.getCategories()).map((objKey, idx) => ({ id: idx.toString(), label: t.post.categories[PostObj.getLabelByIndex(Number(objKey)) as keyof typeof t.post.categories] }))}
                     placeholder={t.general.category}
-                    setValue={(value) => setCategory(Number(value))}
+                    setValue={(value) => onCategoryChange(Number(value))}
                 />
-                <PostCreateSelectInputSearchable
-                    value={makeId !== null ? makeId.toString() : ``}
-                    items={vehicleMakes.map((make) => ({ id: make.id.toString(), label: make.make }))}
-                    placeholder={t.vehicleInfo.objKeys.make}
-                    setValue={(value) => setMakeId(Number(value))}
-                />
-                <PostCreateSelectInputSearchable
-                    value={makeId !== null ? modelId.toString() : ``}
-                    items={makeId !== null ? Object.values(vehicleModels[makeId]).map((model) => ({ id: model.id.toString(), label: model.model })) : []}
-                    placeholder={t.vehicleInfo.objKeys.model}
-                    setValue={(value) => setModelId(Number(value))}
-                />
+                {VehicleObj.isVehicleType(category) && (
+                    <>
+                        <PostCreateSelectInputSearchable
+                            value={makeId !== null ? makeId.toString() : ``}
+                            items={vehicleMakes.filter(make => make.type.includes(category)).map((make) => ({ id: make.id.toString(), label: make.make }))}
+                            placeholder={t.vehicleInfo.objKeys.make}
+                            setValue={(value) => onMakeChange(Number(value))}
+                        />
+                        <PostCreateSelectInputSearchable
+                            value={modelId !== null ? modelId.toString() : ``}
+                            items={makeId !== null ? Object.values(vehicleModels[makeId]).map((model) => ({ id: model.id.toString(), label: model.model })) : []}
+                            placeholder={t.vehicleInfo.objKeys.model}
+                            setValue={(value) => onModelChange(Number(value))}
+                            isDisabled={makeId === null}
+                        />
+                    </>
+                )}
                 <button type={`button`} className={`flex items-center justify-center py-[0.69rem] bg-primary rounded-[0.1875rem] text-[#FFF] text-base full_hd:text-base_2xl`}>
                     {t.general.search}
                 </button>

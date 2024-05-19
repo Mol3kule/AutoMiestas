@@ -7,6 +7,7 @@ import { PageWrapper } from './components/wrappers/page-wrapper';
 
 import { Toaster } from 'react-hot-toast';
 import { ReactQueryProviderWrapper } from './components/wrappers/query-provider-wrapper';
+import { FooterBar } from './components/footer/footer-bar';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -21,6 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <PageWrapper>
               {children}
             </PageWrapper>
+            <FooterBar />
           </body>
         </html>
       </ReactQueryProviderWrapper>

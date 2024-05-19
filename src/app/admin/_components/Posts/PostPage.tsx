@@ -42,7 +42,7 @@ export const PostAdminPage = () => {
     const isCentered = isLoading || !PostItems.length;
 
     return (
-        <div className={`flex-1 ${isCentered ? `flex items-center justify-center` : ``}`}>
+        <div className={`flex flex-col flex-1 ${isCentered ? `flex items-center justify-center` : ``}`}>
             {!isLoading ? (
                 <RenderContent currentPage={currentPage} params={params} activeWindow={params[1]} items={PostItems} />
             ) : (
@@ -57,26 +57,28 @@ const RenderContent = ({ currentPage, params, activeWindow, items }: { currentPa
         <>
             {params.includes(activeWindow) && (
                 items.length > 0 ? (
-                    <div className={`grid grid-cols-1 laptop:grid-cols-3 flex-wrap gap-[1.56rem] justify-between`}>
-                        {items.map((post, idx) => (
-                            <div key={`admin_${activeWindow}_post_${idx}`}>
-                                {activeWindow === "active" && (
-                                    <RenderActivePostCard post={post} />
-                                )}
-                                {activeWindow === "inactive" && (
-                                    <RenderInactivePostCard post={post} />
-                                )}
+                    <>
+                        <div className={`grid grid-cols-1 laptop:grid-cols-3 flex-wrap gap-[1.56rem] justify-between`}>
+                            {items.map((post, idx) => (
+                                <div key={`admin_${activeWindow}_post_${idx}`}>
+                                    {activeWindow === "active" && (
+                                        <RenderActivePostCard post={post} />
+                                    )}
+                                    {activeWindow === "inactive" && (
+                                        <RenderInactivePostCard post={post} />
+                                    )}
 
-                                {activeWindow === "drafts" && (
-                                    <RenderDraftPostCard post={post} />
-                                )}
-                            </div>
+                                    {activeWindow === "drafts" && (
+                                        <RenderDraftPostCard post={post} />
+                                    )}
+                                </div>
 
-                        ))}
-                        <div className={`laptop:absolute left-0 flex items-center justify-center bottom-[1rem] w-full`}>
+                            ))}
+                        </div>
+                        <div className={`flex justify-center bottom-[1rem] w-full flex-1 items-end`}>
                             <PaginationWrapper currentPage={currentPage} pages={Math.ceil(items.length / ItemsDisplayCount)} />
                         </div>
-                    </div>
+                    </>
                 ) : (
                     <span className={`text-placeholder_secondary text-base full_hd:text-base_2xl`}>Atsiprašome, skelbimų nerasta.</span>
                 )

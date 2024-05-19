@@ -9,6 +9,9 @@ import { useQuery } from "@tanstack/react-query";
 import { PostVehicleDataInformation } from "@/types/posts/vehiclePost.type";
 import { PostItemData } from "@/types/posts/postItem.type";
 
+import Countries from "@/classes/Countries";
+import Cities from "@/classes/Cities";
+
 export const RenderLocationItem = ({ children }: { children: React.ReactNode }) => {
     return (
         <div className={`px-[0.62rem] py-[0.25rem] bg-highlight rounded-[0.1875rem] items-center justify-center text-base full_hd:text-base_2xl text-[#FFF] text-center capitalize`}>
@@ -49,9 +52,8 @@ export const GeneralInformationSection = ({ post }: { post: Post }) => {
 
     const CustomObjects = ['make', 'model', 'mileage', 'ccm', 'power'];
     const RenderInfoItem = ({ objKey, item }: { objKey: string, item: any }) => {
-        if (objKey.includes('type' || 'ratingByAuthor') || item === null) return null;
+        if (objKey.includes('type') || objKey.includes('ratingByAuthor') || item === null) return null;
         const label = VehicleObj.getLabelByKeyAndIndex(t, objKey, item);
-
         return (
             !isLoading && (
                 getVehicleData && 'vehicleData' in information ? (
@@ -106,8 +108,8 @@ export const GeneralInformationSection = ({ post }: { post: Post }) => {
                 )}
 
                 <div className={`flex gap-[0.62rem] items-center`}>
-                    <RenderLocationItem>{information.location.city}</RenderLocationItem>
-                    <RenderLocationItem>{information.location.country}</RenderLocationItem>
+                    <RenderLocationItem>{Countries.getCountryByIndex(Number(information.location.countryId))}</RenderLocationItem>
+                    <RenderLocationItem>{Cities.getCityByIndex(information.location.countryId, Number(information.location.cityId))}</RenderLocationItem>
                 </div>
             </div>
             <hr className={`text-border bg-border`} />

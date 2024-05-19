@@ -92,3 +92,36 @@ const deleteFileFromS3 = async (userId: string, image: PostImage) => {
     const command = new DeleteObjectCommand(params);
     await s3Client.send(command);
 };
+
+export const removeUrlFromImageLink = async (image: PostImage) => {
+    return image.url.replace(`https://${process.env.S3_BUCKET_NAME}.s3.amazonaws.com/`, '').replace(/^.*?\//, '');
+}
+
+export const updatePostImages = async (oldImages: PostImage[], newImagesFormData: FormData) => {
+    const { userId } = auth();
+
+    if (!userId) {
+        return { status: 401, message: 'Unauthorized' };
+    }
+
+    const files: File[] = [];
+
+    newImagesFormData?.forEach((value) => {
+        files.push(value as File);
+    });
+
+    if (!files || !files.length) {
+        return { status: 400, message: 'No files uploaded' };
+    }
+
+    await deleteImages(oldImages);
+
+    const imageUrls: string[] = [];
+    await Promise.all(files.map(async (file) => {
+        const buffer = Buffer.from(await file.arrayBuffer());
+        const imageUrl = await uploadFileToS3(buffer, file.name, userId);
+        imageUrls.push(imageUrl);
+    }));
+
+    return { status: 200, data: imageUrls };
+};

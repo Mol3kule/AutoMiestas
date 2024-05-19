@@ -1,17 +1,17 @@
 'use client';
 
-import { useSignIn } from '@clerk/nextjs';
+import { useSignUp } from '@clerk/nextjs';
 import GoogleIcon from '/public/assets/icons/google.png';
 import Image from "next/image";
 
 export const LoginWithGoogleButton = () => {
-    const { signIn } = useSignIn();
+    const { signUp } = useSignUp();
 
     const HandleSignInGoogle = async () => {
-        await signIn?.authenticateWithRedirect({
+        await signUp?.authenticateWithRedirect({
             strategy: 'oauth_google',
-            redirectUrl: '/sso-callback',
-            redirectUrlComplete: '/sign-in'
+            redirectUrl: '/sign-in?provider=google',
+            redirectUrlComplete: '/',
         }).catch((error) => {
             console.log(error)
         });

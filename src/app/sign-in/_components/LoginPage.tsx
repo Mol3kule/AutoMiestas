@@ -97,9 +97,11 @@ export const LoginPage = ({ ChangeView }: LoginPageProps) => {
                 <LoginWithGoogleButton />
             </div>
 
-            <div className={`flex items-center w-full bg-error py-[0.85rem] ${errorMessage ? 'block' : 'hidden'}`}>
-                <span className={`w-full text-center text-primary text-base px-[1.55rem]`}>{errorMessage}</span>
-            </div>
+            {errorMessage && (
+                <div className={`flex items-center w-full bg-error py-[0.85rem]`}>
+                    <span className={`w-full text-center text-primary text-base px-[1.55rem]`}>{errorMessage}</span>
+                </div>
+            )}
         </AuthWrapper>
     )
 }

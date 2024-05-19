@@ -4,11 +4,23 @@ import prisma from "@/prisma/prisma";
 import { auth } from "@clerk/nextjs";
 import { getUserById } from "@/actions/users/user.actions";
 import { MailType } from "@/types/mailbox/mailbox.type";
-import { PostStatus, Post, PostBoosts, PostStatistics } from "@/types/post.type";
-import { uploadImages } from "@/actions/s3/s3.actions";
+import { PostStatus, Post, PostBoosts, PostStatistics, PostPeriods } from "@/types/post.type";
+import { updatePostImages, uploadImages } from "@/actions/s3/s3.actions";
 import { VehicleObj } from "@/classes/Vehicle";
 import { getSelectedVehicle } from "../vehicles/vehicle.actions";
 import { createCheckoutSession, getSubscription } from "../stripe/stripe.actions";
+
+export const getFavoritePosts = async () => {
+    const { userId } = auth();
+    return await prisma.posts.findMany({
+        where: {
+            statistics: {
+                path: '$.times_liked',
+                array_contains: userId
+            }
+        }
+    });
+};
 
 export const getPostsByUserId = async (userId: string) => {
     return await prisma.posts.findMany({
@@ -16,7 +28,7 @@ export const getPostsByUserId = async (userId: string) => {
             authorId: userId
         }
     });
-}
+};
 
 export const getPostsByCategory = async (category: number) => {
     return await prisma.posts.findMany({
@@ -69,6 +81,19 @@ export const getPostBySlug = async (slug: string) => {
     return await prisma.posts.findFirst({
         where: {
             slug
+        }
+    });
+};
+
+export const getPostBySlugAndAuthor = async (slug: string) => {
+    const { userId } = auth();
+
+    if (!userId) return null;
+
+    return await prisma.posts.findFirst({
+        where: {
+            slug,
+            authorId: userId
         }
     });
 };
@@ -237,8 +262,6 @@ export const CreatePost = async (data: any) => {
         return { status: 500, error };
     }
 };
-
-export const DeletePost = async (postId: number) => { };
 
 export const getPostSlug = async (postId: number) => {
     const post = await prisma.posts.findUnique({
@@ -410,4 +433,81 @@ export const addToFavoritesById = async (postId: number) => {
     });
 
     return { status: 200, translation: "post_liked" };
+};
+
+export const UpdatePost = async (data: any) => {
+    const { userId } = auth();
+
+    if (!userId) {
+        return { status: 401, error: 'Unauthorized' };
+    }
+
+    const {
+        category, makeId, modelId, modelYear, bodyType, mileage, mileage_type, fuelType,
+        drivetrain, transmission, sw_side, condition, price, technical_inspection_due,
+        vin, sdk, description, countryId, cityId, specifications,
+        ccm, power, power_type, title, partNumber, formDataImages, filledImages, oldSlug
+    } = data;
+
+    const oldPostData = await getPostBySlug(oldSlug);
+    if (!oldPostData || oldPostData.authorId !== userId) return { status: 401, error: 'Unauthorized' };
+
+    const vehicleData = {
+        make: makeId,
+        model: modelId,
+        year: modelYear,
+        body_type: bodyType,
+        condition,
+        fuel_type: fuelType,
+        drive_train: drivetrain,
+        transmission,
+        mileage,
+        mileage_type,
+        technical_inspection_due_to: technical_inspection_due,
+        sdk,
+        sw_side,
+        vin,
+        ccm,
+        power,
+        power_type,
+        ratingByAuthor: specifications,
+    }
+    const itemData = { partNumber, condition };
+
+    const isVehicleCategory = Object.keys(VehicleObj.getAllTypes()).includes(category.toString());
+    const { slug, timestamp: currentTimestamp } = await generateSlug({ isVehicleCategory, category, makeId, modelId, modelYear, title });
+
+    // Update images with new
+    const { status, data: imageUrls, message } = await updatePostImages(filledImages, formDataImages);
+    if (status !== 200 || !imageUrls) return { status, error: message };
+
+    const primaryImageFile = formDataImages.get('primary_img');
+    await prisma.posts.update({
+        where: {
+            slug: oldSlug
+        },
+        data: {
+            information: {
+                ...isVehicleCategory ? { vehicleData } : { itemData },
+                ...isVehicleCategory ? {} : title,
+                location: { cityId, countryId },
+                description,
+                price
+            },
+            images: imageUrls.map((img: string) => ({ url: img, isPrimary: img.includes(primaryImageFile.name) })),
+            periods: {
+                ...oldPostData.periods as PostPeriods,
+                time_updated: currentTimestamp
+            },
+            category: category,
+            slug,
+            status: {
+                isPublished: false,
+                isAttentionRequired: true,
+                isEditedAfterAttentionRequired: true
+            }
+        }
+    });
+
+    return { status: 200 };
 };

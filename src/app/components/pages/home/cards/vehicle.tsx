@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useVehicleStore } from "@/store/vehicles/vehicle.store";
@@ -12,12 +11,15 @@ import { Post } from "@/types/post.type";
 import { Heart } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
 import { animated, useTransition } from "@react-spring/web";
+import Countries from "@/classes/Countries";
+import Cities from "@/classes/Cities";
 
-export const VehiclePostCard = ({ postData, idx }: { postData: Post, idx: number }) => {
-    const { vehicleMakes, vehicleModels, setMakes, setModels } = useVehicleStore();
-    const { id, images, information, periods } = postData;
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+export const VehiclePostCard = ({ postData }: { postData: Post }) => {
+    const { vehicleMakes, vehicleModels } = useVehicleStore();
+    const { images, information } = postData;
     const router = useRouter();
+
+    const isLoading = false;
 
     const t = useLanguage();
 
@@ -26,16 +28,13 @@ export const VehiclePostCard = ({ postData, idx }: { postData: Post, idx: number
     const RenderLocation = ({ text }: { text: string }) => {
         return (
             <div className={`flex gap-[1.25] bg-primary px-[0.62rem] py-[0.25rem] rounded-[0.1875rem]`}>
-                <p className={`text-[#FFF] text-base full_hd:text-base_2xl`}>{text}</p>
+                <p className={`text-[#FFF] text-base full_hd:text-base_2xl capitalize`}>{text}</p>
             </div>
         )
     }
 
     const HandlePostClick = () => {
-        // const encodedMake = encodeURI(vehicleMakes.find((make) => make.id === information.vehicleData.make)!.make);
-        // const encodedModel = encodeURI(Object.values(vehicleModels[Number(information.vehicleData.make)]).find((model) => model.id === information.vehicleData.model)?.model!);
-        // const newUri = encodeURI(`posts/${id}/${encodedMake}-${encodedModel}-${information.vehicleData.year}/${periods.time_created}`)
-        // router.push(newUri);
+        router.push(`/posts/${postData.slug}`);
     }
 
     const transitions = useTransition(!isLoading, {
@@ -62,21 +61,26 @@ export const VehiclePostCard = ({ postData, idx }: { postData: Post, idx: number
                         </div>
                         <div className={`px-[1.25rem] py-[1.44rem] flex flex-col gap-[0.87rem]`}>
                             <div className={`flex justify-between gap-[1.25rem] items-center`}>
-                                {vehicleMakes.length > 0 && Object.values(vehicleModels).length > 0 &&
+                                {'vehicleData' in information && (
+                                    vehicleMakes.length > 0 && Object.values(vehicleModels).length > 0 &&
                                     <p className={`text-primary text-base full_hd:text-base_2xl font-medium`}>{Object.values(vehicleMakes).find((make) => make.id === information.vehicleData.make)?.make} {Object.values(vehicleModels[information.vehicleData.make]).find((model) => model.id === information.vehicleData.model)?.model}</p>
-                                }
-                                <Heart className={`w-[1.125rem] h-[1.125rem] ${isLoaded && user && postData.statistics.times_liked.includes(user.id) ? `text-highlight` : `text-placeholder`}`} />
+                                )}
+                                <Heart fill={`${isLoaded && user && postData.statistics.times_liked.includes(user.id) ? '#E74F71' : 'none'}`} className={`w-[1.125rem] h-[1.125rem] ${isLoaded && user && postData.statistics.times_liked.includes(user.id) ? `text-error_secondary` : `text-placeholder_secondary`}`} />
                             </div>
                             <hr className="bg-border text-border w-full" />
                             <div className={`flex gap-[1.25rem]`}>
-                                <p className={`text-primary text-base full_hd:text-base_2xl`}>{t.vehicleInfo.fuelTypes[VehicleObj.getFuelTypeByIndex(information.vehicleData.fuel_type) as keyof typeof t.vehicleInfo.fuelTypes]}</p>
-                                <p className={`text-primary text-base full_hd:text-base_2xl`}>{t.vehicleInfo.transmission[VehicleObj.getTransmissionByIndex(information.vehicleData.transmission) as keyof typeof t.vehicleInfo.transmission]}</p>
+                                {'vehicleData' in information && (
+                                    <>
+                                        <p className={`text-primary text-base full_hd:text-base_2xl`}>{t.vehicleInfo.fuelTypes[VehicleObj.getFuelTypeByIndex(information.vehicleData.fuel_type) as keyof typeof t.vehicleInfo.fuelTypes]}</p>
+                                        <p className={`text-primary text-base full_hd:text-base_2xl`}>{t.vehicleInfo.transmission[VehicleObj.getTransmissionByIndex(information.vehicleData.transmission) as keyof typeof t.vehicleInfo.transmission]}</p>
+                                    </>
+                                )}
                             </div>
                             <hr className="bg-border text-border w-full" />
                             <p className={`text-highlight text-base full_hd:text-base_2xl font-medium text-left`}>{information.price.toLocaleString('lt-LT', { style: 'currency', currency: 'eur' })}</p>
                             <div className={`flex gap-[0.62rem]`}>
-                                <RenderLocation text={information.location.city} />
-                                <RenderLocation text={information.location.country} />
+                                <RenderLocation text={Countries.getCountryByIndex(Number(information.location.countryId))} />
+                                <RenderLocation text={Cities.getCityByIndex(information.location.countryId, Number(information.location.cityId))} />
                             </div>
                         </div>
                     </div>

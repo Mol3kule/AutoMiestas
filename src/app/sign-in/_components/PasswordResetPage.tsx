@@ -45,6 +45,11 @@ export const PasswordResetPage = ({ ChangeView }: PasswordResetPageProps) => {
     }
 
     const attemptEmailVerification = async () => {
+        if (!verificationCode) {
+            setErrorMessage('Prašome įvesti patvirtinimo kodą.');
+            return;
+        }
+
         if (password !== password_repeat) {
             setErrorMessage('Slaptažodžiai nesutampa.');
             return;
@@ -100,7 +105,7 @@ export const PasswordResetPage = ({ ChangeView }: PasswordResetPageProps) => {
                         <span className={`font-medium text-header_2xl`}>Registracija</span>
                         <span className={`text-base full_hd:text-base_2xl text-center`}>Į nurodytą el. paštą buvo išsiųstas patvirtinimo kodas.</span>
                     </div>
-                    <CustomInput type='text' name="verify_code" placeholder={`Patvirtinimo kodas`} value={verificationCode} setValue={setVerificationCode} isRequired={true} />
+                    <CustomInput type='text' name="verify_code" placeholder={`Patvirtinimo kodas`} value={verificationCode ?? ''} setValue={setVerificationCode} isRequired={true} />
                     <CustomInput type='password' name="reset_password" placeholder={`Naujas slaptažodis`} value={password} setValue={setPassword} isRequired={true} />
                     <CustomInput type='password' name="reset_password_repeat" placeholder={`Pakartokite slaptažodį`} value={password_repeat} setValue={setPasswordRepeat} isRequired={true} />
                     <span className={`w-full text-base full_hd:text-base_2xl text-secondary text-right`}>Negavote kodo? <CooldownButton type='button' cooldownByDefault={true} cooldown={30000} text={`Siųsti dar kartą`} className={`text-highlight`} buttonClicked={handleResendVerificationCode} /></span>

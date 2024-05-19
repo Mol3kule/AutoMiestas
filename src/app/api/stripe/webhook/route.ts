@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/prisma";
 import Stripe from "stripe";
-import { PostStatus } from "@/types/post.type";
+import { getPostById } from "@/actions/posts/post.actions";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -24,7 +24,6 @@ export const POST = async (req: NextRequest) => {
         switch (event.type) {
             case "invoice.paid": {
                 const { postId, userId } = subscription.subscription_details.metadata;
-
                 await prisma.posts.update({
                     where: {
                         id: Number(postId),
@@ -32,11 +31,6 @@ export const POST = async (req: NextRequest) => {
                     },
                     data: {
                         subscriptionId: subscription.subscription,
-                        status: {
-                            isPublished: false,
-                            isAttentionRequired: true,
-                            isEditedAfterAttentionRequired: true
-                        },
                         isSubscriptionActive: true
                     }
                 });

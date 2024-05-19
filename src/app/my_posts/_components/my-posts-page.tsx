@@ -20,7 +20,7 @@ export const MyPostsPage = () => {
     });
 
     return (
-        <div className={`flex ${isLoading ? `flex-1 items-center justify-center` : `flex-col`}`}>
+        <div className={`flex ${isLoading ? `flex-1 items-center justify-center` : `flex-col gap-[1.25rem]`}`}>
             {!isLoading ? (
                 posts?.map((post, idx) => (
                     <RenderPostCard postData={post as Post} key={`${post}_${idx}`} />

@@ -20,8 +20,8 @@ export type PostType = {
 export type PostInformation = {
     description: string;
     location: {
-        city: string;
-        country: string;
+        cityId: number;
+        countryId: number;
     };
     price: number;
 }

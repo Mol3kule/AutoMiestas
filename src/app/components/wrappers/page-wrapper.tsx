@@ -2,7 +2,6 @@
 
 import { getVehicles } from "@/actions/vehicles/vehicle.actions";
 import { useVehicleStore } from "@/store/vehicles/vehicle.store";
-import { TVehicleMake, TVehicleModels } from "@/types/vehicle.type";
 import { useQuery } from "@tanstack/react-query";
 import ReactModal from "react-modal";
 import { Spinner } from "../spinner";

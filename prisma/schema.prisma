@@ -27,9 +27,9 @@ model users {
   userId           String    @unique
   stripeCustomerId String    @unique
   email            String    @unique
-  first_name       String
-  last_name        String
-  phone_number     String
+  first_name       String?
+  last_name        String?
+  phone_number     String?   @unique
   organization     String?
   date_registered  DateTime  @default(now())
   posts            posts[]
@@ -47,10 +47,10 @@ model posts {
   periods              Json
   boosts               Json
   category             Int
-  subscriptionId       String?
+  subscriptionId       String? @unique
   status               Json?
   isSubscriptionActive Boolean
-  slug                 String
+  slug                 String  @unique
 }
 
 model mailbox {

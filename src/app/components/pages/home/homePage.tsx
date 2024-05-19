@@ -19,7 +19,7 @@ export const HomePage = ({ searchParams }: { searchParams: { page?: number } }) 
         queryFn: async () => {
             return await getPostsByCategory(category);
         }
-    })
+    });
 
     const ItemsOffset = (currentPage - 1) * ItemsDisplayCount;
 
@@ -38,22 +38,22 @@ export const HomePage = ({ searchParams }: { searchParams: { page?: number } }) 
         if (aBoosts.time_created > bBoosts.time_created) return -1;
         return 0;
     }) : [];
-    const ItemsToRender = SortedItems?.slice(ItemsOffset, ItemsOffset + ItemsDisplayCount);
+    const ItemsToRender = SortedItems?.slice(ItemsOffset, ItemsOffset + ItemsDisplayCount) ?? [];
 
     useEffect(() => {
         setCurrentPage(searchParams.page ? Number(searchParams.page) : 1);
     }, [searchParams]);
 
     return (
-        <div className={`flex flex-col gap-[2.20rem]`}>
+        <div className={`flex flex-col gap-[2.20rem] flex-1`}>
             <FilterSelector />
             <div className={`grid grid-cols-1 laptop:grid-cols-3 flex-wrap gap-[1.56rem] justify-between`}>
                 {ItemsToRender?.map((post, idx) => (
-                    <VehiclePostCard postData={post as Post} idx={idx} key={`vehicle_post_card_${idx}`} />
+                    <VehiclePostCard postData={post as Post} key={`vehicle_post_card_${idx}`} />
                 ))}
             </div>
             {ItemsToRender.length > 0 && posts && (
-                <div className={`laptop:absolute left-0 flex items-center justify-center bottom-[1rem] w-full`}>
+                <div className={`flex items-end justify-center w-full flex-1`}>
                     <PaginationWrapper currentPage={currentPage} pages={Math.ceil(posts.length / ItemsDisplayCount)} />
                 </div>
             )}

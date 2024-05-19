@@ -11,8 +11,8 @@ class PostCategories {
         [3]: Categories.agricultural,
         [4]: Categories.construction,
         [5]: Categories.trailer,
-        [6]: Categories.boat,
-        [7]: Categories.plane,
+        // [6]: Categories.boat,
+        // [7]: Categories.plane,
         [8]: Categories.scooter,
         [9]: Categories.tires_wheels,
         [10]: Categories.parts

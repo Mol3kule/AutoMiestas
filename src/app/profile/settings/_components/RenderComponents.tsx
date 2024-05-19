@@ -1,9 +1,8 @@
 "use client";
 
 import { z } from "zod";
-import { UserType } from "@/types/user.type";
 import { ProfileInformation } from "./ProfileInformation";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import { useLanguage } from "@/lib/languageUtils";
 
 const formValidationSchema = z.object({
@@ -13,7 +12,7 @@ const formValidationSchema = z.object({
     phone: z.string().min(9).max(12),
 });
 
-export const RenderComponents = ({ userData }: { userData: UserType }) => {
+export const RenderComponents = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const t = useLanguage();
 
@@ -76,13 +75,6 @@ export const RenderComponents = ({ userData }: { userData: UserType }) => {
         }
     }
 
-
-    useEffect(() => {
-        if (!userData.phone_number) {
-            setErrorMessage(t.profile.phone_required);
-        }
-    }, []);
-
     return (
         <form className={`flex flex-col gap-[1.56rem]`} onSubmit={handleSubmit}>
             {errorMessage && (
@@ -91,7 +83,7 @@ export const RenderComponents = ({ userData }: { userData: UserType }) => {
                 </div>
             )}
 
-            <ProfileInformation userData={userData} />
+            <ProfileInformation setError={setErrorMessage} />
 
             {/* <div className={`flex items-center justify-end gap-[1.25rem]`}>
                 <button type="button" className={`rounded-[0.1875rem] text-error_secondary text-base full_hd:text-base_2xl`}>Ištrinti paskyrą</button>

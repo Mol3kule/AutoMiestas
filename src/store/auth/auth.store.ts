@@ -7,8 +7,8 @@ type Store = {
     first_name: string;
     last_name: string;
     phone_number: string;
-    organization: string;
-    verificationCode: string;
+    organization: string | null;
+    verificationCode: string | null;
 
     setEmail: (email: string) => void;
     setPassword: (password: string) => void;
@@ -27,8 +27,8 @@ export const useAuthStore = create<Store>()((set) => ({
     first_name: '',
     last_name: '',
     phone_number: '',
-    organization: '',
-    verificationCode: '',
+    organization: null,
+    verificationCode: null,
 
     setEmail: (email: string) => set({ email }),
     setPassword: (password: string) => set({ password }),

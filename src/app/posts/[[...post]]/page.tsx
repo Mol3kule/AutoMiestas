@@ -1,7 +1,8 @@
-import { getPostBySlug } from "@/actions/posts/post.actions";
+import { getPostBySlug, increasePostViewById } from "@/actions/posts/post.actions";
 import { PostPage } from "@/components/pages/posts/preview/postPage";
 import { Spinner } from "@/components/spinner";
 import { Post } from "@/types/post.type";
+import { clerkClient } from "@clerk/nextjs";
 import { Suspense } from "react";
 
 type RenderPostPageProps = {
@@ -14,11 +15,16 @@ type RenderPostPageProps = {
 const RenderPostPage = async ({ params }: RenderPostPageProps) => {
     const post = await getPostBySlug(params.post[0]);
     
-    if (!post) return null;
+    if (!post) {
+        return (
+            <div className={`flex flex-1 items-center justify-center`}>
+                Skelbimas neegzistuoja
+            </div>
+        )
+    };
 
-    // axios.post(`${process.env.defaultApiEndpoint}/api/posts/incrementViewById`, { postId: data.id }, { headers: { 'Authorization': `Bearer ${await getToken()}` } });
-
-    // const authorPhone = await clerkClient.users.getUser(data.authorId).then((res) => res.phoneNumbers[0].phoneNumber);
+    await increasePostViewById(post.id);
+    const authorPhone = await clerkClient.users.getUser(post.authorId).then((res) => res.phoneNumbers[0].phoneNumber);
 
     const RenderLoadingPage = () => {
         return (
@@ -30,7 +36,7 @@ const RenderPostPage = async ({ params }: RenderPostPageProps) => {
 
     return (
         <Suspense fallback={<RenderLoadingPage />}>
-            <PostPage post={post as Post} phoneNumber={''} />
+            <PostPage post={post as Post} phoneNumber={authorPhone} />
         </Suspense>
     );
 }

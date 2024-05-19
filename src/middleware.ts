@@ -4,11 +4,7 @@ import { NextResponse } from "next/server";
 export default authMiddleware({
   publicRoutes: [
     "/",
-    "/api/auth/createUser",
-    "/sso-callback",
-    
     "/posts/(.*)",
-    
     "/api/stripe/webhook",
   ],
   afterAuth(auth, req, evt) {

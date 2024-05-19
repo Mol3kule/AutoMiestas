@@ -1,16 +1,14 @@
 "use client";
 
-import { getPostSlug } from "@/actions/posts/post.actions";
 import { VehicleObj, getVehicleDataProps } from "@/classes/Vehicle";
 import { useVehicleStore } from "@/store/vehicles/vehicle.store";
 import { Post } from "@/types/post.type";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
 
 export const RenderVehicleLabel = ({ post }: { post: Post }) => {
     const { information } = post;
-    const { vehicleMakes, vehicleModels, setMakes, setModels } = useVehicleStore();
+    const { vehicleMakes, vehicleModels } = useVehicleStore();
     const router = useRouter();
 
     const [getVehicleData, setVehicleData] = useState<getVehicleDataProps>(null!);
@@ -25,9 +23,7 @@ export const RenderVehicleLabel = ({ post }: { post: Post }) => {
     }, [vehicleMakes, vehicleModels]);
 
     const RedirectToPost = async () => {
-        const slug = await getPostSlug(post.id!);
-        if (!slug) return toast.error('Failed to get post slug');
-        router.push(`/posts/${slug}`);
+        router.push(`/posts/${post.slug}`);
     }
 
     return (

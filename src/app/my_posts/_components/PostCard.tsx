@@ -7,16 +7,21 @@ import { Post } from "@/types/post.type";
 import { InformationSection } from "./InformationSection";
 import { ActionsSection } from "./ActionsSection";
 import { RenderVehicleLabel } from "./RenderLabel";
+import { useRouter } from "next/navigation";
 
 export const RenderPostCard = ({ postData }: { postData: Post }) => {
     const { images, status } = postData;
+
+    const router = useRouter();
 
     const transition = useTransition(true, {
         from: { opacity: 0 },
         enter: { opacity: 1 }
     })
 
-    const HandleEdit = () => { };
+    const HandleEdit = () => {
+        router.push(`/create/${postData.slug}`);
+    };
 
     return (
         transition((style) => (

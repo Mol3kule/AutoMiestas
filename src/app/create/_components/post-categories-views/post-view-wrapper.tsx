@@ -4,13 +4,17 @@ import { useEffect, useRef, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
 
-import { ILocationCity, useCityStateStore } from "@/store/citystate/citystate.store";
 import { usePostCreateStore } from "@/store/posts/postCreate.store";
 
 import { PostCreateInputText, PostCreateSelectInputSearchable } from "@/components/inputs/postCreateInput";
 import { useLanguage } from "@/lib/languageUtils";
-import { getCityState } from "@/lib/getCityState";
 import { Star, Trash2, Upload } from "lucide-react";
+import Cities from "@/classes/Cities";
+import Countries from "@/classes/Countries";
+import toast from "react-hot-toast";
+import { PostImage } from "@/types/post.type";
+import { removeUrlFromImageLink } from "@/actions/s3/s3.actions";
+import { useQuery } from "@tanstack/react-query";
 
 
 export const PostGeneralInformationSection = ({ children }: { children: React.ReactNode }) => {
@@ -77,7 +81,17 @@ export const PostImagesSection = () => {
     const fileInput = useRef<HTMLInputElement>(null);
     const [images, setImages] = useState([]);
 
-    const { fileImages, primaryImg, setPrimaryImg, setFileImages } = usePostCreateStore();
+    const { fileImages, primaryImg, filledImages, setPrimaryImg, setFileImages } = usePostCreateStore();
+
+    const { isLoading } = useQuery({
+        queryKey: ['fillImages', { filledImages }],
+        queryFn: async () => {
+            if (!filledImages.length) return null;
+            loadAllImagesAsFiles();
+            return true;
+        },
+        staleTime: Infinity
+    });
 
     useEffect(() => {
         const newImages: any = [...images];
@@ -88,6 +102,34 @@ export const PostImagesSection = () => {
         });
         setImages(newImages);
     }, []);
+
+    const loadAllImagesAsFiles = async () => {
+        const tempImgList: any = [];
+        await Promise.all(filledImages.map(async (img) => {
+            const file = await loadImageAsFile(img);
+            if (!file) return;
+            tempImgList.push(file);
+        }));
+        handleImageUpload({ files: tempImgList });
+
+        setPrimaryImg(filledImages.findIndex(img => img.isPrimary));
+    };
+
+    const loadImageAsFile = async (image: PostImage) => {
+        return await fetch(image.url).then(async (res) => {
+            const blob = await res.blob();
+            console.log(res)
+            const fileName = await removeUrlFromImageLink(image);
+    
+            const parts = fileName.split('.');
+            const fileType = parts[parts.length - 1];
+    
+            return new File([blob], fileName, { type: `image/${fileType}` });
+        }).catch((err) => {
+            console.log(`[loadImageAsFile]: ${err}`);
+            return null;
+        });
+    }
 
     const RenderImage = ({ item, idx }: { item: any, idx: number }) => {
         const HandleImageRemove = () => {
@@ -126,8 +168,8 @@ export const PostImagesSection = () => {
     }
 
     const maxSizeInBytes = 8 * 1024 * 1024; // 8MB
-    const supportedImageTypes = ['image/jpeg', 'image/png'];
-    const handleImageUpload = (target: HTMLInputElement) => {
+    const supportedImageTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+    const handleImageUpload = (target: HTMLInputElement | { files: File[] }) => {
         const { files } = target;
 
         if (!files || files.length <= 0) {
@@ -150,6 +192,9 @@ export const PostImagesSection = () => {
         });
 
         if (newImages.length === images.length) return;
+        if (newImages.length < files.length) {
+            toast.error('Kai kurios nuotraukos buvo praleistos, nes jų dydis viršija 8MB arba jų tipas nepalaikomas.', { duration: 5000 });
+        }
         setFileImages([...fileImages, ...Array.from(files)]);
         setImages(newImages);
 
@@ -201,16 +246,14 @@ export const PostLocationSection = () => {
 
     const { user } = useUser();
 
-    const { CountryList, CityList, setCountryList, setCityList } = useCityStateStore();
     const { countryId, cityId, setCountryId, setCityId } = usePostCreateStore();
+    const CountryList = Countries.getAllCountries();
+    const CitiesList = countryId !== null ? Cities.getCitiesByCountry(countryId) : {};
 
-    useEffect(() => {
-        if (CountryList.length > 0 || CityList.length > 0) return;
-
-        const { Countries, Cities } = getCityState(); // Utility
-        setCountryList(Countries);
-        setCityList(Cities as unknown as ILocationCity[]);
-    }, []);
+    const handleCountryChange = (newValue: number) => {
+        setCountryId(newValue)
+        setCityId(null!);
+    };
 
     return (
         <div className={`flex flex-col gap-[1.25rem]`}>
@@ -222,14 +265,14 @@ export const PostLocationSection = () => {
                 <PostCreateSelectInputSearchable
                     label={t.general.country}
                     value={countryId !== null ? countryId.toString() : ``}
-                    setValue={(value) => setCountryId(Number(value))}
-                    items={CountryList && CountryList.map((item) => ({ id: item.id.toString(), label: item.name }))}
+                    setValue={(value) => handleCountryChange(Number(value))}
+                    items={Object.keys(CountryList)?.map((item) => ({ id: item.toString(), label: t.countries[CountryList[Number(item) as keyof typeof CountryList] as keyof typeof t.countries] })) ?? []}
                 />
                 <PostCreateSelectInputSearchable
                     label={t.general.city}
-                    value={cityId ? cityId.toString() : ``}
+                    value={cityId !== null ? cityId.toString() : ``}
                     setValue={(value) => setCityId(Number(value))}
-                    items={countryId !== null ? Object.values(CityList[countryId]).map((item) => ({ id: item.id.toString(), label: item.name })) : []}
+                    items={Object.keys(CitiesList).map((item) => ({ id: item.toString(), label: CitiesList[item as keyof typeof CitiesList] }))}
                     isDisabled={countryId === null}
                 />
                 <PostCreateInputText

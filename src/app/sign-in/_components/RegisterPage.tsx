@@ -12,7 +12,8 @@ import { useAuthStore } from "@/store/auth/auth.store";
 import { ViewTypes } from "./AuthWrap";
 import { z } from "zod";
 import { CodeVerifyModal } from "@/components/modals/code_verify";
-import { createUser } from "@/actions/users/user.actions";
+import { createUser, isUserPhoneTaken } from "@/actions/users/user.actions";
+import toast from "react-hot-toast";
 
 type LoginPageProps = {
     ChangeView: (type: ViewTypes) => void;
@@ -39,7 +40,7 @@ export const RegisterPage = ({ ChangeView }: LoginPageProps) => {
     const [isEmailVerify, setEmailVerify] = useState<boolean>(false);
     const [isPhoneVerify, setPhoneVerify] = useState<boolean>(false);
 
-    const HandleSubmit = (e: FormEvent) => {
+    const HandleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setErrorMessage('');
 
@@ -56,10 +57,15 @@ export const RegisterPage = ({ ChangeView }: LoginPageProps) => {
                 first_name,
                 last_name,
                 phone: phone_number,
-                organization
+                organization: organization ? organization : ''
             });
 
-            signUp?.create({
+            if (await isUserPhoneTaken(phone_number)) {
+                setErrorMessage('Toks telefono numeris jau yra užregistruotas.');
+                return;
+            }
+
+            await signUp?.create({
                 emailAddress: email,
                 password,
                 firstName: first_name,
@@ -86,6 +92,10 @@ export const RegisterPage = ({ ChangeView }: LoginPageProps) => {
                     }
                     case "too_many_requests": {
                         setErrorMessage('Per daug užklausų. Pabandykite vėliau.');
+                        break;
+                    }
+                    case "form_param_format_invalid": {
+                        setErrorMessage('Neteisingas telefono numerio formatas.');
                         break;
                     }
                     default: {
@@ -138,21 +148,22 @@ export const RegisterPage = ({ ChangeView }: LoginPageProps) => {
     }
 
     const attemptEmailVerification = async () => {
-        if (verificationCode.length <= 0 || isLoading) return;
+        if (verificationCode && verificationCode.length <= 0 || isLoading) return;
         setIsLoading(true);
 
         try {
             const verificationResponse = await signUp?.attemptVerification({
                 strategy: 'email_code',
-                code: verificationCode
+                code: verificationCode!
             });
             setVerificationCode(''); // Clear input
 
-            if (verificationResponse?.status === "missing_requirements") {
-                await signUp?.prepareVerification({ strategy: 'phone_code' });
+            if (verificationResponse && verificationResponse.status === "missing_requirements") {
+                await signUp?.prepareVerification({ strategy: 'phone_code' }).catch((err) => console.log(err));
                 setIsLoading(false);
                 setEmailVerify(false);
                 setPhoneVerify(true);
+                toast.success('El. pašto adresas patvirtintas. Dabar patvirtinkite telefono numerį.', { duration: 5000 });
             }
         } catch (error: any) {
             switch (error.errors[0].code) {
@@ -180,24 +191,26 @@ export const RegisterPage = ({ ChangeView }: LoginPageProps) => {
 
     const resendEmailVerificationCode = () => {
         signUp?.prepareVerification({ strategy: 'email_code' });
+        toast.success('Patvirtinimo kodas išsiųstas į jūsų el. paštą.');
     }
 
     const attemptPhoneVerification = async () => {
-        if (verificationCode.length <= 0 || isLoading) return;
+        if (verificationCode && verificationCode.length <= 0 || isLoading) return;
         setIsLoading(true);
 
         try {
             const verificationResponse = await signUp?.attemptVerification({
                 strategy: 'phone_code',
-                code: verificationCode
+                code: verificationCode!
             });
 
-            if (verificationResponse?.status === "complete") {
+            if (verificationResponse && verificationResponse.status === "complete") {
                 if (!setActive) return;
 
                 const { status } = await createUser(verificationResponse.createdUserId!, email, first_name, last_name, phone_number, organization);
                 if (status === 200) {
                     setActive({ session: verificationResponse.createdSessionId });
+                    toast.success('Paskyra sėkmingai sukurta.', { duration: 5000 });
                     setVerificationCode(''); // Clear input
                     setEmail('');
                     setPassword('');
@@ -207,16 +220,29 @@ export const RegisterPage = ({ ChangeView }: LoginPageProps) => {
                     setPhoneNumber('');
                     setOrganization('');
                     router.push('/');
+                    return;
+                }
+                toast.error('Nepavyko sukurti paskyros. Bandykite dar kartą.', { duration: 5000 });
+            }
+        } catch (error: any) {
+            switch (error.errors[0].code) {
+                case "form_code_incorrect": {
+                    setErrorMessage('Neteisingas patvirtinimo kodas. Patikrinkite ir bandykite iš naujo.');
+                    break;
+                }
+                default: {
+                    console.log(error.errors);
+                    setErrorMessage(error.errors[0].longMessage)
+                    break;
                 }
             }
-        } catch (error) {
-            console.log(error);
             setIsLoading(false);
         }
     }
 
     const resendPhoneVerificationCode = () => {
         signUp?.prepareVerification({ strategy: 'phone_code' });
+        toast.success('Patvirtinimo kodas išsiųstas į jūsų telefono numerį.', { duration: 5000 });
     }
 
     return (
@@ -234,7 +260,7 @@ export const RegisterPage = ({ ChangeView }: LoginPageProps) => {
                         <hr className={`bg-border text-border rounded-full h-[2px]`} />
                         <CustomInput type='text' placeholder={`Vardas`} value={first_name ?? ''} setValue={setFirstName} isRequired={true} />
                         <CustomInput type='text' placeholder={`Pavardė`} value={last_name ?? ''} setValue={setLastName} isRequired={true} />
-                        <CustomInput type='text' placeholder={`Tel. numeris`} value={phone_number ?? ''} setValue={setPhoneNumber} isRequired={true} />
+                        <CustomInput type='number' placeholder={`Tel. numeris`} value={phone_number ?? ''} setValue={setPhoneNumber} isRequired={true} maxLength={16} />
                         <CustomInput type='text' placeholder={`Organizacijos pavadinimas (neprivaloma)`} value={organization ?? ''} setValue={setOrganization} isRequired={false} />
                         <button type="submit" className={`bg-primary rounded-[0.1875rem] py-[0.88rem] text-[#FFF] text-base full_hd:text-base_2xl`}>Registruotis</button>
                         <span className={`text-base full_hd:text-base_2xl text-secondary`}>Jau turite paskyrą? <button type='button' className={`text-highlight`} onClick={() => ChangeView('login')}>Prisijungti</button></span>
@@ -256,7 +282,7 @@ export const RegisterPage = ({ ChangeView }: LoginPageProps) => {
                 <CodeVerifyModal
                     title={`Paskyros patvirtinimas`}
                     placeholder={`Į nurodytą el. paštą buvo išsiųstas patvirtinimo kodas.`}
-                    code={verificationCode}
+                    code={verificationCode ?? ''}
                     isLoading={isLoading}
                     setCode={setVerificationCode}
                     attemptVerify={attemptEmailVerification}
@@ -268,7 +294,7 @@ export const RegisterPage = ({ ChangeView }: LoginPageProps) => {
                 <CodeVerifyModal
                     title={`Paskyros patvirtinimas`}
                     placeholder={`Į nurodytą tel. nr buvo išsiųstas patvirtinimo kodas.`}
-                    code={verificationCode}
+                    code={verificationCode ?? ''}
                     isLoading={isLoading}
                     setCode={setVerificationCode}
                     attemptVerify={attemptPhoneVerification}

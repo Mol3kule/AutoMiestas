@@ -11,6 +11,8 @@ import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { getPostsByCategory } from "@/actions/posts/post.actions";
+import Countries from "@/classes/Countries";
+import Cities from "@/classes/Cities";
 
 type PostSecondaryInfoProps = {
     post: Post;
@@ -31,7 +33,8 @@ export const SecondaryInformationSection = ({ post }: PostSecondaryInfoProps) =>
         queryKey: ['getPostsByCategory'],
         queryFn: async () => {
             return await getPostsByCategory(category) as Post[];
-        }
+        },
+        staleTime: Infinity
     });
 
     const CommentSection = () => {
@@ -97,13 +100,16 @@ export const SecondaryInformationSection = ({ post }: PostSecondaryInfoProps) =>
                                 )}
                             </div>
                             <div className={`flex gap-[0.3rem] text-sm full_hd:text-sm_2xl text-[#FFF] items-center w-full`}>
-                                <span className={`px-[0.5rem] py-[0.2rem] bg-primary rounded-[0.1875rem]`}>{postData.information.location.country}</span>
-                                <span className={`px-[0.5rem] py-[0.2rem] bg-primary rounded-[0.1875rem]`}>{postData.information.location.city}</span>
+                                <span className={`px-[0.5rem] py-[0.2rem] bg-primary rounded-[0.1875rem] capitalize`}>{Countries.getCountryByIndex(Number(information.location.countryId))}</span>
+                                <span className={`px-[0.5rem] py-[0.2rem] bg-primary rounded-[0.1875rem] capitalize`}>{Cities.getCityByIndex(information.location.countryId, Number(information.location.cityId))}</span>
                             </div>
                         </div>
                     )}
                     <div className={`flex flex-col items-end h-full justify-between`}>
-                        <Heart className={`${isLoaded && user && postData.statistics.times_liked.includes(user.id) ? `text-highlight` : `text-placeholder_secondary`}`} />
+                        <Heart
+                            fill={`${isLoaded && user && postData.statistics.times_liked.includes(user.id) ? '#E74F71' : 'none'}`}
+                            className={`${isLoaded && user && postData.statistics.times_liked.includes(user.id) ? `text-error_secondary` : `text-placeholder_secondary`} w-[1.25rem] h-[1.25rem]`}
+                        />
                         <span className={`text-highlight`}>{postData.information.price.toLocaleString()}&euro;</span>
                     </div>
                 </div>

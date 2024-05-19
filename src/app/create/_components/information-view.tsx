@@ -14,7 +14,7 @@ export const PostInformationPage = () => {
         [Categories.heavy]: <VehiclePostView />,
         [Categories.agricultural]: <VehiclePostView />,
         [Categories.construction]: <VehiclePostView />,
-        [Categories.trailer]: <VehiclePostView />,
+        [Categories.trailer]: <></>,
         [Categories.boat]: <></>,
         [Categories.plane]: <></>,
         [Categories.scooter]: <ItemPostView />,

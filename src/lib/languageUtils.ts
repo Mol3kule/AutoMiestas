@@ -1,13 +1,15 @@
 import { useUserStore } from "@/store/user/user.store";
-import lt from '@/dictionaries/lt.json';
-import en from '@/dictionaries/en.json';
+import lt from '@/dictionaries/lt/translation.json';
+import en from '@/dictionaries/en/translation.json';
 
-import ltErrors from '@/dictionaries/errors/lt.errors.json';
+import ltErrors from '@/dictionaries/lt/errors.json';
+import ltCountries from '@/dictionaries/lt/countries.json';
 
 export const LanguageMap = {
     lt: {
         ...lt,
-        errors: ltErrors
+        errors: ltErrors,
+        countries: ltCountries
     },
     en
 };

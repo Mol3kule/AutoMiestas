@@ -39,11 +39,6 @@ export const AuthorContactsSection = ({ post, phoneNumber }: { post: Post, phone
     });
 
     const HandlePhoneClick = () => {
-        if (!user) {
-            toast.error(t.general.user_not_logged_in, { duration: 5000 });
-            return;
-        }
-
         setIsPhoneExpanded(!isPhoneExpanded);
         api.start({
             from: {
@@ -72,17 +67,6 @@ export const AuthorContactsSection = ({ post, phoneNumber }: { post: Post, phone
             return;
         }
 
-        // const getPostResponse = await getPostById(post.id!);
-
-        // if (!getPostResponse) {
-        //     toast.error('Error, post not found', { duration: 5000 });
-        //     return;
-        // }
-
-        // const postStats = getPostResponse.statistics as PostStatistics;
-
-        // setPostLikes(postStats.times_liked);
-
         toast.success(t.general[translation as keyof typeof t.general], { duration: 5000 });
         await queryClient.invalidateQueries({ queryKey: ['getPostStatistics'] });
     };
@@ -107,7 +91,10 @@ export const AuthorContactsSection = ({ post, phoneNumber }: { post: Post, phone
                             </button>
                             {!isLoading && postStats && (
                                 <button type="button" onClick={HandleLikeClick} className={`flex bg-[#FFF] w-full px-[1.31rem] py-[0.94rem] laptop:py-0 rounded-[0.1875rem] items-center justify-center hover:opacity-[0.6] duration-700`}>
-                                    <Heart className={`${user && postStats.times_liked.includes(user.id) ? `text-highlight` : `text-primary`} w-[0.9375rem] h-[0.9375rem] full_hd:w-[1.25rem] full_hd:h-[1.25rem]`} />
+                                    <Heart
+                                        fill={`${isLoaded && user && postStats.times_liked.includes(user.id) ? '#E74F71' : 'none'}`}
+                                        className={`${user && postStats.times_liked.includes(user.id) ? `text-error_secondary` : `text-primary`} w-[0.9375rem] h-[0.9375rem] full_hd:w-[1.25rem] full_hd:h-[1.25rem]`}
+                                    />
                                 </button>
                             )}
                         </>

@@ -21,16 +21,16 @@ export type getVehicleDataProps = {
     sw_side: string;
 }
 
-export class Vehicle {
+class Vehicle {
     private Types: { [key: number]: number } = {
         [0]: Categories.vehicle,
         [1]: Categories.motorcycle,
         [2]: Categories.heavy,
         [3]: Categories.agricultural,
         [4]: Categories.construction,
-        [5]: Categories.trailer,
-        [6]: Categories.boat,
-        [7]: Categories.plane
+        // [5]: Categories.trailer,
+        // [6]: Categories.boat,
+        // [7]: Categories.plane
     }
 
     private BodyTypes: { [key in BodyType]: string } = {
@@ -229,6 +229,10 @@ export class Vehicle {
 
     public getVehicleModelDataByIdx(vehicleModels: TVehicleModels, makeId: number, modelId: number) {
         return Object.values(vehicleModels[makeId]).find(model => model.id === modelId);
+    };
+
+    public isVehicleType(type: number): boolean {
+        return Object.keys(this.Types).includes(type.toString());
     };
 };
 

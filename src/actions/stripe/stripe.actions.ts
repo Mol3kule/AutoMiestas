@@ -120,7 +120,7 @@ export const getSubscription = async (subscriptionId: string) => {
             metadata: product.metadata
         }
 
-        return { status: 200, subscription: subscriptionData, product: productData };
+        return { status: 200, subscription: subscriptionData ?? {}, product: productData ?? {} };
     } catch (error) {
         console.log(`[getSubscription]: ${error}`);
         return { status: 500, error };
@@ -154,12 +154,7 @@ export const deleteSubscription = async (postId: number) => {
         }
 
         const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-        try {
-            await stripe.subscriptions.cancel(post.subscriptionId!);
-        } catch (error) {
-            console.log(error);
-            return { status: 500 };
-        }
+        await stripe.subscriptions.cancel(post.subscriptionId!);
 
         const deleteImagesResponse = await deleteImages(post.images as PostImage[]);
         if (deleteImagesResponse.status !== 200) {

@@ -1,6 +1,6 @@
-import { CategoriesAsVehicleCategories } from "@/actions/posts/post.actions";
 import { Categories as PostCategories } from "@/classes/PostCategories";
 import { BodyType, Conditions, Drivetrains, FuelTypes, Rating, SteeringWheel_Side, Transmissions } from "@/classes/Vehicle";
+import { Post, PostImage } from "@/types/post.type";
 import { MileageType, PowerType } from "@/types/vehicle.type";
 import { create } from "zustand";
 
@@ -31,6 +31,7 @@ type Store = {
 
     primaryImg: number;
     fileImages: File[];
+    filledImages: PostImage[];
     countryId: number;
     cityId: number;
 
@@ -76,6 +77,7 @@ type Store = {
     checkFields: () => { status: boolean, message?: string };
     checkFieldsItem: () => { status: boolean, message?: string };
     resetFields: () => void;
+    fillFieldsByPostData: (postData: Post) => void;
 }
 
 export const usePostCreateStore = create<Store>()((set, get) => ({
@@ -105,7 +107,8 @@ export const usePostCreateStore = create<Store>()((set, get) => ({
 
     primaryImg: null!,
     fileImages: [],
-    countryId: null!,
+    filledImages: [],
+    countryId: 0,
     cityId: null!,
     specifications: {
         [Rating.Equipment]: 5,
@@ -219,11 +222,53 @@ export const usePostCreateStore = create<Store>()((set, get) => ({
 
         primaryImg: null!,
         fileImages: [],
-        countryId: null!,
+        filledImages: [],
+        countryId: 0,
         cityId: null!,
         specifications: {
             [Rating.Equipment]: 5,
             [Rating.Body]: 5,
         },
-    })
+    }),
+
+    fillFieldsByPostData: (postData: Post) => {
+        if ('vehicleData' in postData.information) {
+            const { information: { vehicleData } } = postData;
+            set({
+                makeId: vehicleData.make,
+                modelId: vehicleData.model,
+                modelYear: vehicleData.year,
+                bodyType: vehicleData.body_type,
+                mileage: vehicleData.mileage,
+                mileage_type: vehicleData.mileage_type,
+                fuelType: vehicleData.fuel_type,
+                drivetrain: vehicleData.drive_train,
+                transmission: vehicleData.transmission,
+                sw_side: vehicleData.sw_side,
+                condition: vehicleData.condition,
+                ccm: vehicleData.ccm,
+                power: vehicleData.power,
+                power_type: vehicleData.power_type,
+                technical_inspection_due: vehicleData.technical_inspection_due_to ?? '',
+                vin: vehicleData.vin ?? '',
+                sdk: vehicleData.sdk ?? '',
+                specifications: vehicleData.ratingByAuthor,
+            });
+        } else {
+            const { information: { itemData } } = postData;
+            set({
+                title: postData.information.title,
+                partNumber: itemData.partNumber,
+                condition: itemData.condition,
+            });
+        }
+
+        set({
+            price: postData.information.price,
+            countryId: postData.information.location.countryId,
+            cityId: postData.information.location.cityId,
+            description: postData.information.description,
+            filledImages: postData.images,
+        });
+    }
 }));
