@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, FormEvent } from "react";
+import { FormEvent, useEffect, useState } from "react";
 
 export const CooldownButton = ({ type, text, cooldown, className, cooldownByDefault, buttonClicked }: { type: React.ButtonHTMLAttributes<HTMLButtonElement>['type'], text: string, cooldown: number, className: string, cooldownByDefault?: boolean, buttonClicked?: () => void }) => {
     const [datePressed, setDatePressed] = useState<number | null>(null);
@@ -11,7 +11,7 @@ export const CooldownButton = ({ type, text, cooldown, className, cooldownByDefa
         if (isDefaultCooldown) {
             setDatePressed(Date.now());
         }
-    }, []);
+    }, []); 
 
     useEffect(() => {
         let intervalId: NodeJS.Timeout;

@@ -1,11 +1,11 @@
-import { useLanguage } from "@/lib/languageUtils";
-import { useVehicleStore } from "@/store/vehicles/vehicle.store";
-import { usePostCreateStore } from "@/store/posts/postCreate.store";
+import { useLanguage } from "@/lib/languageUtils"
+import { usePostCreateStore } from "@/store/posts/postCreate.store"
+import { useVehicleStore } from "@/store/vehicles/vehicle.store"
 
-import { PostAdditionalInformationSection, PostDescriptionSection, PostGeneralInformationSection, PostImagesSection, PostLocationSection } from "./post-view-wrapper";
-import { PostCreateInputText, PostCreateSelectInput, PostCreateSelectInputSearchable } from "@/components/inputs/postCreateInput";
-import { PostObj } from "@/classes/PostCategories";
-import { VehicleObj } from "@/classes/Vehicle";
+import { PostObj } from "@/classes/PostCategories"
+import { VehicleObj } from "@/classes/Vehicle"
+import { PostCreateInputText, PostCreateSelectInput, PostCreateSelectInputSearchable } from "@/components/inputs/postCreateInput"
+import { PostAdditionalInformationSection, PostDescriptionSection, PostGeneralInformationSection, PostImagesSection, PostLocationSection } from "./post-view-wrapper"
 
 export const VehiclePostView = () => {
     return (
@@ -83,7 +83,7 @@ const GeneralSection = () => {
                 items={Object.keys(VehicleObj.getAllBodyTypes()).map((keyIdx) => ({ id: keyIdx, label: t.vehicleInfo.body_type[VehicleObj.getBodyTypeByIndex(Number(keyIdx)) as keyof typeof t.vehicleInfo.body_type] }))}
                 setValue={(value) => setBodyType(Number(value))}
             />
-            <div className={`flex gap-[1.25rem] flex-wrap laptop:flex-nowrap`}>
+            <div className={`grid grid-cols-2 gap-[1.25rem]`}>
                 <PostCreateInputText
                     label={t.vehicleInfo.objKeys.mileage}
                     value={mileage ? mileage.toString() : ``}
@@ -101,7 +101,7 @@ const GeneralSection = () => {
                 value={ccm ? ccm.toString() : ``}
                 setValue={(value) => setCCM(Number(value))}
             />
-            <div className={`flex gap-[1.25rem] flex-wrap laptop:flex-nowrap`}>
+            <div className={`grid grid-cols-2 gap-[1.25rem]`}>
                 <PostCreateInputText
                     label={t.post.labels.power}
                     value={power ? power.toString() : ``}
